@@ -12,7 +12,7 @@ export type SalesRepAccount = {
 
 export const receiveAccounts = async () => {
   try {
-    const connection = await amqp.connect("amqp://localhost");
+    const connection = await amqp.connect(`amqp://${Bun.env.AMQP_HOST}`);
     const channel = await connection.createChannel();
 
     process.on("exit", async () => {

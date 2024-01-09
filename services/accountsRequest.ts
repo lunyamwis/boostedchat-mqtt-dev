@@ -1,6 +1,6 @@
 import amqp from "amqplib";
 
-const queue = "request";
+const queue = "sendLoginCredentials";
 const text = {
   type: "accounts",
 };
@@ -8,7 +8,7 @@ const text = {
 export const requestAccounts = async () => {
   let connection;
   try {
-    connection = await amqp.connect("amqp://localhost");
+    connection = await amqp.connect(`amqp://${Bun.env.AMQP_HOST}`);
     const channel = await connection.createChannel();
 
     await channel.assertQueue(queue, { durable: false });

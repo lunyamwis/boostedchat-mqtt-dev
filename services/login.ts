@@ -24,6 +24,7 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
     salesRepAccount.igname,
     salesRepAccount.password
   );
+  console.log(`Logged in ${salesRepAccount.igname} successfully`);
   AccountInstances.addAccountInstance(salesRepAccount.igname, {
     userId: user.pk,
     instance: igInstance,

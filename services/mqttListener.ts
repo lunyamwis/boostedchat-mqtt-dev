@@ -287,7 +287,7 @@ export class MQTTListener {
   private async receiveSalesRepMessage(threadId: string, message: string) {
     try {
       const response = await fetch(
-        `${Bun.env.API_BASE_URL}/instagram/dm/${threadId}/save-salesrep-message/`,
+        `${Bun.env.API_URL}/instagram/dm/${threadId}/save-salesrep-message/`,
         {
           method: "POST",
           body: JSON.stringify({ text: message }),
@@ -356,7 +356,7 @@ export class MQTTListener {
 
   private async sendNewMessage(threadId: string, messages: string[]) {
     const response = await fetch(
-      `${Bun.env.API_BASE_URL}/instagram/dflow/${threadId}/generate-response/`,
+      `${Bun.env.API_URL}/instagram/dflow/${threadId}/generate-response/`,
       {
         method: "POST",
         body: JSON.stringify({ message: messages.join("#*eb4*#") }),
@@ -381,7 +381,7 @@ export class MQTTListener {
         delete this.messageHolder[threadId];
         if (body.generated_comment === "Come again") {
           const humanTakeover = await fetch(
-            `${Bun.env.API_BASE_URL}/instagram/fallback/${threadId}/assign-operator/`,
+            `${Bun.env.API_URL}/instagram/fallback/${threadId}/assign-operator/`,
             {
               method: "POST",
               body: JSON.stringify({ assigned_to: "Human" }),
@@ -412,7 +412,7 @@ export class MQTTListener {
               .get(this.username)!
               .instance.entity.directThread([userId.toString()]);
             await thread.broadcastText(body.generated_comment);
-          }, 30000);
+          }, 75000);
         }
       }
     } else {

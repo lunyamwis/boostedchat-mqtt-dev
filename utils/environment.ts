@@ -4,13 +4,14 @@ declare module "bun" {
   interface Env {
     PROXY_USERNAME: string;
     PROXY_PASSWORD: string;
-    API_BASE_URL: string;
+    API_URL: string;
     CLIENT_ORG: string;
     EMAIL_USER: string;
     EMAIL_PASSWORD: string;
     EMAIL_RECIPIENTS: string;
     SMTP_HOST: string;
     SMTP_PORT: number;
+    AMQP_HOST: string;
   }
 }
 
@@ -18,7 +19,8 @@ export const validateEnv = () => {
   const envs = {
     PROXY_USERNAME: str(),
     PROXY_PASSWORD: str(),
-    API_BASE_URL: url(),
+    API_URL: url(),
+    AMQP_HOST: str(),
     CLIENT_ORG: str(),
     EMAIL_USER: email(),
     EMAIL_PASSWORD: str(),
