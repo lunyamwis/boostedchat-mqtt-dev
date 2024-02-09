@@ -16,6 +16,7 @@
     "instagram-private-api": "^1.45.3",
     "instagram_mqtt": "^1.2.2",
     "nodemailer": "^6.9.7",
+    "pnpm": "^8.15.1",
     "winston": "^3.11.0",
     "winston-daily-rotate-file": "^4.7.1"
   }
