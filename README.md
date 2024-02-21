@@ -1,5 +1,13 @@
 # mqtt-bun-v2
 
+## Prerequisites
+1. AMQP Server
+
+```bash
+sudo apt-get install rabbitmq-server
+```
+
+## Usage
 To install dependencies:
 
 ```bash

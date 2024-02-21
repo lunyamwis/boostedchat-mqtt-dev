@@ -372,13 +372,14 @@ export class MQTTListener {
         username: string;
         assigned_to: "Robot" | "Human";
       };
-
+      
+      delete this.messageHolder[threadId];
+      
       if (body.assigned_to === "Human") {
         return;
       }
 
       if (body.status === 200) {
-        delete this.messageHolder[threadId];
         if (body.generated_comment === "Come again") {
           const humanTakeover = await fetch(
             `${Bun.env.API_URL}/instagram/fallback/${threadId}/assign-operator/`,

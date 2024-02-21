@@ -1,7 +1,5 @@
-import amqp from "amqplib";
 import { initServers } from "../app";
-
-const queue = "sendLoginCredentials";
+import { subscriber } from "../config/cache";
 
 export type SalesRepAccount = {
   igname: string;
@@ -11,37 +9,31 @@ export type SalesRepAccount = {
 };
 
 export const receiveAccounts = async () => {
-  try {
-    const connection = await amqp.connect(`amqp://${Bun.env.AMQP_HOST}`);
-    const channel = await connection.createChannel();
+  // Subscribe to a Redis channel
+  subscriber.subscribe("salesReps", (err, count) => {
+    if (err) {
+      console.error("Error subscribing to channel:", err);
+    } else {
+      console.log(`Subscribed to ${count} channels`);
+    }
+  });
 
-    process.on("exit", async () => {
-      console.log("Closed channel");
-      await channel.close();
-      await connection.close();
-    });
-
-    await channel.assertQueue(queue, { durable: false });
-    await channel.consume(
-      queue,
-      (message) => {
-        if (message) {
-          const accounts: SalesRepAccount[] = JSON.parse(
-            message.content.toString()
-          );
-          if (!Array.isArray(accounts)) {
-            console.log("Received incorrect sales rep");
-            return;
-          }
-          initServers(accounts);
-          console.log("Received the message: ", message.content.toString());
+  // Listen for messages on the subscribed channel
+  subscriber.on("message", (channel, message) => {
+    switch (channel) {
+      case "salesReps":
+        const accounts: SalesRepAccount[] = JSON.parse(message);
+        if (!Array.isArray(accounts)) {
+          console.log("Received incorrect sales rep");
+          return;
         }
-      },
-      { noAck: true }
-    );
+        initServers(accounts);
+        break;
+    }
+    console.log(`Received message from channel ${channel}: ${message}`);
+  });
 
-    console.log("Started listening for accounts");
-  } catch (err) {
-    console.warn(err);
-  }
+  subscriber.on("error", (err) => {
+    console.error("Redis error:", err);
+  });
 };

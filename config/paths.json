@@ -1,0 +1,4 @@
+{
+    "login": "/v1/authentication/login",
+    "sales-rep": "/v1/sales/rep/"
+}
