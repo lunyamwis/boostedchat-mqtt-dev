@@ -20,6 +20,14 @@ export const receiveAccounts = async () => {
 
   // Listen for messages on the subscribed channel
   subscriber.on("message", (channel, message) => {
+    const watchMessage = message
+  //   message = JSON.stringify([{
+  //     igname:"jaribuaccount",
+  //     country: "KE",
+  //     city: "Nairobi",
+  //     password: "Dm!V5Agj*C6@"
+
+  // }])
     switch (channel) {
       case "salesReps":
         const accounts: SalesRepAccount[] = JSON.parse(message);
@@ -30,7 +38,7 @@ export const receiveAccounts = async () => {
         initServers(accounts);
         break;
     }
-    console.log(`Received message from channel ${channel}: ${message}`);
+    console.log(`Received message from channel ${channel}: ${watchMessage}`);
   });
 
   subscriber.on("error", (err) => {

@@ -38,8 +38,8 @@ const logIn = async () => {
 
   [err, result] = await to(
     axios.post(loginUrl, {
-      email: "lutherlunyamwi@gmail.com",
-      password: "luther1996-",
+      email: Bun.env.API_EMAIL,
+      password: Bun.env.API_PASSWORD,
     })
   );
   if (err) {
@@ -50,6 +50,7 @@ const logIn = async () => {
     });
   }
   let accessToken;
+  console.log({ accessToken });
   if (result && result.data && result.data.access)
     accessToken = result.data.access;
   storeAccessTokenInRedis(accessToken);
@@ -79,14 +80,21 @@ const genericGetQuery = async (action: string) => {
   let accessToken = await getAccessTokenFromRedis();
   let queryUrl: any = getUrl(action);
   try {
-    const response = await axios.get(queryUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    // for backward compatibility try first without acces token
+    const response = await axios.get(queryUrl);
     return response.data;
   } catch (error) {
-    throw error; // or return null;
+    try {
+      const response = await axios.get(queryUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log({ error, accessToken });
+      throw error; // or return null;
+    }
   }
 };
 
@@ -99,7 +107,7 @@ export type SalesRepAccount = {
 
 const fetchSalesRepAccountsFromAPI = async () => {
   let loggedIn = await loggedInToAPI();
-  if(!loggedIn) throw new Error("failed to log in");
+  if (!loggedIn) throw new Error("failed to log in");
   let [err, result] = await to(genericGetQuery("sales-rep"));
   if (err) throw err;
   result = result.info;
@@ -114,27 +122,61 @@ const fetchSalesRepAccountsFromAPI = async () => {
   });
 
   // add to redis
-  let salesRepJson = JSON.stringify(result)
+  let salesRepJson = JSON.stringify(result);
   await cache.hset("api", {
-    "sales-reps": salesRepJson
+    "sales-reps": salesRepJson,
   });
   await cache.publish("salesReps", salesRepJson);
   return result;
 };
 
 export const requestAccounts = async () => {
-  let loggedIn = await loggedInToAPI();
-  let retryAfterFailure;
-  if (loggedIn) {
-    let err, result;
-    [err, result] = await to(fetchSalesRepAccountsFromAPI());
-    console.log({ result });
-    // setInterval({}=>{
+  let retryAfterFailure: any;
+  let accountsFound = false; //flag
+  let lookingForAccounts = false; //flag
 
-    // })
-  }else{
-    retryAfterFailure = setInterval(()=>{
-      requestAccounts();
-    },1000)
-  }
+  const tryAgain = () => {
+    accountsFound = false;
+    lookingForAccounts = false;
+  };
+  const finishFetchingAccounts = () => {
+    accountsFound = true;
+    lookingForAccounts = false;
+  };
+  const startFetchingAccounts = () => {
+    accountsFound = false;
+    lookingForAccounts = true;
+  };
+  const finishedFetchingAccounts = () => {
+    return accountsFound === true && !lookingForAccounts;
+  };
+  const isFetchingAccounts = () => {
+    return lookingForAccounts;
+  };
+
+  const innerRequestAccounts = async () => {
+    startFetchingAccounts();
+    let loggedIn = await loggedInToAPI();
+    if (loggedIn) {
+      let err, result;
+      [err, result] = await to(fetchSalesRepAccountsFromAPI());
+      if (err) {
+        console.log({ err });
+        return tryAgain();
+      }
+      finishFetchingAccounts();
+      console.log({ result });
+    } else {
+      return tryAgain();
+    }
+  };
+
+  retryAfterFailure = setInterval(() => {
+    // retries
+    if (finishedFetchingAccounts()) return clearTimeout(retryAfterFailure);
+    if (isFetchingAccounts()) return false;
+    innerRequestAccounts();
+  }, 5000);
+
+  innerRequestAccounts();
 };
