@@ -12,6 +12,8 @@ declare module "bun" {
     SMTP_HOST: string;
     SMTP_PORT: number;
     AMQP_HOST: string;
+    REDIS_HOST: string;
+    REDIS_PORT: string;
   }
 }
 
@@ -26,6 +28,8 @@ export const validateEnv = () => {
     EMAIL_PASSWORD: str(),
     SMTP_HOST: str(),
     SMTP_PORT: num(),
+    REDIS_HOST: str(),
+    REDIS_PORT: str(),
     EMAIL_RECIPIENTS: json<string[]>(),
   };
   cleanEnv(process.env, envs);
