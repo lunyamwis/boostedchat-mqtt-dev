@@ -1,6 +1,8 @@
 name: Push to Holding Repo
 
 # Define global variables
+# Whenever this file is updated, ensure that is is also updated in all the microservice repos
+# For now this can still be done manually
 env:
   SERVICE_NAME: "mqtt" # change this for each service
   REPO_NAME: "create-boostedchat-instance"
@@ -31,7 +33,7 @@ jobs:
             echo "Branch extracted from tag: $BRANCH"
             echo "LOCAL_BRANCH=$BRANCH" >> $GITHUB_ENV
             echo "BRANCH=${{ env.SERVICE_NAME }}-$BRANCH" >> $GITHUB_ENV
-        - uses: actions/checkout@v3
+        - uses: actions/checkout@v4
           with:
             ref: ${{ env.LOCAL_BRANCH }}
         - name: Check if destination branch exists
@@ -55,9 +57,8 @@ jobs:
             sort -u heldrepos.md > /tmp/heldrepos.md
             mv /tmp/heldrepos.md heldrepos.md
             commit_url="https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/commit/${{ github.sha }}"
-            echo $(date) > date # ensure that is always a change to me commited
             git add . && git commit -m "Update from $commit_url"
-            GIT_SSH_COMMAND="ssh -i /tmp/ssh/id_rsa -o UserKnownHostsFile=/tmp/ssh/known_hosts" git push git@github.com:${{ github.repository_owner }}/${{ env.REPO_NAME }}.git master 
+            GIT_SSH_COMMAND="ssh -i /tmp/ssh/id_rsa -o UserKnownHostsFile=/tmp/ssh/known_hosts" git push git@github.com:${{ github.repository_owner }}/${{ env.REPO_NAME }}.git master
 
             ### Rest of the process
             git checkout -b ${{ env.BRANCH }}
@@ -74,16 +75,10 @@ jobs:
             commit_url="https://github.com/${{ github.repository_owner }}/${{ github.event.repository.name }}/commit/${{ github.sha }}"
             git add . && git commit -m "Update from $commit_url"
             GIT_SSH_COMMAND="ssh -i /tmp/ssh/id_rsa -o UserKnownHostsFile=/tmp/ssh/known_hosts" git push git@github.com:${{ github.repository_owner }}/${{ env.REPO_NAME }}.git ${{ env.BRANCH }}
+            
+
+
 
 
             
-        # - name: Push back to repository
-        #   uses: cpina/github-action-push-to-another-repository@main
-        #   env:
-        #     SSH_DEPLOY_KEY: ${{ secrets.HOLDING_REPO }}
-        #   with:
-        #     source-directory: ./
-        #     destination-github-username: ${{ github.repository_owner }}
-        #     destination-repository-name: ${{ env.REPO_NAME }}
-        #     user-email: "github-actions[bot]@users.noreply.github.com"
-        #     target-branch: ${{ env.BRANCH }}
+
