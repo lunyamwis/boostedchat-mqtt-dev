@@ -3,6 +3,7 @@ import paths from "../config/paths.json";
 import { cache } from "../config/cache";
 import to from "await-to-js";
 import { eventLogger, httpLogger, libLogger } from "../config/logger";
+import {clearLoggedInAccounts} from "./accounts"
 
 const getAccessTokenFromRedis = async () => {
   const s = await cache.hget("api", "accessToken");
@@ -105,7 +106,7 @@ export type SalesRepAccount = {
   city: string;
 };
 
-const fetchSalesRepAccountsFromAPI = async () => {
+export const fetchSalesRepAccountsFromAPI = async (publish = true) => {
   let loggedIn = await loggedInToAPI();
   if (!loggedIn) throw new Error("failed to log in");
   let [err, result] = await to(genericGetQuery("sales-rep"));
@@ -126,11 +127,12 @@ const fetchSalesRepAccountsFromAPI = async () => {
   await cache.hset("api", {
     "sales-reps": salesRepJson,
   });
-  await cache.publish("salesReps", salesRepJson);
+  if (publish) await cache.publish("salesReps", salesRepJson);
   return result;
 };
 
 export const requestAccounts = async () => {
+  clearLoggedInAccounts()
   let retryAfterFailure: any;
   let accountsFound = false; //flag
   let lookingForAccounts = false; //flag
