@@ -48,7 +48,8 @@ export const receiveAccounts = async () => {
         initServers(accounts);
         break;
     }
-    console.log(`Received message from channel ${channel}: ${watchMessage}`);
+    // console.log(`Received message from channel ${channel}: ${watchMessage}`);
+    console.log(`Received message from channel ${channel}`);
   });
 
   subscriber.on("error", (err) => {
