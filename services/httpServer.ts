@@ -2,6 +2,10 @@ import { DirectThreadRepositoryBroadcastResponsePayload } from "instagram-privat
 import { httpLogger } from "../config/logger";
 import { Mailer } from "../services/mailer/mailer";
 import { AccountInstances } from "../instances";
+import {fetchSalesRepAccountsFromAPI} from "./accountsRequest"
+import {initServers} from "../app"
+import { cache } from "../config/cache";
+import {isALoggedInAccount, listAccounts} from "../services/accounts";
 
 export class HttpServer {
   private mailer: Mailer;
@@ -20,6 +24,52 @@ export class HttpServer {
 
   private async bunFetch(request: Request) {
     const url = new URL(request.url);
+    if (request.method === "GET" && url.pathname === "/accounts") {
+      let accounts = await listAccounts();
+      return new Response(JSON.stringify(accounts))
+
+    }
+    if (request.method === "POST" && url.pathname === "/login") {
+      try {
+        const data = (await request.json()) as {
+          igname: string;
+        };
+        console.log(data)
+        let isLoggedIn = await isALoggedInAccount(data.igname)
+        if(isLoggedIn){
+          return new Response("Account already logged in", { status: 200 });
+        }
+        let salesReps = await fetchSalesRepAccountsFromAPI(false)
+        // console.log(salesReps)
+        // salesReps.push( 
+        //   {
+        //       igname:"jaribuaccount",
+        //   country: "KE",
+        //   city: "Nairobi",
+        //   password: "Dm!V5Agj*C6@"
+        //   }
+        //   )
+        if(salesReps){
+          // salesReps = JSON.parse(salesReps)
+        }else{
+          return new Response("Account not found", { status: 404 });
+        }
+        let accounts:[] = salesReps.filter(account=>account.igname==data.igname)
+        console.log(accounts)
+        if(accounts.length ===0){
+          return new Response("Account not found", { status: 404 });
+        }
+        isLoggedIn = await initServers(accounts, data.igname)
+        if(isLoggedIn){
+          return new Response("Account logged in", { status: 200 });
+        }else {
+          return new Response("Failed to log in", { status: 422 });
+        }
+      } catch (error) {
+        console.error(error)
+      }
+      return new Response("There was an error", { status: 400 });
+    }
     if (request.method === "POST" && url.pathname === "/send-message") {
       try {
         const data = (await request.json()) as {
@@ -77,9 +127,9 @@ export class HttpServer {
           .instance.entity.directThread([userId.toString()]);
 
         if (data.mediaId) {
-          try{
+          try {
             await thread.broadcastPost(data.mediaId);
-          }catch(err){
+          } catch (err) {
             this.mailer.send({
               subject: `Sending media error`,
               text: `Hi team, There was an error sending a media to a lead but nevertheless we are still proceeding without the media and reaching out.\nThe error message is \n${

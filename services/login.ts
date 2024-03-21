@@ -20,7 +20,7 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
     );
   }
 
-  const user = await igInstance.account.login(
+  const user = await igInstance.account.login(  // check.
     salesRepAccount.igname,
     salesRepAccount.password
   );

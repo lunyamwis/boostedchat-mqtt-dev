@@ -30,15 +30,26 @@ export const receiveAccounts = async () => {
   // }])
     switch (channel) {
       case "salesReps":
-        const accounts: SalesRepAccount[] = JSON.parse(message);
+        let accounts: SalesRepAccount[] = JSON.parse(message);
         if (!Array.isArray(accounts)) {
           console.log("Received incorrect sales rep");
           return;
         }
+    //     accounts = [{"igname":"asdasjd","password":"asdasdasd!","country":"US","city":"Pasadena"},{"igname":"asdhasduasdo","password":"adasdas","country":"US","city":"Miami"}
+    //   //   ,
+    //   // {
+    //   //     igname:"jaribuaccount",
+    //   // country: "KE",
+    //   // city: "Nairobi",
+    //   // password: "Dm!V5Agj*C6@"
+    //   // }
+    // ]
+
         initServers(accounts);
         break;
     }
-    console.log(`Received message from channel ${channel}: ${watchMessage}`);
+    // console.log(`Received message from channel ${channel}: ${watchMessage}`);
+    console.log(`Received message from channel ${channel}`);
   });
 
   subscriber.on("error", (err) => {
