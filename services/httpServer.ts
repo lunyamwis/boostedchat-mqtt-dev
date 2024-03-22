@@ -126,7 +126,7 @@ export class HttpServer {
           .get(data.username_from)!
           .instance.entity.directThread([userId.toString()]);
 
-        if (data.mediaId) {
+        if (data.mediaId && data.mediaId.length > 0) {
           try {
             await thread.broadcastPost(data.mediaId);
           } catch (err) {
