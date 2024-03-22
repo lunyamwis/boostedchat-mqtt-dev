@@ -28,7 +28,7 @@ class Mailer {
             text: message.text,
             from: Bun.env.EMAIL_USER,
             to: JSON.parse(Bun.env.EMAIL_RECIPIENTS),
-            subject: `${Bun.env.CLIENT_ORG} server: ${message.subject}`,
+            subject: `${Bun.env.DOMAIN1} server: ${message.subject}`,
           },
           (error) => {
             if (error) {
