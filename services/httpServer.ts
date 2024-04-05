@@ -1,11 +1,22 @@
+/*
+ * add link to log out
+ * link to disconnect
+ */
 import { DirectThreadRepositoryBroadcastResponsePayload } from "instagram-private-api";
 import { httpLogger } from "../config/logger";
 import { Mailer } from "../services/mailer/mailer";
 import { AccountInstances } from "../instances";
-import {fetchSalesRepAccountsFromAPI} from "./accountsRequest"
-import {initServers} from "../app"
+import { fetchSalesRepAccountsFromAPI } from "./accountsRequest";
+import { initServers } from "../app";
 import { cache } from "../config/cache";
-import {isALoggedInAccount, listAccounts} from "../services/accounts";
+import {
+  isALoggedInAccount,
+  listAccounts,
+  getConnectedAccounts,
+  getDisconnectedAccounts,
+  isDisconnectedAccount,
+  isConnectedAccount
+} from "../services/accounts";
 
 export class HttpServer {
   private mailer: Mailer;
@@ -26,22 +37,77 @@ export class HttpServer {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/accounts") {
       let accounts = await listAccounts();
-      return new Response(JSON.stringify(accounts))
-
+      return new Response(JSON.stringify(accounts));
     }
+    if (request.method === "GET" && url.pathname === "/accounts/loggedin") {
+      let accounts = await listAccounts();
+      return new Response(JSON.stringify(accounts));
+    }
+    if (request.method === "GET" && url.pathname === "/accounts/connected") {
+      let accounts = await getConnectedAccounts();
+      return new Response(JSON.stringify(accounts));
+    }
+    if (request.method === "GET" && url.pathname === "/accounts/disconnected") {
+      let accounts = await getDisconnectedAccounts();
+      return new Response(JSON.stringify(accounts));
+    }
+
+    if (request.method === "POST" && url.pathname === "/accounts/isloggedin") {
+      try {
+        const data = (await request.json()) as {
+          igname: string;
+        };
+        let isLoggedIn = await isALoggedInAccount(data.igname);
+        let dat = {};
+        dat[data.igname] = isLoggedIn;
+        return new Response(JSON.stringify(dat), { status: 200 });
+      } catch (error) {
+        console.error(error);
+      }
+      return new Response("There was an error", { status: 400 });
+    }
+    if (request.method === "POST" && url.pathname === "/accounts/isconnected") {
+      try {
+        const data = (await request.json()) as {
+          igname: string;
+        };
+        let isLoggedIn = await isConnectedAccount(data.igname);
+        let dat = {};
+        dat[data.igname] = isLoggedIn;
+        return new Response(JSON.stringify(dat), { status: 200 });
+      } catch (error) {
+        console.error(error);
+      }
+      return new Response("There was an error", { status: 400 });
+    }
+    if (request.method === "POST" && url.pathname === "/accounts/isdisconnected") {
+      try {
+        const data = (await request.json()) as {
+          igname: string;
+        };
+        let isLoggedIn = await isDisconnectedAccount(data.igname);
+        let dat = {};
+        dat[data.igname] = isLoggedIn;
+        return new Response(JSON.stringify(dat), { status: 200 });
+      } catch (error) {
+        console.error(error);
+      }
+      return new Response("There was an error", { status: 400 });
+    }
+
     if (request.method === "POST" && url.pathname === "/login") {
       try {
         const data = (await request.json()) as {
           igname: string;
         };
-        console.log(data)
-        let isLoggedIn = await isALoggedInAccount(data.igname)
-        if(isLoggedIn){
+        console.log(data);
+        let isLoggedIn = await isALoggedInAccount(data.igname);
+        if (isLoggedIn) {
           return new Response("Account already logged in", { status: 200 });
         }
-        let salesReps = await fetchSalesRepAccountsFromAPI(false)
+        let salesReps = await fetchSalesRepAccountsFromAPI(false);
         // console.log(salesReps)
-        // salesReps.push( 
+        // salesReps.push(
         //   {
         //       igname:"jaribuaccount",
         //   country: "KE",
@@ -49,24 +115,26 @@ export class HttpServer {
         //   password: "Dm!V5Agj*C6@"
         //   }
         //   )
-        if(salesReps){
+        if (salesReps) {
           // salesReps = JSON.parse(salesReps)
-        }else{
+        } else {
           return new Response("Account not found", { status: 404 });
         }
-        let accounts:[] = salesReps.filter(account=>account.igname==data.igname)
-        console.log(accounts)
-        if(accounts.length ===0){
+        let accounts: [] = salesReps.filter(
+          (account) => account.igname == data.igname
+        );
+        console.log(accounts);
+        if (accounts.length === 0) {
           return new Response("Account not found", { status: 404 });
         }
-        isLoggedIn = await initServers(accounts, data.igname)
-        if(isLoggedIn){
+        isLoggedIn = await initServers(accounts, data.igname);
+        if (isLoggedIn) {
           return new Response("Account logged in", { status: 200 });
-        }else {
+        } else {
           return new Response("Failed to log in", { status: 422 });
         }
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
       return new Response("There was an error", { status: 400 });
     }
