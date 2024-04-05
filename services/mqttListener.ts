@@ -2,7 +2,7 @@ import { GraphQLSubscriptions, SkywalkerSubscriptions } from "instagram_mqtt";
 import { eventLogger, httpLogger, libLogger } from "../config/logger";
 import { Mailer } from "../services/mailer/mailer";
 import { AccountInstances, TAccountInstances } from "../instances";
-import {addLoggedInAccount, removeLoggedInAccount} from "./accounts"
+import {addLoggedInAccount, removeLoggedInAccount, addConnectedAccount, removeConnectedAccount} from "./accounts"
 
 export class MQTTListener {
   private mailer: Mailer;
@@ -104,7 +104,8 @@ export class MQTTListener {
           label: `${this.username} MQTT Disconnect`,
           message: `${this.username}'s Client cleanly disconnected`,
         });
-        removeLoggedInAccount(this.username)
+        // removeLoggedInAccount(this.username)
+        removeConnectedAccount(this.username)
         await this.mailer.send({
           subject: `${this.username}'s MQTT client disconnected`,
           text: `Hi team, ${this.username}'s MQTT was safely disconnected. Please check on this.`,
@@ -175,6 +176,7 @@ export class MQTTListener {
     setTimeout(() => {
       eventLogger.info(`${this.username} in app`);
       console.log(`Started listening to ${this.username}`);
+      addConnectedAccount(this.username)
       // this.counter = 0;
       this.accountInstances
         .get(this.username)!
@@ -219,7 +221,8 @@ export class MQTTListener {
     setTimeout(async () => {
       try {
         await this.connectMQTTBroker();
-        addLoggedInAccount(this.username)
+        // addLoggedInAccount(this.username)
+        addConnectedAccount(this.username)
         console.log(`${this.username}'s client reconnected safely`);
         libLogger.log({
           level: "info",
@@ -255,7 +258,8 @@ export class MQTTListener {
                 label: `${this.username} MQTT Disconnect`,
                 message: "Client got disconnected cleanly",
               });
-              removeLoggedInAccount(this.username)
+              // removeLoggedInAccount(this.username)
+              removeConnectedAccount(this.username)
               this.registerRealtimeListeners();
               this.reconnectMQTT();
             });
