@@ -35,7 +35,7 @@ export const receiveAccounts = async () => {
           console.log("Received incorrect sales rep");
           return;
         }
-    //     accounts = [{"igname":"asdasjd","password":"asdasdasd!","country":"US","city":"Pasadena"},{"igname":"asdhasduasdo","password":"adasdas","country":"US","city":"Miami"}
+    //     accounts = [{"igname":"jaribuaccount","password":"Dm!V5Agj*C6@","country":"KE","city":"Nairobi"},{"igname":"asdhasduasdo","password":"adasdas","country":"US","city":"Miami"}
     //   //   ,
     //   // {
     //   //     igname:"jaribuaccount",
