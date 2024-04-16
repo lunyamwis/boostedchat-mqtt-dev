@@ -15,8 +15,10 @@ import {
   getConnectedAccounts,
   getDisconnectedAccounts,
   isDisconnectedAccount,
-  isConnectedAccount
+  isConnectedAccount,
 } from "../services/accounts";
+
+import {logout} from "../services/login"
 
 export class HttpServer {
   private mailer: Mailer;
@@ -42,6 +44,17 @@ export class HttpServer {
     if (request.method === "GET" && url.pathname === "/accounts/loggedin") {
       let accounts = await listAccounts();
       return new Response(JSON.stringify(accounts));
+    }
+    if (request.method === "POST" && url.pathname === "/accounts/logout") {
+      const data = (await request.json()) as {
+        igname: string;
+      };
+      let isLoggedIn = await isALoggedInAccount(data.igname);
+      if(!isLoggedIn){
+        return new Response(JSON.stringify(data));
+      }
+      let ret = await logout(data.igname)
+      return new Response(JSON.stringify(data));
     }
     if (request.method === "GET" && url.pathname === "/accounts/connected") {
       let accounts = await getConnectedAccounts();
@@ -95,7 +108,9 @@ export class HttpServer {
       return new Response("There was an error", { status: 400 });
     }
 
-    if (request.method === "POST" && url.pathname === "/login") {
+    
+
+    if (request.method === "POST" && (url.pathname === "/login" || url.pathname === "/accounts/login")) {
       try {
         const data = (await request.json()) as {
           igname: string;
@@ -179,6 +194,7 @@ export class HttpServer {
       request.method === "POST" &&
       url.pathname === "/send-first-media-message"
     ) {
+      // check if username is loggedIn and connected
       try {
         const data = (await request.json()) as {
           message: string;
@@ -187,6 +203,29 @@ export class HttpServer {
           links: string;
           mediaId: string;
         };
+        let sales_rep = data.username_from
+        let isLoggedIn = await isALoggedInAccount(sales_rep);
+        if(!isLoggedIn){
+          httpLogger.error({
+            level: "error",
+            label: "Not connected",
+            message: `${sales_rep} is logged out`,
+            stack: `401`,
+          });
+          return new Response(`${sales_rep} is logged out`, { status: 401 });
+        }
+        let isConnected = await isConnectedAccount(sales_rep);
+        if(!isConnected){
+          // save log
+          httpLogger.error({
+            level: "error",
+            label: "Not connected",
+            message: `${sales_rep} is not connected`,
+            stack: `403`,
+          });
+          return new Response(`${sales_rep} is not connected`, { status: 403});
+        }
+
         const userId = await this.accountInstances
           .get(data.username_from)!
           .instance.user.getIdByUsername(data.username_to);
@@ -208,10 +247,10 @@ export class HttpServer {
             });
           }
         } else {
-          await this.mailer.send({
-            subject: `Unable to send media`,
-            text: `Hi team,\n the server was unable to send media to ${data.username_to} because media id was absent. The message has however been sent`,
-          });
+          // await this.mailer.send({
+          //   subject: `Unable to send media`,
+          //   text: `Hi team,\n the server was unable to send media to ${data.username_to} because media id was absent. The message has however been sent`,
+          // });
         }
         const sent_message = (await thread.broadcastText(
           data.message
@@ -238,7 +277,15 @@ export class HttpServer {
             (err as Error).stack
           }\nPlease check on this.`,
         });
-        return new Response("There was an error", { status: 400 });
+        let str = `${(err as Error).message}`
+        const parts = str.split(' ');
+        let status_code:any = parts[3]
+        if(`${parseInt(status_code)}` === status_code){ // is an actual status code
+            status_code = parseInt(status_code)
+            let status_msg = parts.slice(4).join(' ')
+            return new Response(status_msg, { status: status_code });
+        }
+        return new Response(`There was an error: ${(err as Error).message}`, { status: 400 });
       }
     }
     if (request.method === "POST" && url.pathname === "/post-media") {
