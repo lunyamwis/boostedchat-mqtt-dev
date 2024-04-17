@@ -13,7 +13,7 @@
     "@types/nodemailer": "^6.4.14",
     "amqplib": "^0.10.3",
     "await-to-js": "^3.0.0",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "envalid": "^8.0.0",
     "fastify": "^4.26.0",
     "instagram-private-api": "^1.45.3",
