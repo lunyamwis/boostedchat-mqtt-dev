@@ -294,7 +294,6 @@ export class HttpServer {
           // Get the user ID (pk) and username from the client instance
           const userId = clientInstance.user.getIdByUsername(data.username_from);
           
-          clientInstance.friendship
           // Like the media using the Instagram client instance
           await clientInstance.media.like({
               mediaId: data.mediaId,
