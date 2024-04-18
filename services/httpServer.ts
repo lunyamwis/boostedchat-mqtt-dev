@@ -9,6 +9,12 @@ import { AccountInstances } from "../instances";
 import { fetchSalesRepAccountsFromAPI } from "./accountsRequest";
 import { initServers } from "../app";
 import { cache } from "../config/cache";
+import { StickerBuilder } from "instagram-private-api/dist/sticker-builder";
+import { readFile } from 'fs';
+import { promisify } from 'util';
+
+const readFileAsync = promisify(readFile);
+
 import {
   isALoggedInAccount,
   listAccounts,
@@ -510,7 +516,7 @@ export class HttpServer {
     } 
 
 
-    if (request.method === "POST" && url.pathname === "/reactToStory") {
+    if (request.method === "POST" && url.pathname === "/viewStory") {
       try {
           const data = (await request.json()) as {
               username_from: string;
@@ -559,8 +565,74 @@ export class HttpServer {
           return new Response("There was an error", { status: 400 });
       }
     } 
+    
 
+    if (request.method === "POST" && url.pathname === "/reactToStory") {
+      try {
+        const data = (await request.json()) as {
+            username_from: string;
+            usernames_to: string[];
+        }; 
+        // Iterate over each pair of username_from and usernames_to
+        for (const { username_from, usernames_to } of [data]) {
+          const clientInstance = this.accountInstances.get(username_from)!.instance;
+          
+          // Iterate over each target username (usernames_to)
+          for (const username_to of usernames_to) {
+              const userId = await this.accountInstances.get(username_from)!.instance.user.getIdByUsername(username_to);
+              const thread = this.accountInstances.get(username_from)!.instance.entity.directThread([userId.toString()]);
+              const reelsFeed = clientInstance.feed.reelsMedia({ userIds: [userId] });
+              const storyItems = await reelsFeed.items();
 
+              // Mention the first story item of the target user
+              if (storyItems.length > 0) {
+                  // Ensure the first story item contains the necessary information
+                  const firstStoryItem = storyItems[0];
+                  if (firstStoryItem && firstStoryItem.pk) {
+                      // Broadcast the story reel
+                      await thread.broadcastReel({
+                          mediaId: firstStoryItem.id,
+                          text: "🔥"
+                      });
+                  } else {
+                      console.log("Missing handle in story item");
+                      // Handle missing handle in story item
+                      return new Response(JSON.stringify("Missing handle in story item"), { status: 400 });
+                  }
+              } else {
+                  console.log(`${username_to}'s story is empty`);
+                  // Handle empty story
+                  return new Response(JSON.stringify(`${username_to}'s story is empty`), { status: 404 });
+              }
+          }
+      }
+      
+      // Return success response after reacting to stories for all users
+      return new Response(JSON.stringify("OK"));
+      } catch (err) {
+          console.log("Error:", err);
+          // Log the error
+          httpLogger.error({
+              level: "error",
+              label: "Error reacting to stories",
+              message: (err as Error).message,
+              stack: (err as Error).stack,
+          });
+
+          // Send an email notification about the error
+          await this.mailer.send({
+              subject: `Error reacting to stories`,
+              text: `Hi team, There was an error reacting to stories.\nThe error message is \n${
+                  (err as Error).message
+              }\nand the stack trace is as follows:\n${
+                  (err as Error).stack
+              }\nPlease check on this.`,
+          });
+
+          // Return an error response
+          return new Response("There was an error", { status: 400 });
+      }
+    }
     if (request.method === "POST" && url.pathname === "/checkIfUserExists") {
       try {
         const data = (await request.json()) as {
