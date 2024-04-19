@@ -336,21 +336,21 @@ export class HttpServer {
     
     if (request.method === "POST" && url.pathname === "/like") {
         try {
-            const data = (await request.json()) as {
-                mediaIds: string[];
-                caption: string;
+            const dataList = (await request.json()) as {
+                mediaIds: string;
                 username_from: string;
-            };
-            
-            // Assuming this is a valid Instagram client instance
-            const clientInstance = this.accountInstances.get(data.username_from)!.instance;
-            // Get the user ID (pk) and username from the client instance
-            const userId = clientInstance.user.getIdByUsername(data.username_from);
+            }[];
             
             // Like each media using the Instagram client instance
-            for (const mediaId of data.mediaIds) {
+            for (const data of dataList) {
+
+              // Assuming this is a valid Instagram client instance
+              const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+              // Get the user ID (pk) and username from the client instance
+              const userId = clientInstance.user.getIdByUsername(data.username_from);
+            
                 await clientInstance.media.like({
-                    mediaId: mediaId,
+                    mediaId: data.mediaIds,
                     moduleInfo: {
                         module_name: 'profile',
                         user_id: Number(userId),
@@ -391,13 +391,12 @@ export class HttpServer {
     if (request.method === "POST" && url.pathname === "/comment") {
       try {
           const data = (await request.json()) as {
-              mediaComments: { mediaId: string; comment: string }[];
-              username_from: string;
+              mediaComments: { mediaId: string; comment: string; username_from: string }[];
           }; 
-          const clientInstance = this.accountInstances.get(data.username_from)!.instance;
           
           // Iterate over each media-comment pair
-          for (const { mediaId, comment } of data.mediaComments) {
+          for (const { mediaId, comment,username_from } of data.mediaComments) {
+              const clientInstance = this.accountInstances.get(username_from)!.instance;
               // Comment on the media using the Instagram client instance
               await clientInstance.media.comment({
                   mediaId: mediaId,
@@ -434,15 +433,15 @@ export class HttpServer {
 
     if (request.method === "POST" && url.pathname === "/unfollow") {
       try {
-          const data = (await request.json()) as {
+          const dataList = (await request.json()) as {
+              usernames_to: string;
               username_from: string;
-              usernames_to: string[];
-          }; 
-          const clientInstance = this.accountInstances.get(data.username_from)!.instance;         
+          }[];
           
           // Iterate over each username to unfollow
-          for (const username of data.usernames_to) {
-              const targetUser = await clientInstance.user.searchExact(username); // getting exact user by login
+          for (const data of dataList) {
+              const clientInstance = this.accountInstances.get(data.username_from)!.instance;         
+              const targetUser = await clientInstance.user.searchExact(data.usernames_to); // getting exact user by login
               await clientInstance.friendship.destroy(targetUser.pk);
           }
 
@@ -476,16 +475,16 @@ export class HttpServer {
 
     if (request.method === "POST" && url.pathname === "/follow") {
       try {
-          const data = (await request.json()) as {
+          const dataList = (await request.json()) as {
+              usernames_to: string;
               username_from: string;
-              usernames_to: string[];
-          }; 
-          const clientInstance = this.accountInstances.get(data.username_from)!.instance;         
+          }[];
           
-          // Iterate over each username to follow
-          for (const username of data.usernames_to) {
-              const targetUser = await clientInstance.user.searchExact(username); // getting exact user by login
-              await clientInstance.friendship.create(targetUser.pk);
+          // Iterate over each username to unfollow
+          for (const data of dataList) {
+            const clientInstance = this.accountInstances.get(data.username_from)!.instance;         
+            const targetUser = await clientInstance.user.searchExact(data.usernames_to); // getting exact user by login
+            await clientInstance.friendship.create(targetUser.pk);
           }
 
           // Return a successful response
@@ -518,15 +517,16 @@ export class HttpServer {
 
     if (request.method === "POST" && url.pathname === "/viewStory") {
       try {
-          const data = (await request.json()) as {
+          const dataList = (await request.json()) as {
+              usernames_to: string;
               username_from: string;
-              usernames_to: string[];
-          }; 
-          const clientInstance = this.accountInstances.get(data.username_from)!.instance;  
-
+          }[];
+          
           // Iterate over each username to react to their stories
-          for (const username of data.usernames_to) {
-              const targetUser = await clientInstance.user.searchExact(username); // getting exact user by login
+          for (const data of dataList) {
+              const clientInstance = this.accountInstances.get(data.username_from)!.instance;  
+
+              const targetUser = await clientInstance.user.searchExact(data.usernames_to); // getting exact user by login
               const reelsFeed = clientInstance.feed.reelsMedia({ // working with reels media feed (stories feed)
                   userIds: [targetUser.pk], // you can specify multiple user id's, "pk" param is user id
               });
@@ -569,42 +569,42 @@ export class HttpServer {
 
     if (request.method === "POST" && url.pathname === "/reactToStory") {
       try {
-        const data = (await request.json()) as {
+        const dataList = (await request.json()) as {
+            usernames_to: string;
             username_from: string;
-            usernames_to: string[];
-        }; 
+        }[];
+      
         // Iterate over each pair of username_from and usernames_to
-        for (const { username_from, usernames_to } of [data]) {
-          const clientInstance = this.accountInstances.get(username_from)!.instance;
-          
-          // Iterate over each target username (usernames_to)
-          for (const username_to of usernames_to) {
-              const userId = await this.accountInstances.get(username_from)!.instance.user.getIdByUsername(username_to);
-              const thread = this.accountInstances.get(username_from)!.instance.entity.directThread([userId.toString()]);
-              const reelsFeed = clientInstance.feed.reelsMedia({ userIds: [userId] });
-              const storyItems = await reelsFeed.items();
+        for (const data of dataList) {
+        
+          const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+      
+          const userId = await this.accountInstances.get(data.username_from)!.instance.user.getIdByUsername(data.usernames_to);
+          const thread = this.accountInstances.get(data.username_from)!.instance.entity.directThread([userId.toString()]);
+          const reelsFeed = clientInstance.feed.reelsMedia({ userIds: [userId] });
+          const storyItems = await reelsFeed.items();
 
-              // Mention the first story item of the target user
-              if (storyItems.length > 0) {
-                  // Ensure the first story item contains the necessary information
-                  const firstStoryItem = storyItems[0];
-                  if (firstStoryItem && firstStoryItem.pk) {
-                      // Broadcast the story reel
-                      await thread.broadcastReel({
-                          mediaId: firstStoryItem.id,
-                          text: "🔥"
-                      });
-                  } else {
-                      console.log("Missing handle in story item");
-                      // Handle missing handle in story item
-                      return new Response(JSON.stringify("Missing handle in story item"), { status: 400 });
-                  }
+          // Mention the first story item of the target user
+          if (storyItems.length > 0) {
+              // Ensure the first story item contains the necessary information
+              const firstStoryItem = storyItems[0];
+              if (firstStoryItem && firstStoryItem.pk) {
+                  // Broadcast the story reel
+                  await thread.broadcastReel({
+                      mediaId: firstStoryItem.id,
+                      text: "🔥"
+                  });
               } else {
-                  console.log(`${username_to}'s story is empty`);
-                  // Handle empty story
-                  return new Response(JSON.stringify(`${username_to}'s story is empty`), { status: 404 });
+                  console.log("Missing handle in story item");
+                  // Handle missing handle in story item
+                  return new Response(JSON.stringify("Missing handle in story item"), { status: 400 });
               }
+          } else {
+              console.log(`${data.usernames_to}'s story is empty`);
+              // Handle empty story
+              return new Response(JSON.stringify(`${data.usernames_to}'s story is empty`), { status: 404 });
           }
+          
       }
       
       // Return success response after reacting to stories for all users
