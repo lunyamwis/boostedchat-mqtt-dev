@@ -335,12 +335,14 @@ export class HttpServer {
     
     
     if (request.method === "POST" && url.pathname === "/like") {
+
         try {
             const dataList = (await request.json()) as {
                 mediaIds: string;
                 username_from: string;
             }[];
             
+
             // Like each media using the Instagram client instance
             for (const data of dataList) {
 
