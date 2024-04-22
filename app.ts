@@ -12,6 +12,7 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
     }
 
     let ret: [] = [];
+    let faileds = {};
     await Promise.allSettled(promises).then((results) => {
       const successfulInitializations = results
         .filter((result) => result.status === "fulfilled")
@@ -38,16 +39,38 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
         console.error("Failed to log in to accounts:");
         failedInitializations.forEach((result) =>
           {
-            console.log(result)
-          console.error(
-            `account: ${JSON.stringify(Object.keys(result.reason)[0])}`
-          )
+            let failedAccount = Object.keys(result.reason)[0]
+            console.error(
+              `account: ${failedAccount}`
+            )
+            let err_str:string = `${Object.values(result.reason)[0]}`
+            // console.log(err_str)
+            // console.log(err_str.match("IgCheckpointError:"))
+            if(err_str.match("IgCheckpointError:")){
+              err_str = err_str.split("IgCheckpointError:")[1].trimStart()
+
+              let str = err_str
+              const parts = str.split(' ');
+              // console.log(parts)
+              let status_code:any = parts[3]
+              if(`${parseInt(status_code)}` === status_code){ // is an actual status code
+                  status_code = parseInt(status_code)
+                  let status_msg = parts.slice(4).join(' ')
+                  console.log(status_msg)
+                  faileds[failedAccount] = {status: status_code, msg: status_msg}
+                  return
+              }
+              faileds[failedAccount] = {status: 401, msg: "Our failed to log in"}
+            }
+          
         }
         );
       }
     });
-    if(accountToCheck)return resolve(ret.includes(accountToCheck))
-    resolve(ret);
+    if(accountToCheck){
+      return resolve([ret.includes(accountToCheck), faileds])
+    }
+    resolve(ret, faileds);
   });
   // const httpServer = new HttpServer();
   // httpServer.initHttpServer();

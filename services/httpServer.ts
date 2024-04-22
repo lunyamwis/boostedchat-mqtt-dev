@@ -148,11 +148,13 @@ export class HttpServer {
         if (accounts.length === 0) {
           return new Response("Account not found", { status: 404 });
         }
-        isLoggedIn = await initServers(accounts, data.igname);
+        let failures = {};
+        [isLoggedIn, failures] = await initServers(accounts, data.igname);
         if (isLoggedIn) {
           return new Response("Account logged in", { status: 200 });
         } else {
-          return new Response("Failed to log in", { status: 422 });
+          let {status, msg} = failures[data.igname]
+          return new Response(msg, { status });
         }
       } catch (error) {
         console.error(error);
