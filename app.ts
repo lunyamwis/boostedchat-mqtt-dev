@@ -37,9 +37,12 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
       if (failedInitializations.length > 0) {
         console.error("Failed to log in to accounts:");
         failedInitializations.forEach((result) =>
+          {
+            console.log(result)
           console.error(
             `account: ${JSON.stringify(Object.keys(result.reason)[0])}`
           )
+        }
         );
       }
     });
