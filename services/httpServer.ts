@@ -398,17 +398,19 @@ export class HttpServer {
   
     if (request.method === "POST" && url.pathname === "/comment") {
       try {
-          const data = (await request.json()) as {
-              mediaComments: { mediaId: string; comment: string; username_from: string }[];
-          }; 
+          const dataList = (await request.json()) as {
+              mediaId: string; 
+              comment: string; 
+              username_from: string 
+          }[];
           
           // Iterate over each media-comment pair
-          for (const { mediaId, comment,username_from } of data.mediaComments) {
-              const clientInstance = this.accountInstances.get(username_from)!.instance;
+          for (const data of dataList) {
+              const clientInstance = this.accountInstances.get(data.username_from)!.instance;
               // Comment on the media using the Instagram client instance
               await clientInstance.media.comment({
-                  mediaId: mediaId,
-                  text: comment,
+                  mediaId: data.mediaId,
+                  text: data.comment,
               });
               // Add a 20-second delay
               // await new Promise(resolve => setTimeout(resolve, 20000));
