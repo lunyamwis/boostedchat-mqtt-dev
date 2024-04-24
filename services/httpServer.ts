@@ -412,7 +412,6 @@ export class HttpServer {
                   mediaId: data.mediaId,
                   text: data.comment,
               });
-              // Add a 20-second delay
               // await new Promise(resolve => setTimeout(resolve, 20000));
           }
 
