@@ -61,6 +61,7 @@ export class MQTTListener {
     this.accountInstances
       .get(this.username)
       ?.instance.realtime.on("error", async (err) => {
+        console.log(err)
         if (
           err.message.toLowerCase().includes("mqttotclient got disconnected")
         ) {

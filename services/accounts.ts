@@ -1,4 +1,20 @@
 import { cache } from "../config/cache";
+import { AccountInstances } from "../instances";
+
+export const clearMQTTRealTimeListeners = (igname: string) => {
+    let accountInstances = AccountInstances.allAccountInstances()
+    const instance = accountInstances.get(igname)?.instance.realtime;
+    if (instance) {
+        instance.off("receive");
+        instance.off("message");
+        instance.off("threadUpdate");
+        instance.off("direct");
+        instance.off("realtimeSub");
+        instance.off("error");
+        instance.off("disconnect");
+        instance.off("close");
+    }
+  }
 
 export const addLoggedInAccount = async (igname: string) => {
     // let accounts = await listAccounts()
@@ -29,6 +45,7 @@ export const removeConnectedAccount = async (igname: string) => {
     let isConnected = await isConnectedAccount(igname)
     if (isConnected)
         await cache.hset("api.accounts.loggedin", igname, "false")
+    clearMQTTRealTimeListeners(igname)
 }
 
 export const removeLoggedInAccount = async (igname: string) => {

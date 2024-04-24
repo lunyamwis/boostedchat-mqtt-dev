@@ -24,7 +24,7 @@ import {
   isConnectedAccount,
 } from "../services/accounts";
 
-import {logout} from "../services/login"
+import {logout, disconnect} from "../services/login"
 
 export class HttpServer {
   private mailer: Mailer;
@@ -56,11 +56,23 @@ export class HttpServer {
         igname: string;
       };
       let isLoggedIn = await isALoggedInAccount(data.igname);
+      console.log({isLoggedIn})
       if(!isLoggedIn){
-        return new Response(JSON.stringify(data));
+        return new Response("Account is not logged in.", { status: 422 });
       }
       let ret = await logout(data.igname)
-      return new Response(JSON.stringify(data));
+      return new Response(JSON.stringify(ret));
+    }
+    if (request.method === "POST" && url.pathname === "/accounts/disconnect") {
+      const data = (await request.json()) as {
+        igname: string;
+      };
+      let isConnected = await isConnectedAccount(data.igname);
+      if(!isConnected){
+        return new Response("Account is not connected.", { status: 422 });
+      }
+      let ret = await disconnect(data.igname)
+      return new Response("Account has been disconnected.", { status: 422 });
     }
     if (request.method === "GET" && url.pathname === "/accounts/connected") {
       let accounts = await getConnectedAccounts();
