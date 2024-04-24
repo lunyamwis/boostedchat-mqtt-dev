@@ -336,6 +336,7 @@ export class HttpServer {
     }
     
     
+    
     if (request.method === "POST" && url.pathname === "/like") {
 
         try {
@@ -362,6 +363,9 @@ export class HttpServer {
                     },
                     d: 1,
                 });
+
+                // Add a 20-second delay
+                await new Promise(resolve => setTimeout(resolve, 20000));
             }
 
             // Return a successful response
@@ -406,6 +410,8 @@ export class HttpServer {
                   mediaId: mediaId,
                   text: comment,
               });
+              // Add a 20-second delay
+              await new Promise(resolve => setTimeout(resolve, 20000));
           }
 
           // Return a successful response
@@ -447,6 +453,8 @@ export class HttpServer {
               const clientInstance = this.accountInstances.get(data.username_from)!.instance;         
               const targetUser = await clientInstance.user.searchExact(data.usernames_to); // getting exact user by login
               await clientInstance.friendship.destroy(targetUser.pk);
+              // Add a 20-second delay
+              await new Promise(resolve => setTimeout(resolve, 20000));
           }
 
           // Return a successful response
@@ -489,6 +497,8 @@ export class HttpServer {
             const clientInstance = this.accountInstances.get(data.username_from)!.instance;         
             const targetUser = await clientInstance.user.searchExact(data.usernames_to); // getting exact user by login
             await clientInstance.friendship.create(targetUser.pk);
+            // Add a 20-second delay
+            await new Promise(resolve => setTimeout(resolve, 20000));
           }
 
           // Return a successful response
@@ -541,6 +551,8 @@ export class HttpServer {
               }
               const seenResult = await clientInstance.story.seen([storyItems[0]]);
               // now we can mark story as seen using story-service, you can specify multiple stories, in this case we are only watching the first story
+              // Add a 20-second delay
+              await new Promise(resolve => setTimeout(resolve, 20000));
           }
 
           // Return a successful response
@@ -608,6 +620,9 @@ export class HttpServer {
               // Handle empty story
               return new Response(JSON.stringify(`${data.usernames_to}'s story is empty`), { status: 404 });
           }
+
+          // Add a 20-second delay
+          await new Promise(resolve => setTimeout(resolve, 20000));
           
       }
       
