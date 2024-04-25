@@ -678,27 +678,17 @@ export class HttpServer {
 
         return new Response(JSON.stringify("OK"));
       } catch (err) {
-        console.log("UserNotFound error", err);
-        // Log the error
-        httpLogger.error({
-            level: "error",
-            label: "UserNotFound error",
-            message: (err as Error).message,
-            stack: (err as Error).stack,
-        });
-
-        // Send an email notification about the error
-        await this.mailer.send({
-            subject: `UserNotFound error`,
-            text: `Hi team, There was an error in User.\nThe error message is \n${
-                (err as Error).message
-            }\nand the stack trace is as follows:\n${
-                (err as Error).stack
-            }\nPlease check on this.`,
-        });
-
-        // Return an error response
-        return new Response("There was an error", { status: 400 });
+        // console.log("UserNotFound error", err);
+        // error is either an authentication error: 401, 403, or use not found error
+        let str = `${(err as Error).message}`
+        const parts = str.split(' ');
+        let status_code:any = parts[3]
+        if(`${parseInt(status_code)}` === status_code){ // is an actual status code
+            status_code = parseInt(status_code)
+            let status_msg = parts.slice(4).join(' ')
+            return new Response(status_msg, { status: status_code });
+        }
+        return new Response(`${(err as Error).message}`, { status: 404 }); // probably a 404
       }
     } 
 
