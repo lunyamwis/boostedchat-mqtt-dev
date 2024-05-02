@@ -353,7 +353,7 @@ export class HttpServer {
 
         try {
             const dataList = (await request.json()) as {
-                mediaIds: string;
+                mediaId: string;
                 username_from: string;
             }[];
             
@@ -367,7 +367,7 @@ export class HttpServer {
               const userId = clientInstance.user.getIdByUsername(data.username_from);
             
                 await clientInstance.media.like({
-                    mediaId: data.mediaIds,
+                    mediaId: data.mediaId,
                     moduleInfo: {
                         module_name: 'profile',
                         user_id: Number(userId),
