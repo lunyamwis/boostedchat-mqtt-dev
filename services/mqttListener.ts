@@ -55,16 +55,12 @@ export class MQTTListener {
       );
 
     this.accountInstances
-      .get(this.username)
-      ?.instance.realtime.on("direct", (data) => {
-        console.log('Received direct message:', data);
-      });
-      
+    .get(this.username)
+    ?.instance.realtime.on("direct", this.logEvent("direct"));
+
     this.accountInstances
       .get(this.username)
-      ?.instance.realtime.on("realtimeSub", (data) => {
-        console.log('Received realtime subscription:', data);
-      });
+      ?.instance.realtime.on("realtimeSub", this.logEvent("realtimeSub"));
 
     this.accountInstances
       .get(this.username)
@@ -205,12 +201,12 @@ export class MQTTListener {
 
   private logEvent(name: string, userId?: number) {
     return (data: any) => {
-      if (name === "realtimeSub" && userId) {
-        console.log(data)
-      }  
-      if (name === "direct" && userId) {
-        console.log(data)
-      }
+      // if (name === "realtimeSub" && userId) {
+      //   console.log(data)
+      // }  
+      // if (name === "direct" && userId) {
+      //   console.log(data)
+      // }
       if (name === "messageWrapper" && userId) {
         (async () => {
           if (data?.message?.thread_id == null || data?.message?.text == null) {
