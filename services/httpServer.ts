@@ -29,7 +29,7 @@ import { cli } from "winston/lib/winston/config";
 
 export const cors_urls = import.meta.env.PROD
   ? `https://booksy.us.boostedchat.com`
-  : "http://localhost:5173";
+  : `https://booksy.us.boostedchat.com`;
 
 export class HttpServer {
   private mailer: Mailer;
