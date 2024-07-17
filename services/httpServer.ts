@@ -27,6 +27,10 @@ import {
 import {logout, disconnect} from "../services/login"
 import { cli } from "winston/lib/winston/config";
 
+export const cors_urls = import.meta.env.PROD
+  ? `https://booksy.us.boostedchat.com`
+  : "http://localhost:5173";
+
 export class HttpServer {
   private mailer: Mailer;
   private accountInstances = AccountInstances.allAccountInstances();
@@ -45,10 +49,9 @@ export class HttpServer {
   private async bunFetch(request: Request) {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') {
-      const allowedOrigins = ['http://localhost:5173', 'https://booksy.us.boostedchat.com'];
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': allowedOrigins.includes(url.origin) ? url.origin : '',
+          'Access-Control-Allow-Origin': cors_urls,
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
