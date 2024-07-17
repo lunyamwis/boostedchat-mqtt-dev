@@ -45,9 +45,10 @@ export class HttpServer {
   private async bunFetch(request: Request) {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') {
+      const allowedOrigins = ['http://localhost:5173', 'https://booksy.us.boostedchat.com'];
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': 'http://localhost:5173',
+          'Access-Control-Allow-Origin': allowedOrigins.includes(url.origin) ? url.origin : '',
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
         },
