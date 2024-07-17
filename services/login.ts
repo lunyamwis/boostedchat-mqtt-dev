@@ -52,8 +52,10 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
     salesRepAccount.city
   ) {
     igInstance.state.proxyUrl = proxyConstructor(
-      salesRepAccount.country,
-      salesRepAccount.city
+      //salesRepAccount.country,
+      //salesRepAccount.city
+      "us",
+      "miami+beach"
     );
   }
 
