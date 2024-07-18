@@ -215,7 +215,9 @@ export class HttpServer {
           // let { status, msg } = failures[data.igname]
           let { status, msg } = failures?.[data.igname] ?? { status: 400, msg: 'Unknown error occured' };
           console.log(status, msg);
-          return new Response(msg, {
+          return new Response(JSON.stringify({
+            message: msg,
+          }), {
             status,
             headers: {
               'Access-Control-Allow-Origin': cors_urls, 
