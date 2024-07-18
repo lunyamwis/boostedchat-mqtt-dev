@@ -210,7 +210,7 @@ export class HttpServer {
              status: 200 });
         } else {
 
-          console.log("seeking failers");
+          console.log("seeing failers");
           console.log(failures);
           // let { status, msg } = failures[data.igname]
           let { status, msg } = failures?.[data.igname] ?? { status: 400, msg: 'Unknown error occured' };
