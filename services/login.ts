@@ -43,22 +43,32 @@ export const disconnect = async (igname: string) => {
 
 export const login = async (salesRepAccount: SalesRepAccount) => {
   const igInstance = withRealtime(new IgApiClient());
+  const shttps = require('socks-proxy-agent'); 
   igInstance.state.generateDevice(salesRepAccount.igname);
 
-  if (
-    Bun.env.PROXY_USERNAME &&
-    Bun.env.PROXY_PASSWORD &&
-    salesRepAccount.country &&
-    salesRepAccount.city
-  ) {
-    igInstance.state.proxyUrl = proxyConstructor(
-      //salesRepAccount.country,
-      //salesRepAccount.city
-      "us",
-      "miami+beach"
-    );
-    console.log(igInstance.state.proxyUrl);
-  }
+  igInstance.request.defaults.agentClass = shttps; // apply agent class to request library defaults
+  igInstance.request.defaults.agentOptions = {
+    // @ts-ignore
+    hostname: 'proxy.soax.com', // proxy hostname
+    port: 9000, // proxy port
+    protocol: 'socks5:', // supported: 'socks:' , 'socks4:' , 'socks4a:' , 'socks5:' , 'socks5h:'
+    username: Bun.env.PROXY_PASSWORD, // proxy username, optional
+    password: 'wifi;ke;starlink;nairobi+county;nairobi', // proxy password, optional
+  };
+  // if (
+  //   Bun.env.PROXY_USERNAME &&
+  //   Bun.env.PROXY_PASSWORD &&
+  //   salesRepAccount.country &&
+  //   salesRepAccount.city
+  // ) {
+  //   igInstance.state.proxyUrl = proxyConstructor(
+  //     //salesRepAccount.country,
+  //     //salesRepAccount.city
+  //     "us",
+  //     "miami+beach"
+  //   );
+  //   console.log(igInstance.state.proxyUrl);
+  // }
 
   const user = await igInstance.account.login(  // check.
     salesRepAccount.igname,
