@@ -47,7 +47,7 @@ export class HttpServer {
     const url = new URL(request.url);
     if (request.method === 'OPTIONS') {
       console.log(import.meta.env.NODE_ENV);
-      console.log(process.env.NODE_ENV );
+      console.log(process.env.NODE_ENV);
       return new Response(null, {
         headers: {
           'Content-Type': 'application/json',
@@ -180,25 +180,29 @@ export class HttpServer {
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
               'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
             },
-            status: 404 });
+            status: 404
+          });
         }
         let accounts: [] = salesReps.filter(
           (account) => account.igname == data.igname
         );
         console.log(accounts);
         if (accounts.length === 0) {
-          return new Response("Account not found", { 
+          return new Response(JSON.stringify({
+            message: "Account not found"
+          }), {
             headers: {
               'Access-Control-Allow-Origin': cors_urls,
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
               'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
             },
-            status: 404 });
+            status: 404
+          });
         }
-        
-        
+
+
         let failures = {};
-        
+
         // let failures: Failures = {};
         [isLoggedIn, failures] = await initServers(accounts, data.igname);
         if (isLoggedIn) {
@@ -208,10 +212,11 @@ export class HttpServer {
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
               'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
             },
-             status: 200 });
+            status: 200
+          });
         } else {
 
-          console.log("seeing failers here"); 
+          console.log("seeing failers here");
           console.log(failures);
           // let { status, msg } = failures[data.igname]
           let { status, msg } = failures?.[data.igname] ?? { status: 400, msg: 'Unknown error occured' };
@@ -221,7 +226,7 @@ export class HttpServer {
           }), {
             status,
             headers: {
-              'Access-Control-Allow-Origin': cors_urls, 
+              'Access-Control-Allow-Origin': cors_urls,
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
               'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
             }
