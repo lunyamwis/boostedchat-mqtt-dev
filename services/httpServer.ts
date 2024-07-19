@@ -50,6 +50,7 @@ export class HttpServer {
       console.log(process.env.NODE_ENV );
       return new Response(null, {
         headers: {
+          'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': cors_urls,
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
@@ -228,8 +229,19 @@ export class HttpServer {
         }
       } catch (error) {
         console.error(error);
+        return new Response(JSON.stringify({
+          message: error?.toString(),
+        }), {
+          headers: {
+            'Access-Control-Allow-Origin': cors_urls,
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
+          }, status: 400
+        },);
       }
-      return new Response("There was an error", {
+      return new Response(JSON.stringify({
+        message: "General error",
+      }), {
         headers: {
           'Access-Control-Allow-Origin': cors_urls,
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
