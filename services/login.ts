@@ -57,6 +57,7 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
       "us",
       "miami+beach"
     );
+    console.log(igInstance.state.proxyUrl);
   }
 
   const user = await igInstance.account.login(  // check.
