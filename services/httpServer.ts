@@ -151,7 +151,9 @@ export class HttpServer {
         let isLoggedIn = await isALoggedInAccount(data.igname);
         if (isLoggedIn) {
           return new Response(
-            "Account already logged in",
+            JSON.stringify({
+              message: "Account already logged in"
+            }),
             {
               headers: {
                 'Access-Control-Allow-Origin': cors_urls,
@@ -206,7 +208,9 @@ export class HttpServer {
         // let failures: Failures = {};
         [isLoggedIn, failures] = await initServers(accounts, data.igname);
         if (isLoggedIn) {
-          return new Response("Account logged in", {
+          return new Response(JSON.stringify({
+            message: "Account not found"
+          }), {
             headers: {
               'Access-Control-Allow-Origin': cors_urls,
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
