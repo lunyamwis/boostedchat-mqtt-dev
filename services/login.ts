@@ -9,6 +9,7 @@ import {
   removeLoggedInAccount,
   clearMQTTRealTimeListeners
 } from "../services/accounts";
+import { decryptMessage } from "./messageDycrypt";
 
 
 
@@ -46,22 +47,25 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
   const shttps = require('socks-proxy-agent'); 
   igInstance.state.generateDevice(salesRepAccount.igname);
 
-  // igInstance.request.defaults.agentClass = shttps; // apply agent class to request library defaults
+  igInstance.request.defaults.agentClass = shttps; // apply agent class to request library defaults
   // igInstance.request.defaults.agentOptions = {
   //   // @ts-ignore
   //   hostname: 'proxy.soax.com', // proxy hostname
   //   port: 9000, // proxy port
-  //   protocol: 'socks5:', // supported: 'socks:' , 'socks4:' , 'socks4a:' , 'socks5:' , 'socks5h:'
-  //   username: Bun.env.PROXY_PASSWORD, // proxy username, optional
-  //   password: 'wifi;ke;starlink;nairobi+county;nairobi', // proxy password, optional
+  //   protocol: 'socks5', // supported: 'socks:' , 'socks4:' , 'socks4a:' , 'socks5:' , 'socks5h:'
+  //   username: 'Sql8t2uRG3XRvQrO',// Bun.env.PROXY_PASSWORD, // proxy username, optional
+  //   password: 'wifi;ke;starlink;;nairobi', // proxy password, optional
   // };
+
+
+
   if (
     Bun.env.PROXY_USERNAME &&
     Bun.env.PROXY_PASSWORD &&
     salesRepAccount.country &&
     salesRepAccount.city
   ) {
-    igInstance.state.proxyUrl = proxyConstructor(
+    igInstance.state.proxyUrl =  proxyConstructor(
       //salesRepAccount.country,
       //salesRepAccount.city
       "us",
@@ -70,9 +74,12 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
     console.log(igInstance.state.proxyUrl);
   }
 
+  // this is where to decrypt the password
+  let password = await decryptMessage(salesRepAccount.password);
+ 
   const user = await igInstance.account.login(  // check.
     salesRepAccount.igname,
-    salesRepAccount.password
+    password
   );
   // console.log(`Logged in ${salesRepAccount.igname} successfully`);
   AccountInstances.addAccountInstance(salesRepAccount.igname, {
