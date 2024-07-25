@@ -248,15 +248,7 @@ export class HttpServer {
           }, status: 400
         },);
       }
-      return new Response(JSON.stringify({
-        message: "General error",
-      }), {
-        headers: {
-          'Access-Control-Allow-Origin': cors_urls,
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': 'Origin, Content-Type, Authorization',
-        }, status: 400
-      },);
+      
 
     }
     if (request.method === "POST" && url.pathname === "/send-message") {
