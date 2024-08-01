@@ -79,6 +79,8 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
 async function initializeAccount(account: any) {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("i must pass through here")
+      
       await login(account);
       const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
       mqttListener.registerRealtimeListeners();

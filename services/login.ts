@@ -9,7 +9,7 @@ import {
   removeLoggedInAccount,
   clearMQTTRealTimeListeners
 } from "../services/accounts";
-
+import {HttpProxyAgent} from 'http-proxy-agent';
 
 
 export const logout = async (igname: string) => {
@@ -43,8 +43,13 @@ export const disconnect = async (igname: string) => {
 
 export const login = async (salesRepAccount: SalesRepAccount) => {
   const igInstance = withRealtime(new IgApiClient());
-  const shttps = require('socks-proxy-agent'); 
+  // const SocksProxyAgent = require('socks-proxy-agent');
   igInstance.state.generateDevice(salesRepAccount.igname);
+  console.log("are we even reaching here first!");
+  const proxyUrl = await proxyConstructor(salesRepAccount.country, salesRepAccount.city);
+  const proxyAgent = await new HttpProxyAgent(proxyUrl);
+  igInstance.request.defaults.agent = await proxyAgent;
+  console.log(`Using proxy: ${proxyUrl}`);
 
   // igInstance.request.defaults.agentClass = shttps; // apply agent class to request library defaults
   // igInstance.request.defaults.agentOptions = {
@@ -55,20 +60,27 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
   //   username: Bun.env.PROXY_PASSWORD, // proxy username, optional
   //   password: 'wifi;ke;starlink;nairobi+county;nairobi', // proxy password, optional
   // };
-  if (
-    Bun.env.PROXY_USERNAME &&
-    Bun.env.PROXY_PASSWORD &&
-    salesRepAccount.country &&
-    salesRepAccount.city
-  ) {
-    igInstance.state.proxyUrl = proxyConstructor(
-      //salesRepAccount.country,
-      //salesRepAccount.city
-      "us",
-      "miami+beach"
-    );
-    console.log(igInstance.state.proxyUrl);
-  }
+
+
+  // if (
+  //   0 < 1
+  //   // Bun.env.PROXY_USERNAME 
+  //   // Bun.env.PROXY_PASSWORD &&
+  //   // salesRepAccount.country &&
+  //   // salesRepAccount.city
+  // ) {
+  //   // igInstance.state.proxyUrl = proxyConstructor(
+  //   //   //salesRepAccount.country,
+  //   //   //salesRepAccount.city
+  //   //   "us",
+  //   //   "miami+beach"
+  //   // );
+  //   console.log("are we even reaching here next!");
+  //   const proxyUrl = proxyConstructor(salesRepAccount.country, salesRepAccount.city);
+  //   const proxyAgent = new HttpProxyAgent(proxyUrl);
+  //   igInstance.request.defaults.agent = proxyAgent;
+  //   console.log(`Using proxy: ${proxyUrl}`);
+  // }
 
   const user = await igInstance.account.login(  // check.
     salesRepAccount.igname,
