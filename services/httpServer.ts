@@ -610,10 +610,21 @@ export class HttpServer {
         return new Response("There was an error", { status: 400 });
       }
     }
+    if (request.method === "POST" && url.pathname === "/fetchDirectInbox") {
+      const data = await request.json();
+      const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+      const inbox = await clientInstance.feed.directInbox()
+      
+      return new Response(JSON.stringify(await inbox.items()), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+    }
     if (request.method === "POST" && url.pathname === "/fetchPendingInbox") {
       const data = await request.json();
       const clientInstance = this.accountInstances.get(data.username_from)!.instance;
       const inbox = await clientInstance.feed.directPending()
+      
       return new Response(JSON.stringify(await inbox.items()), {
         headers: { 'Content-Type': 'application/json' },
       });
