@@ -31,7 +31,7 @@ class AccountRepository extends repository_1.Repository {
                 // jazoest: AccountRepository.createJazoest(this.client.state.phoneId),
                 jazoest:"22329",
                 phone_id:"e4837d30-3563-48fc-af55-e96b11b2481c",
-                enc_password:"#PWD_INSTAGRAM:4:1724056024:AZWVc+5QcONzSCPW/DUAAYqkZpJLJ+qboWGIjhtctkW9oBErLZvoaFRE3zO4fFzUjuTMDZ4IkrU/p7pPXEbn6ztZ2Lo8cXa4rsr911vw/04iKacCKy3l8PwSHEXr6Pt73h+Pfg7k+I7hdFX84fWl6dz1zuzHMEvNVSxIMLXO2qc/oBd5iM2y2bi/Uxc9fgbPkumShbFRE/pyNwqRyBRUEulhnLes8OUf90olpleiVslwCsjUVShSVi0LtrHrablJd1UFMrYFTlfbx4lk516aDJPt5/56BURscnygB2OZAcJbXzxaVulQSijqnO4PNH86TV1DSVNZjZzdDqEvNPJIgVW9sAuOAoYaurbfUsyuZ1CGUjGXVqT0LnwBfSk5d4sb1aTR52OtGQ==",
+                enc_password:"#PWD_INSTAGRAM:4:1724066626:AZUUXg+AVckSrJSRTd8AARPNElau2XAn1xBv7aK0pjQ0CAJaZkD54qOVC5X2dJjyO0YBAc6H0xl7/ySNJ3Dq2zxxBOKfV5gIcpYixmCubvkfWqmcquMYn0zfyOZCdLIU7OqpSdG4IFAYIUpzsP0/z7u9Rm7ayfJD8uAeF3oENFJCRMDWaYnwf9dB7PLI7Rhb+PovDCjoUfCmGfekea6yUiUYaSDFhhCEVpooNa5iypQcL7ri6vhg2yeRA6Q9YWFJk/xcWLt9uR7Ga/KTS3RhabycIc6YxguxPUR3a4DU4MhTyvJkhfjcl0v5sig80J2j43jydxP9z+ZQpI2h7I/AEXA15Cj7wy2HdC44BYM/p2M6hZojjHF7KFTHJfl6SdLeBCR6ZePPzg==",
                 username:"barbersince98",
                 adid:"266bedea-f541-46b5-a653-dd1c1b5615cf",
                 guid:"e86743c4-1b67-4a67-ab6a-8da1666b0e6f",
