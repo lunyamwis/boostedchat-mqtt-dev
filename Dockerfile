@@ -22,4 +22,8 @@ FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/ .
 # run the app
+
+COPY state.js node_modules/instagram_mqtt/node_modules/instagram-private-api/dist/core/state.js
+COPY account.repository.js node_modules/instagram_mqtt/node_modules/instagram-private-api/dist/repositories/account.repository.js
+
 ENTRYPOINT [ "bun", "run", "index.ts" ]
