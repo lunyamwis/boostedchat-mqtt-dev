@@ -4,8 +4,8 @@ type Options = Array<{ text: string; count: number }>;
 
 export class QuizSticker extends InstaSticker {
   // tslint:disable-next-line:variable-name
-  private _options: Options;
-  question: string;
+  private _options: Options = [];
+  question: string ='';
 
   set options(value: string[] | Options) {
     let options: Options;
@@ -21,7 +21,7 @@ export class QuizSticker extends InstaSticker {
     return this._options;
   }
 
-  correctAnswer: number;
+  correctAnswer: number = 0;
   textColor?: string = '#ffffff';
   startBackgroundColor?: string = '#262626';
   endBackgroundColor?: string = '#262626';
