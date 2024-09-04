@@ -4,12 +4,12 @@ import { Feed } from '../core/feed';
 import { LocationFeedResponse, LocationFeedResponseMedia } from '../responses';
 
 export class LocationFeed extends Feed<LocationFeedResponse, LocationFeedResponseMedia> {
-  id: string | number;
-  tab: 'recent' | 'ranked';
+  id!: string | number;
+  tab!: 'recent' | 'ranked';
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
   @Expose()
-  private nextPage: number;
+  private nextPage!: number;
   @Expose()
   private nextMediaIds: Array<string> = [];
 
@@ -38,8 +38,8 @@ export class LocationFeed extends Feed<LocationFeedResponse, LocationFeedRespons
     return body;
   }
 
-  public async items() {
+  public async items(): Promise<any> {
     const response = await this.request();
-    return flatten(response.sections.map(section => section.layout_content.medias.map(medias => medias.media)));
+    return flatten(response.sections.map((section: any) => section.layout_content.medias.map((medias: any) => medias.media)));
   }
 }

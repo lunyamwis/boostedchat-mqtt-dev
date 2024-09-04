@@ -2,17 +2,17 @@ import { Feed } from '../core/feed';
 import { Expose } from 'class-transformer';
 
 export class MediaStickerResponsesFeed<T, I> extends Feed<T, I> {
-  name: string;
-  rootName: string;
-  itemName: string;
+  name!: string;
+  rootName!: string;
+  itemName!: string;
 
-  stickerId: string;
-  mediaId: string;
+  stickerId!: string;
+  mediaId!: string;
   @Expose()
-  private maxId: string = undefined;
+  private maxId: string = '';
 
   async items(): Promise<I[]> {
-    const response = await this.request();
+    const response: any = await this.request();
     return response[this.rootName][this.itemName];
   }
 
@@ -28,7 +28,7 @@ export class MediaStickerResponsesFeed<T, I> extends Feed<T, I> {
     return body;
   }
 
-  protected set state(response: T) {
+  protected set state(response: any) {
     this.maxId = response[this.rootName].max_id;
     this.moreAvailable = response[this.rootName].more_available;
   }

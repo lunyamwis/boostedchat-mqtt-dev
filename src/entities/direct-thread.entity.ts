@@ -13,8 +13,8 @@ import { PublishService } from '../services/publish.service';
 import * as Bluebird from 'bluebird';
 
 export class DirectThreadEntity extends Entity {
-  threadId: string = null;
-  userIds: string[] = null;
+  threadId: string | null = null;
+  userIds: string[] | null = null;
 
   public async deleteItem(itemId: string | number) {
     if (!this.threadId) {
@@ -217,31 +217,31 @@ export class DirectThreadEntity extends Entity {
   }
 
   public async updateTitle(title: string) {
-    return await this.client.directThread.updateTitle(this.threadId, title);
+    return await this.client.directThread.updateTitle(this.threadId as string, title);
   }
 
   public async mute() {
-    return await this.client.directThread.mute(this.threadId);
+    return await this.client.directThread.mute(this.threadId as string);
   }
 
   public async unmute() {
-    return await this.client.directThread.unmute(this.threadId);
+    return await this.client.directThread.unmute(this.threadId as string);
   }
 
   public async hide() {
-    return await this.client.directThread.hide(this.threadId);
+    return await this.client.directThread.hide(this.threadId as string);
   }
 
   public async leave() {
-    return await this.client.directThread.leave(this.threadId);
+    return await this.client.directThread.leave(this.threadId as string);
   }
 
   public async addUser(userIds: string[] | number[]) {
-    return await this.client.directThread.addUser(this.threadId, userIds);
+    return await this.client.directThread.addUser(this.threadId as string, userIds);
   }
 
   public async markItemSeen(threadItemId: string) {
-    return await this.client.directThread.markItemSeen(this.threadId, threadItemId);
+    return await this.client.directThread.markItemSeen(this.threadId as string, threadItemId);
   }
 
   private async broadcast(options: Partial<DirectThreadBroadcastOptions>) {

@@ -6,7 +6,7 @@ export class IgtvBrowseFeed extends Feed<IgtvBrowseFeedResponseRootObject, IgtvB
   isPrefetch: boolean = false;
 
   @Expose()
-  private maxId: string;
+  private maxId!: string;
 
   async items(): Promise<IgtvBrowseFeedResponseBrowseItemsItem[]> {
     const req = await this.request();
