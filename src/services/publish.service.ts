@@ -565,7 +565,7 @@ export class PublishService extends Repository {
         source_type: '3',
         video: { length: videoInfo.duration / 1000.0 },
       }),
-    ).catch(IgResponseError, PublishService.catchTranscodeError(videoInfo, options.transcodeDelay));
+    ).catch(IgResponseError, PublishService.catchTranscodeError(videoInfo, options.transcodeDelay ?? 0));
     return Bluebird.try(() =>
       this.client.media.configureToStoryVideo({
         upload_id: uploadId,

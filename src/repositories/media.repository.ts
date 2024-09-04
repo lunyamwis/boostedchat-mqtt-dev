@@ -213,7 +213,7 @@ export class MediaRepository extends Repository {
     return body.comment;
   }
 
-  async commentsDisable(mediaId) {
+  async commentsDisable(mediaId: any) {
     const { body } = await this.client.request.send({
       url: `/api/v1/media/${mediaId}/disable_comments/`,
       method: 'POST',
@@ -226,7 +226,7 @@ export class MediaRepository extends Repository {
     return body;
   }
 
-  async commentsEnable(mediaId) {
+  async commentsEnable(mediaId: any) {
     const { body } = await this.client.request.send({
       url: `/api/v1/media/${mediaId}/enable_comments/`,
       method: 'POST',
@@ -491,7 +491,7 @@ export class MediaRepository extends Repository {
       MediaRepository.stringifyStoryStickers(form);
     } else if (form.configure_mode === '2') {
       if (typeof form.recipient_users !== 'string') {
-        form.recipient_users = JSON.stringify(form.recipient_users ? [form.recipient_users.map(x => Number(x))] : []);
+        form.recipient_users = JSON.stringify(form.recipient_users ? [form.recipient_users.map((x: any) => Number(x))] : []);
       }
       form.thread_ids = JSON.stringify(form.thread_ids || []);
     }
@@ -795,7 +795,7 @@ export class MediaRepository extends Repository {
     });
     return body;
   }
-  
+
   private async storyCountdownAction(
     countdownId: string | number,
     action: string,
@@ -811,11 +811,11 @@ export class MediaRepository extends Repository {
     });
     return body;
   }
-  
+
   public async storyCountdownFollow(countdownId: string | number) {
     return this.storyCountdownAction(countdownId, 'follow_story_countdown');
   }
-  
+
   public async storyCountdownUnfollow(countdownId: string | number) {
     return this.storyCountdownAction(countdownId, 'unfollow_story_countdown');
   }

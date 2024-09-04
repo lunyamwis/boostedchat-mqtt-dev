@@ -119,7 +119,7 @@ export class UserRepository extends Repository {
         guid: this.client.state.uuid,
         device_id: this.client.state.deviceId,
         waterfall_id: options.waterfallId,
-        directly_sign_in: options.directlySignIn.toString(),
+        directly_sign_in: options.directlySignIn?.toString() ,
       }),
     });
     return body;
