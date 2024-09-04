@@ -2,7 +2,7 @@ import { Feed } from '../core/feed';
 import { ReelsTrayFeedResponseRootObject, ReelsTrayFeedResponseTrayItem } from '../responses';
 
 export class ReelsTrayFeed extends Feed<ReelsTrayFeedResponseRootObject, ReelsTrayFeedResponseTrayItem> {
-  reason: 'cold_start' | 'pull_to_refresh';
+  reason!: 'cold_start' | 'pull_to_refresh';
 
   protected set state(response: ReelsTrayFeedResponseRootObject) {}
 

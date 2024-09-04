@@ -4,12 +4,12 @@ import { Feed } from '../core/feed';
 import { TagsFeedResponse, TagsFeedResponseMedia } from '../responses';
 
 export class TagsFeed extends Feed<TagsFeedResponse, TagsFeedResponseMedia> {
-  tag: string;
-  tab: 'top' | 'recent' | 'places';
+  tag!: string;
+  tab!: 'top' | 'recent' | 'places';
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
   @Expose()
-  private nextPage: number;
+  private nextPage!: number;
   @Expose()
   private nextMediaIds: Array<string> = [];
 
@@ -44,7 +44,7 @@ export class TagsFeed extends Feed<TagsFeedResponse, TagsFeedResponseMedia> {
       response.sections.map(section => {
         if (section.layout_type !== 'media_grid') return;
 
-        return section.layout_content.medias.map(medias => medias.media);
+        return section.layout_content.medias.map(medias => medias.media) as any;
       }),
     );
   }

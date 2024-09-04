@@ -4,10 +4,10 @@ import { IgAppModule } from '../types/common.types';
 import * as SUPPORTED_CAPABILITIES from '../samples/';
 
 export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, ReelsMediaFeedResponseItem> {
-  userIds: Array<number | string>;
+  userIds!: Array<number | string>;
   source: IgAppModule = 'feed_timeline';
 
-  protected set state(body: any) {}
+  protected set state(body: any) { }
 
   async request() {
     const { body } = await this.client.request.send<ReelsMediaFeedResponseRootObject>({
@@ -29,7 +29,7 @@ export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, Reels
   async items(): Promise<ReelsMediaFeedResponseItem[]> {
     const body = await this.request();
     return Object.values(body.reels).reduce(
-      (accumulator, current: ReelsMediaFeedResponse) => accumulator.concat(current.items),
+      (accumulator: any, current: ReelsMediaFeedResponse) => accumulator.concat(current.items),
       [],
     );
   }

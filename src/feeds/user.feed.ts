@@ -3,9 +3,9 @@ import { Feed } from '../core/feed';
 import { UserFeedResponse, UserFeedResponseItemsItem } from '../responses';
 
 export class UserFeed extends Feed<UserFeedResponse, UserFeedResponseItemsItem> {
-  id: number | string;
+  id!: number | string;
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   protected set state(body: UserFeedResponse) {
     this.moreAvailable = body.more_available;

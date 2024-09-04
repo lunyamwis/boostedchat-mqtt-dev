@@ -3,9 +3,9 @@ import { Feed } from '../core/feed';
 import { TagFeedResponse, TagFeedResponseItemsItem } from '../responses';
 
 export class TagFeed extends Feed<TagFeedResponse, TagFeedResponseItemsItem> {
-  tag: string;
+  tag!: string;
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   set state(body: TagFeedResponse) {
     this.moreAvailable = body.more_available;

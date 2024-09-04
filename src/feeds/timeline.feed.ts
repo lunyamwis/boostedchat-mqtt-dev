@@ -5,11 +5,11 @@ import { TimelineFeedReason, TimelineFeedsOptions } from '../types/timeline-feed
 import { TimelineFeedResponse, TimelineFeedResponseMedia_or_ad } from '../responses';
 
 export class TimelineFeed extends Feed<TimelineFeedResponse, TimelineFeedResponseMedia_or_ad> {
-  tag: string;
+  tag!: string;
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
   public reason: TimelineFeedReason = sample(['pull_to_refresh', 'warm_start_fetch', 'cold_start_fetch']);
-  set state(body) {
+  set state(body: any) {
     this.moreAvailable = body.more_available;
     this.nextMaxId = body.next_max_id;
   }

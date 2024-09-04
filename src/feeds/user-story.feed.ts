@@ -2,7 +2,7 @@ import { Feed } from '../core/feed';
 import { UserStoryFeedResponseItemsItem, UserStoryFeedResponseRootObject } from '../responses/user-story.feed.response';
 
 export class UserStoryFeed extends Feed<UserStoryFeedResponseRootObject, UserStoryFeedResponseItemsItem> {
-  userId: string | number;
+  userId!: string | number;
 
   async items(): Promise<UserStoryFeedResponseItemsItem[]> {
     const response = await this.request();
