@@ -1,4 +1,4 @@
-import { IgApiClient } from './core/client';
+import { IgApiClient } from '../core/client';
 import { REALTIME, RealtimeTopicsArray, Topics } from '../constants';
 import { Commands, DirectCommands } from './commands';
 import { compressDeflate, debugChannel, prepareLogString, ToEventFn, tryUnzipAsync } from '../shared';
