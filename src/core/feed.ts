@@ -60,7 +60,8 @@ export abstract class Feed<Response = any, Item = any> extends Repository {
     });
   }
   @Expose()
-  protected moreAvailable: boolean;
+  protected moreAvailable: boolean = false; // Initialize with a default value
+
   @Enumerable(false)
   protected chance = new Chance();
   @Expose()

@@ -114,7 +114,8 @@ export class FeedFactory {
     const feed = new DirectThreadFeed(this.client);
     feed.id = options.thread_id;
     feed.cursor = options.oldest_cursor;
-    feed.seqId = seqId;
+    feed.seqId = seqId ?? 0; // Use a default value if seqId is undefined
+
     return feed;
   }
 
