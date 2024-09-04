@@ -9,10 +9,10 @@ export class MediaInlineChildCommentsFeed extends Feed<
   MediaInlineChildCommentsFeedResponseRootObject,
   MediaInlineChildCommentsFeedResponseChildCommentsItem
 > {
-  mediaId: string;
-  commentId: string;
+  mediaId!: string;
+  commentId!: string;
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
   @Expose()
   private nextMinId?: string;
 

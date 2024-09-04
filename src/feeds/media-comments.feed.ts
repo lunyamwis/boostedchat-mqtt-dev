@@ -3,11 +3,11 @@ import { Feed } from '../core/feed';
 import { MediaCommentsFeedResponse, MediaCommentsFeedResponseCommentsItem } from '../responses/';
 
 export class MediaCommentsFeed extends Feed<MediaCommentsFeedResponse, MediaCommentsFeedResponseCommentsItem> {
-  id: string;
+  id!: string;
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
   @Expose()
-  private nextMinId: string;
+  private nextMinId!: string;
 
   set state(body: MediaCommentsFeedResponse) {
     this.moreAvailable = !!body.next_max_id || !!body.next_min_id;

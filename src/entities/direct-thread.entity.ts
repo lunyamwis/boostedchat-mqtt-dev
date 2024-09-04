@@ -260,7 +260,7 @@ export class DirectThreadEntity extends Entity {
     } else {
       params = Object.assign(baseParams, { userIds: this.userIds });
     }
-    const response = await this.client.directThread.broadcast(params);
+    const response = await this.client.directThread.broadcast(params as DirectThreadBroadcastOptions);
     if (response.payload) {
       this.threadId = response.payload.thread_id;
       this.userIds = null;
