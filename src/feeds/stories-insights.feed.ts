@@ -7,10 +7,10 @@ export class StoriesInsightsFeed extends Feed<
   StoriesInsightsFeedResponseEdgesItem
 > {
   @Expose()
-  private timeframe: 'ONE_DAY' | 'ONE_WEEK' | 'TWO_WEEKS';
+  private timeframe!: 'ONE_DAY' | 'ONE_WEEK' | 'TWO_WEEKS';
 
   @Expose()
-  private nextCursor: string = null;
+  private nextCursor: string = '';
 
   async items(): Promise<StoriesInsightsFeedResponseEdgesItem[]> {
     const body = await this.request();

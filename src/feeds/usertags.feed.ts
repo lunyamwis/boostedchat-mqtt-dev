@@ -3,9 +3,9 @@ import { Expose } from 'class-transformer';
 import { UsertagsFeedResponseItemsItem, UsertagsFeedResponseRootObject } from '../responses';
 
 export class UsertagsFeed extends Feed<UsertagsFeedResponseRootObject, UsertagsFeedResponseItemsItem> {
-  id: number | string;
+  id!: number | string;
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   protected set state(body: UsertagsFeedResponseRootObject) {
     this.moreAvailable = body.more_available;

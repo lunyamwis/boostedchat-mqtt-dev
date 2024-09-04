@@ -46,13 +46,13 @@ export class AccountRepository extends Repository {
         }),
       }),
     ).catch(IgResponseError, error => {
-      if (error.response.body.two_factor_required) {
+      if (error.response.data.two_factor_required) {
         AccountRepository.accountDebug(
-          `Login failed, two factor auth required: ${JSON.stringify(error.response.body.two_factor_info)}`,
+          `Login failed, two factor auth required: ${JSON.stringify(error.response.data.two_factor_info)}`,
         );
         throw new IgLoginTwoFactorRequiredError(error.response as IgResponse<AccountRepositoryLoginErrorResponse>);
       }
-      switch (error.response.body.error_type) {
+      switch (error.response.data.error_type) {
         case 'bad_password': {
           throw new IgLoginBadPasswordError(error.response as IgResponse<AccountRepositoryLoginErrorResponse>);
         }
@@ -64,7 +64,7 @@ export class AccountRepository extends Repository {
         }
       }
     });
-    return response.body.logged_in_user;
+    return response.data.logged_in_user;
   }
 
   public static createJazoest(input: string): string {
@@ -162,7 +162,7 @@ export class AccountRepository extends Repository {
         }),
       }),
     ).catch(IgResponseError, error => {
-      switch (error.response.body.error_type) {
+      switch (error.response.data.error_type) {
         case 'signup_block': {
           AccountRepository.accountDebug('Signup failed');
           throw new IgSignupBlockError(error.response as IgResponse<SpamResponse>);

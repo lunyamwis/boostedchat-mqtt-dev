@@ -134,8 +134,8 @@ export class ChallengeRepository extends Repository {
         }),
       })
       .catch((error: IgResponseError) => {
-        if (error.response.statusCode === 400 && error.response.body.status === 'fail') {
-          throw new IgChallengeWrongCodeError(error.response.body.message);
+        if (error.response.statusCode === 400 && error.response.data.status === 'fail') {
+          throw new IgChallengeWrongCodeError(error.response.data.message);
         }
         throw error;
       });
