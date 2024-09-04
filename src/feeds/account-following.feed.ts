@@ -9,9 +9,9 @@ export class AccountFollowingFeed extends Feed<AccountFollowingFeedResponse, Acc
   enableGroups = true;
   includesHashtags = true;
 
-  id: number | string;
+  id!: number | string;
   @Expose()
-  public nextMaxId: string;
+  public nextMaxId!: string | null;
 
   set state(body: AccountFollowingFeedResponse) {
     this.moreAvailable = !!body.next_max_id;
@@ -37,6 +37,6 @@ export class AccountFollowingFeed extends Feed<AccountFollowingFeedResponse, Acc
 
   async items() {
     const body = await this.request();
-    return body.users.map(user => plainToClassFromExist(new AccountFollowingFeedResponseUsersItem(this.client), user));
+    return body.users.map((user: any) => plainToClassFromExist(new AccountFollowingFeedResponseUsersItem(this.client), user));
   }
 }

@@ -7,7 +7,7 @@ export class PendingFriendshipsFeed extends Feed<
   PendingFriendshipsFeedResponseUsersItem
 > {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string | null;
 
   set state(body: PendingFriendshipsFeedResponse) {
     this.moreAvailable = !!body.next_max_id;
@@ -28,7 +28,7 @@ export class PendingFriendshipsFeed extends Feed<
 
   async items() {
     const body = await this.request();
-    return body.users.map(user =>
+    return body.users.map((user:any) =>
       plainToClassFromExist(new PendingFriendshipsFeedResponseUsersItem(this.client), user),
     );
   }

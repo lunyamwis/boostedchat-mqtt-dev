@@ -4,7 +4,7 @@ import { DiscoverFeedResponseRootObject, DiscoverFeedResponseUser } from '../res
 
 export class DiscoverFeed extends Feed<DiscoverFeedResponseRootObject, DiscoverFeedResponseUser> {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   set state(body: DiscoverFeedResponseRootObject) {
     this.moreAvailable = body.more_available;
@@ -30,7 +30,7 @@ export class DiscoverFeed extends Feed<DiscoverFeedResponseRootObject, DiscoverF
 
   async items() {
     const body = await this.request();
-    return body.suggested_users.suggestions.map(user =>
+    return body.suggested_users.suggestions.map((user: any) =>
       plainToClassFromExist(new DiscoverFeedResponseUser(this.client), user),
     );
   }

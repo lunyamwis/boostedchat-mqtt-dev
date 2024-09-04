@@ -8,11 +8,11 @@ export class MusicSearchFeed extends Feed<MusicSearchFeedResponseRootObject, Mus
   protected nextCursor?: string;
 
   @Expose()
-  public product: IgAppModule;
+  public product!: IgAppModule;
   @Expose()
-  public query: string;
+  public query!: string;
   @Expose()
-  public searchSessionId: string;
+  public searchSessionId!: string;
 
   async items(): Promise<MusicSearchFeedResponseItemsItem[]> {
     const response = await this.request();

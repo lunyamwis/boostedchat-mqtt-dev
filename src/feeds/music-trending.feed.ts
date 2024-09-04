@@ -8,7 +8,7 @@ export class MusicTrendingFeed extends Feed<MusicTrendingFeedResponseRootObject,
   protected nextCursor?: string;
 
   @Expose()
-  public product: IgAppModule;
+  public product!: IgAppModule;
 
   async items(): Promise<MusicTrendingFeedResponseItemsItem[]> {
     const response = await this.request();

@@ -7,7 +7,7 @@ export class BlockedUsersFeed extends Feed<
   BlockedUsersFeedResponseBlockedListItem
 > {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   set state(body: BlockedUsersFeedResponseRootObject) {
     this.moreAvailable = !!body.next_max_id;
@@ -27,7 +27,7 @@ export class BlockedUsersFeed extends Feed<
 
   async items() {
     const body = await this.request();
-    return body.blocked_list.map(user =>
+    return body.blocked_list.map((user: any) =>
       plainToClassFromExist(new BlockedUsersFeedResponseBlockedListItem(this.client), user),
     );
   }

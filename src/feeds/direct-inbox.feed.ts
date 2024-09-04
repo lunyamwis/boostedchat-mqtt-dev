@@ -5,9 +5,9 @@ import { DirectThreadEntity } from '../entities';
 
 export class DirectInboxFeed extends Feed<DirectInboxFeedResponse, DirectInboxFeedResponseThreadsItem> {
   @Expose()
-  private cursor: string;
+  private cursor!: string;
   @Expose()
-  private seqId: number;
+  private seqId!: number;
 
   set state(body: DirectInboxFeedResponse) {
     this.moreAvailable = body.inbox.has_older;
@@ -39,6 +39,6 @@ export class DirectInboxFeed extends Feed<DirectInboxFeedResponse, DirectInboxFe
 
   async records(): Promise<DirectThreadEntity[]> {
     const threads = await this.items();
-    return threads.map(thread => this.client.entity.directThread(thread.thread_id));
+    return threads.map((thread: any) => this.client.entity.directThread(thread.thread_id));
   }
 }

@@ -4,10 +4,10 @@ import { PostsInsightsFeedOptions } from '../types';
 import { PostsInsightsFeedResponseEdgesItem, PostsInsightsFeedResponseRootObject } from '../responses';
 
 export class PostsInsightsFeed extends Feed<PostsInsightsFeedResponseRootObject, PostsInsightsFeedResponseEdgesItem> {
-  private options: PostsInsightsFeedOptions;
+  private options!: PostsInsightsFeedOptions;
 
   @Expose()
-  private nextCursor: string = null;
+  private nextCursor: string | null = null;
 
   async items(): Promise<PostsInsightsFeedResponseEdgesItem[]> {
     const body = await this.request();

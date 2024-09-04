@@ -8,9 +8,9 @@ export class MusicMoodFeed extends Feed<MusicMoodFeedResponseRootObject, MusicMo
   protected nextCursor?: string;
 
   @Expose()
-  public product: IgAppModule;
+  public product!: IgAppModule;
   @Expose()
-  public id: number | string;
+  public id!: number | string;
 
   async items(): Promise<MusicMoodFeedResponseItemsItem[]> {
     const response = await this.request();

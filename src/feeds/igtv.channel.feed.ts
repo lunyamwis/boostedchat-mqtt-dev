@@ -6,10 +6,10 @@ import {
 } from '../responses/igtv.channel.feed.response';
 
 export class IgtvChannelFeed extends Feed<IgtvChannelFeedResponseRootObject, IgtvChannelFeedResponseItemsItem> {
-  channelId: string;
+  channelId!: string;
 
   @Expose()
-  private maxId: string;
+  private maxId!: string;
 
   protected set state(response: IgtvChannelFeedResponseRootObject) {
     this.moreAvailable = response.more_available;

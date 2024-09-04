@@ -4,7 +4,7 @@ import { NewsFeedResponseRootObject, NewsFeedResponseStoriesItem } from '../resp
 
 export class NewsFeed extends Feed<NewsFeedResponseRootObject, NewsFeedResponseStoriesItem> {
   @Expose()
-  private nextMaxId: string | number;
+  private nextMaxId!: string | number;
 
   set state(body: NewsFeedResponseRootObject) {
     this.moreAvailable = !!body.next_max_id;
@@ -24,6 +24,6 @@ export class NewsFeed extends Feed<NewsFeedResponseRootObject, NewsFeedResponseS
 
   async items() {
     const body = await this.request();
-    return body.stories.map(user => plainToClassFromExist(new NewsFeedResponseStoriesItem(this.client), user));
+    return body.stories.map((user: any) => plainToClassFromExist(new NewsFeedResponseStoriesItem(this.client), user));
   }
 }

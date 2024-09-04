@@ -8,9 +8,9 @@ export class MusicGenreFeed extends Feed<MusicGenreFeedResponseRootObject, Music
   protected nextCursor?: string;
 
   @Expose()
-  public product: IgAppModule;
+  public product!: IgAppModule;
   @Expose()
-  public id: number | string;
+  public id!: number | string;
 
   async items(): Promise<MusicGenreFeedResponseItemsItem[]> {
     const response = await this.request();

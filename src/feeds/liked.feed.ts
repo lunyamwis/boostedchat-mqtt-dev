@@ -4,7 +4,7 @@ import { LikedFeedResponseItemsItem, LikedFeedResponseRootObject } from '../resp
 
 export class LikedFeed extends Feed<LikedFeedResponseRootObject, LikedFeedResponseItemsItem> {
   @Expose()
-  private maxId: string;
+  private maxId!: string;
 
   async items(): Promise<LikedFeedResponseItemsItem[]> {
     const res = await this.request();

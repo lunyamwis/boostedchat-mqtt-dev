@@ -3,10 +3,10 @@ import { Feed } from '../core/feed';
 import { DirectThreadFeedResponse, DirectThreadFeedResponseItemsItem } from '../responses';
 
 export class DirectThreadFeed extends Feed<DirectThreadFeedResponse, DirectThreadFeedResponseItemsItem> {
-  public id: string;
-  public seqId: number;
+  public id!: string;
+  public seqId!: number;
   @Expose()
-  public cursor: string;
+  public cursor!: string;
   set state(body: DirectThreadFeedResponse) {
     this.cursor = body.thread.oldest_cursor;
     this.moreAvailable = body.thread.has_older;
