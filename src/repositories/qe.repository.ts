@@ -7,7 +7,7 @@ export class QeRepository extends Repository {
   public async syncLoginExperiments() {
     return this.sync(this.client.state.loginExperiments);
   }
-  public async sync(experiments) {
+  public async sync(experiments: any) {
     let data;
     try {
       const uid = this.client.state.cookieUserId;

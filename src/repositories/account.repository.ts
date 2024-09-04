@@ -26,7 +26,7 @@ export class AccountRepository extends Repository {
     if (!this.client.state.passwordEncryptionPubKey) {
       await this.client.qe.syncLoginExperiments();
     }
-    const {encrypted, time} = this.encryptPassword(password);
+    const { encrypted, time } = this.encryptPassword(password);
     const response = await Bluebird.try(() =>
       this.client.request.send<AccountRepositoryLoginResponseRootObject>({
         method: 'POST',
@@ -141,7 +141,7 @@ export class AccountRepository extends Repository {
     return body;
   }
 
-  async create({ username, password, email, first_name }) {
+  async create({ username, password, email, first_name }: { username: any, password: any, email: any, first_name: any, }) {
     const { body } = await Bluebird.try(() =>
       this.client.request.send({
         method: 'POST',
