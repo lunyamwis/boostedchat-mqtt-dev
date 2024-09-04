@@ -88,7 +88,7 @@ export class ChallengeRepository extends Repository {
       await this.state();
     }
     const challenge = this.client.state.challenge;
-    switch (challenge.step_name) {
+    switch (challenge?.step_name) {
       case 'select_verify_method': {
         return await this.selectVerifyMethod(challenge.step_data.choice);
       }
@@ -96,7 +96,7 @@ export class ChallengeRepository extends Repository {
         return await this.deltaLoginReview('0');
       }
       default: {
-        return challenge;
+        return challenge as ChallengeStateResponse;
       }
     }
   }

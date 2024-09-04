@@ -83,10 +83,10 @@ export class State {
   authorization?: string;
   passwordEncryptionPubKey?: string;
   passwordEncryptionKeyId?: string | number;
-  deviceString: string;
-  build: string;
-  uuid: string;
-  phoneId: string;
+  deviceString!: string;
+  build!: string;
+  uuid!: string;
+  phoneId!: string;
   /**
    * Google Play Advertising ID.
    *
@@ -95,10 +95,10 @@ export class State {
    *
    * @see https://support.google.com/googleplay/android-developer/answer/6048248?hl=en
    */
-  adid: string;
-  deviceId: string;
+  adid!: string;
+  deviceId!: string;
   @Enumerable(false)
-  proxyUrl: string;
+  proxyUrl!: string;
   @Enumerable(false)
   cookieStore = new MemoryCookieStore();
   @Enumerable(false)
@@ -194,7 +194,7 @@ export class State {
     return this.extractCookieValue('ds_user');
   }
 
-  public isExperimentEnabled(experiment) {
+  public isExperimentEnabled(experiment: any) {
     return this.experiments.includes(experiment);
   }
 
@@ -231,7 +231,7 @@ export class State {
     return Bluebird.fromCallback(cb => this.cookieJar['_jar'].serialize(cb));
   }
 
-  public async serialize(): Promise<{ constants; cookies } & any> {
+  public async serialize(): Promise<{ constants: any; cookies: any } & any> {
     const obj = {
       constants: this.constants,
       cookies: JSON.stringify(await this.serializeCookieJar()),
