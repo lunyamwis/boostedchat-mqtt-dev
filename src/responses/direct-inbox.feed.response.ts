@@ -15,41 +15,41 @@ export interface DirectInboxFeedResponseInbox {
   blended_inbox_enabled: boolean;
 }
 export class DirectInboxFeedResponseThreadsItem {
-  thread_id: string;
-  thread_v2_id: string;
-  users: DirectInboxFeedResponseUsersItem[];
-  left_users: any[];
-  admin_user_ids: any[];
-  items: DirectInboxFeedResponseItemsItem[];
-  last_activity_at: string;
-  muted: boolean;
-  is_pin: boolean;
-  named: boolean;
-  canonical: boolean;
-  pending: boolean;
-  archived: boolean;
-  valued_request: boolean;
-  thread_type: string;
-  viewer_id: number;
-  thread_title: string;
-  pending_score: string;
-  folder: number;
-  vc_muted: boolean;
-  is_group: boolean;
-  mentions_muted: boolean;
-  inviter: DirectInboxFeedResponseInviter;
-  has_older: boolean;
-  has_newer: boolean;
+  thread_id!: string;
+  thread_v2_id!: string;
+  users!: DirectInboxFeedResponseUsersItem[];
+  left_users!: any[];
+  admin_user_ids!: any[];
+  items!: DirectInboxFeedResponseItemsItem[];
+  last_activity_at!: string;
+  muted!: boolean;
+  is_pin!: boolean;
+  named!: boolean;
+  canonical!: boolean;
+  pending!: boolean;
+  archived!: boolean;
+  valued_request!: boolean;
+  thread_type!: string;
+  viewer_id!: number;
+  thread_title!: string;
+  pending_score!: string;
+  folder!: number;
+  vc_muted!: boolean;
+  is_group!: boolean;
+  mentions_muted!: boolean;
+  inviter!: DirectInboxFeedResponseInviter;
+  has_older!: boolean;
+  has_newer!: boolean;
   /*
         last_seen_at: {
             user_id: { timestamp: string, item_id: string }
         }
      */
-  last_seen_at: any;
-  newest_cursor: string;
-  oldest_cursor: string;
-  is_spam: boolean;
-  last_permanent_item: DirectInboxFeedResponseLastPermanentItem;
+  last_seen_at!: any;
+  newest_cursor!: string;
+  oldest_cursor!: string;
+  is_spam!: boolean;
+  last_permanent_item!: DirectInboxFeedResponseLastPermanentItem;
 }
 export interface DirectInboxFeedResponseUsersItem {
   pk: number;

@@ -7,11 +7,11 @@ export interface NewsFeedResponseRootObject {
   status: string;
 }
 export class NewsFeedResponseStoriesItem extends Entity {
-  type: number;
-  story_type: number;
-  args: NewsFeedResponseArgs;
-  counts: NewsFeedResponseCounts;
-  pk: string;
+  type!: number;
+  story_type!: number;
+  args!: NewsFeedResponseArgs;
+  counts!: NewsFeedResponseCounts;
+  pk!: string;
 }
 export interface NewsFeedResponseArgs {
   text: string;

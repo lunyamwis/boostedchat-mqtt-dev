@@ -7,9 +7,9 @@ export interface BlockedUsersFeedResponseRootObject {
   status: string;
 }
 export class BlockedUsersFeedResponseBlockedListItem extends Entity {
-  user_id: number;
-  username: string;
-  full_name: string;
-  profile_pic_url: string;
-  block_at: number;
+  user_id!: number;
+  username!: string;
+  full_name!: string;
+  profile_pic_url!: string;
+  block_at!: number;
 }
