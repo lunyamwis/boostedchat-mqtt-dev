@@ -2,7 +2,7 @@ import { Repository } from '../core/repository';
 import { StoryServiceInput, StoryServiceSeenInputItems, StoryServiceSeenInputReels } from '../types';
 
 export class StoryService extends Repository {
-  seen(input: StoryServiceInput, sourceId: string = null) {
+  seen(input: StoryServiceInput, sourceId: string = '') {
     let items: StoryServiceSeenInputItems[];
     if (input instanceof Array) {
       items = input;

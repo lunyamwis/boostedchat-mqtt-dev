@@ -39,8 +39,8 @@ export class PublishService extends Repository {
    * @param videoInfo The video info for debugging reasons
    * @param transcodeDelayInMs The delay for instagram to transcode the video
    */
-  public static catchTranscodeError(videoInfo, transcodeDelayInMs: number) {
-    return error => {
+  public static catchTranscodeError(videoInfo: any, transcodeDelayInMs: number) {
+    return (error: any) => {
       if (error.response.statusCode === 202) {
         PublishService.publishDebug(
           `Received trancode error: ${JSON.stringify(error.response.body)}, waiting ${transcodeDelayInMs}ms`,
@@ -199,7 +199,7 @@ export class PublishService extends Repository {
     for (let i = 0; i < 6; i++) {
       try {
         return await this.client.media.configureVideo(configureOptions);
-      } catch (e) {
+      } catch (e: any) {
         if (i >= 5 || e.response.statusCode >= 400) {
           throw new IgConfigureVideoError(e.response, configureOptions);
         }
@@ -235,7 +235,7 @@ export class PublishService extends Repository {
             uploadId: item.uploadId,
             isSidecar: true,
             ...item.videoInfo,
-          }),
+          } as UploadVideoOptions),
         ).catch(IgResponseError, error => {
           throw new IgConfigureVideoError(
             error.response as IgResponse<UploadRepositoryVideoResponseRootObject>,
@@ -249,11 +249,11 @@ export class PublishService extends Repository {
         });
         await Bluebird.try(() =>
           this.client.media.uploadFinish({
-            upload_id: item.uploadId,
+            upload_id: item.uploadId ?? Date.now().toString(),
             source_type: '4',
-            video: { length: item.videoInfo.duration / 1000.0 },
+            video: { length: (item.videoInfo?.duration ?? 0) / 1000.0 },
           }),
-        ).catch(IgResponseError, PublishService.catchTranscodeError(item.videoInfo, item.transcodeDelay));
+        ).catch(IgResponseError, PublishService.catchTranscodeError(item.videoInfo, item.transcodeDelay ?? 0));
       }
     }
 
@@ -444,7 +444,7 @@ export class PublishService extends Repository {
     for (let i = 0; i < 6; i++) {
       try {
         return await this.client.media.configureToIgtv(finalInput);
-      } catch (e) {
+      } catch (e: any) {
         if (i >= 6) {
           throw new IgConfigureVideoError(e.response, finalInput);
         }
@@ -459,7 +459,7 @@ export class PublishService extends Repository {
       waterfallId: this.chance.guid({ version: 4 }),
     });
     options.uploadName = options.uploadName || `${options.uploadId}_0_${random(1000000000, 9999999999)}`;
-    const ruploadParams = UploadRepository.createVideoRuploadParams(options, options.uploadId);
+    const ruploadParams = UploadRepository.createVideoRuploadParams(options, options.uploadId ?? options.uploadId ?? Date.now());
     const { offset } = await this.client.upload.initVideo({
       name: options.uploadName,
       ruploadParams,

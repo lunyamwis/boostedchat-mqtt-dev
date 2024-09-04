@@ -2,8 +2,8 @@ import * as snakeCaseKeys from 'snakecase-keys';
 import { classToPlain } from 'class-transformer';
 
 export abstract class InstaSticker {
-  public width: number;
-  public height: number;
+  public width!: number;
+  public height!: number;
   public rotation: number = 0.0;
   public x: number = 0.0;
   public y: number = 0.0;

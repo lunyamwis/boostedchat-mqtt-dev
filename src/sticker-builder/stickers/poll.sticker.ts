@@ -9,7 +9,7 @@ type Tallies = [PollStickerTallie, PollStickerTallie];
 
 export class PollSticker extends InstaSticker {
   // tslint:disable-next-line:variable-name
-  private _tallies: Tallies;
+  private _tallies!: Tallies ;
 
   get tallies(): Tallies {
     return this._tallies;
@@ -19,7 +19,7 @@ export class PollSticker extends InstaSticker {
     this._tallies = value.map(t => ({ fontSize: 28.0, ...t })) as Tallies;
   }
 
-  question: string;
+  question: string = '';
 
   finished?: boolean = false;
   viewerVote?: number = 0;

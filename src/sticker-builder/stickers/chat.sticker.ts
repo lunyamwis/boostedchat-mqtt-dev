@@ -1,7 +1,7 @@
 import { InstaSticker } from './insta-sticker';
 
 export class ChatSticker extends InstaSticker {
-  text: string;
+  text!: string;
   startBackgroundColor?: string = '#3897f0';
   endBackgroundColor?: string = '#27c4f5';
   hasStartedChat?: boolean = false;

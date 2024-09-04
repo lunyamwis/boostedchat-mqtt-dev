@@ -1,7 +1,7 @@
 import { InstaSticker } from './insta-sticker';
 
 export class HashtagSticker extends InstaSticker {
-  public tagName: string;
+  public tagName!: string;
   width = 0.47;
   height = 0.11;
 

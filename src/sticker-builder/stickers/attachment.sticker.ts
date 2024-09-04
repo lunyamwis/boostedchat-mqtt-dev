@@ -1,8 +1,8 @@
 import { InstaSticker } from './insta-sticker';
 
 export class AttachmentSticker extends InstaSticker {
-  mediaId: string;
-  mediaOwnerId: string;
+  mediaId!: string;
+  mediaOwnerId!: string;
   width = 0.8;
   height = 0.67;
 

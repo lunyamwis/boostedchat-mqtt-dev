@@ -1,7 +1,7 @@
 import { InstaSticker } from './insta-sticker';
 
 export class LocationSticker extends InstaSticker {
-  public locationId: string;
+  public locationId: string = '';
   width = 0.47;
   height = 0.111;
 

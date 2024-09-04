@@ -1,7 +1,7 @@
 import { InstaSticker } from './insta-sticker';
 
 export class QuestionSticker extends InstaSticker {
-  question: string;
+  question: string = '';
   backgroundColor?: string = '#ffffff';
   textColor?: string = '#000000';
   profilePicUrl?: string = '';

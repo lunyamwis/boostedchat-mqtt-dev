@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 
 export class CountdownSticker extends InstaSticker {
   // tslint:disable-next-line:variable-name
-  private _endTs: number;
+  private _endTs!: number;
 
   get endTs() {
     return this._endTs;
@@ -17,7 +17,7 @@ export class CountdownSticker extends InstaSticker {
     }
   }
 
-  text: string;
+  text: string ='';
   textColor?: string = '#ffffff';
   startBackgroundColor?: string = '#ca2ee1';
   endBackgroundColor?: string = '#5eb1ff';
