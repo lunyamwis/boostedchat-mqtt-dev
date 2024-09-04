@@ -263,9 +263,9 @@ export class PublishService extends Repository {
         if (isVideo(item)) {
           return {
             upload_id: item.uploadId,
-            width: item.videoInfo.width,
-            height: item.videoInfo.height,
-            length: item.videoInfo.duration,
+            width: item?.videoInfo?.width,
+            height: item?.videoInfo?.height,
+            length: item?.videoInfo?.duration,
             usertags: item.usertags,
           };
         } else if (isPhoto(item)) {
@@ -327,7 +327,7 @@ export class PublishService extends Repository {
         if (hashtag.tag_name.includes('#')) {
           hashtag.tag_name = hashtag.tag_name.replace('#', '');
         }
-        if (!options.caption.includes(hashtag.tag_name)) {
+        if (!options?.caption?.includes(hashtag.tag_name)) {
           options.caption = `${options.caption} ${hashtag.tag_name}`;
         }
       });

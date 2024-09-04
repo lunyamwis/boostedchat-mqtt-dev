@@ -20,7 +20,7 @@ export interface UploadVideoOptions {
 
 export interface UploadVideoSegmentInitOptions {
   waterfallId: string;
-  ruploadParams;
+  ruploadParams: any;
   transferId: string;
   streamId: string;
   startOffset: number;
@@ -28,7 +28,7 @@ export interface UploadVideoSegmentInitOptions {
 
 export interface UploadVideoSegmentTransferOptions {
   waterfallId: string;
-  ruploadParams;
+  ruploadParams: any;
   transferId: string;
   streamId: string;
   startOffset: number;
@@ -52,7 +52,7 @@ export interface UploadRetryContext {
 }
 
 export const SEGMENT_DIVIDERS = {
-  totalSections(numSections): SegmentDivider {
+  totalSections(numSections: any): SegmentDivider {
     return ({ buffer }) => {
       const sections = [];
       const sectionSize = Math.floor(buffer.byteLength / numSections);
@@ -63,7 +63,7 @@ export const SEGMENT_DIVIDERS = {
       return sections;
     };
   },
-  sectionSize(sectionSize): SegmentDivider {
+  sectionSize(sectionSize: any): SegmentDivider {
     return ({ buffer }) => {
       const sections = [];
       for (let i = 0; i < buffer.byteLength; ) {

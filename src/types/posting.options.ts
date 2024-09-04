@@ -46,7 +46,7 @@ export interface PostingStoryOptions {
   quiz?: StoryQuiz;
   link?: string;
 
-  stickerConfig?: (any & { story_sticker_ids }) | StickerBuilder;
+  stickerConfig?: (any & { story_sticker_ids: any }) | StickerBuilder;
 }
 
 export interface PostingStoryLocationSticker {
