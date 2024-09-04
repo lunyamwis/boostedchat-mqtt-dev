@@ -1,7 +1,7 @@
 import { Feed } from '../core/feed';
 import { ReelsMediaFeedResponse, ReelsMediaFeedResponseItem, ReelsMediaFeedResponseRootObject } from '../responses';
 import { IgAppModule } from '../types/common.types';
-import * as SUPPORTED_CAPABILITIES from '../samples/';
+import * as SUPPORTED_CAPABILITIES from '../samples/supported-capabilities.json';
 
 export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, ReelsMediaFeedResponseItem> {
   userIds: Array<number | string>;
@@ -10,10 +10,10 @@ export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, Reels
   protected set state(body: any) {}
 
   async request() {
-    const { body } = await this.client.request.send<ReelsMediaFeedResponseRootObject>({
+    const { data } = await this.client.request.send<ReelsMediaFeedResponseRootObject>({
       url: `/api/v1/feed/reels_media/`,
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         user_ids: this.userIds,
         source: this.source,
         _uuid: this.client.state.uuid,
@@ -23,8 +23,9 @@ export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, Reels
         supported_capabilities_new: JSON.stringify(SUPPORTED_CAPABILITIES),
       }),
     });
-    return body;
+    return data;
   }
+  
 
   async items(): Promise<ReelsMediaFeedResponseItem[]> {
     const body = await this.request();

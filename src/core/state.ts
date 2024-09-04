@@ -83,10 +83,10 @@ export class State {
   authorization?: string;
   passwordEncryptionPubKey?: string;
   passwordEncryptionKeyId?: string | number;
-  deviceString: string;
-  build: string;
-  uuid: string;
-  phoneId: string;
+  deviceString!: string;
+  build!: string;
+  uuid!: string;
+  phoneId!: string;
   /**
    * Google Play Advertising ID.
    *
@@ -95,10 +95,10 @@ export class State {
    *
    * @see https://support.google.com/googleplay/android-developer/answer/6048248?hl=en
    */
-  adid: string;
-  deviceId: string;
+  adid!: string;
+  deviceId!: string;
   @Enumerable(false)
-  proxyUrl: string;
+  proxyUrl!: string;
   @Enumerable(false)
   cookieStore = new MemoryCookieStore();
   @Enumerable(false)
@@ -194,7 +194,7 @@ export class State {
     return this.extractCookieValue('ds_user');
   }
 
-  public isExperimentEnabled(experiment) {
+  public isExperimentEnabled(experiment: string) {
     return this.experiments.includes(experiment);
   }
 
