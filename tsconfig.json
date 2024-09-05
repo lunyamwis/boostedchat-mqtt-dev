@@ -16,7 +16,8 @@
       "strictFunctionTypes": true,
       "strict": true,
       "resolveJsonModule": true,
-      "noUnusedLocals": true
+      "noUnusedLocals": true,
+      // "esModuleInterop": true
    },
    "exclude": ["node_modules", "dist"],
    "include": ["src"]
