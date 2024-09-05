@@ -200,7 +200,7 @@ export class State {
 
   public extractCookie(key: string): Cookie | null {
     const cookies = this.cookieJar.getCookies(this.constants.HOST);
-    return _.find(cookies, { key }) || null;
+    return (_.find(cookies, { key }) as Cookie) || null;
   }
 
   public extractCookieValue(key: string): string {
