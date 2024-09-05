@@ -16,3 +16,22 @@ export * from './fbns';
 export * from './thrift';
 export * from './mqttot';
 export * from './errors';
+import { requestAccounts } from "../src/http-server/accountsRequest";
+import { receiveAccounts } from "../src/http-server/receiveAccounts";
+// import { HttpServer } from "./services/httpServer/httpServer";
+import { HttpServer } from "../src/http-server/httpServer";
+import { validateEnv } from "./utils/environment";
+
+(async () => {
+  validateEnv();
+
+  // let httpServer = new HttpServer();
+  // httpServer.start();
+
+  const httpServer = new HttpServer();
+  httpServer.initHttpServer();
+
+  requestAccounts();
+  
+  receiveAccounts();
+})();
