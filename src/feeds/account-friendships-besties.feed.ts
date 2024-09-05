@@ -4,21 +4,22 @@ import { BestiesFeedResponse, BestiesFeedResponseUsersItem } from '../responses'
 
 export class BestiesFeed extends Feed<BestiesFeedResponse, BestiesFeedResponseUsersItem> {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   set state(body: BestiesFeedResponse) {
     this.moreAvailable = !!body.next_max_id;
-    this.nextMaxId = body.next_max_id;
+    this.nextMaxId = body.next_max_id ?? '';
   }
 
   async request() {
-    const { body } = await this.client.request.send<BestiesFeedResponse>({
+    const response = await this.client.request.send<BestiesFeedResponse>({
       url: `/api/v1/friendships/besties`,
-      qs: {
+      params: {
         rank_token: this.rankToken,
         max_id: this.nextMaxId,
       },
     });
+    const body = response.data;
     this.state = body;
     return body;
   }

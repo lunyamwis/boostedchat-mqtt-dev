@@ -31,7 +31,7 @@ export class AccountRepository extends Repository {
       this.client.request.send<AccountRepositoryLoginResponseRootObject>({
         method: 'POST',
         url: '/api/v1/accounts/login/',
-        form: this.client.request.sign({
+        data: this.client.request.sign({
           username,
           enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
           guid: this.client.state.uuid,
@@ -80,7 +80,7 @@ export class AccountRepository extends Repository {
     const randKey = crypto.randomBytes(32);
     const iv = crypto.randomBytes(12);
     const rsaEncrypted = crypto.publicEncrypt({
-      key: Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString(),
+      key: this.client.state.passwordEncryptionPubKey ? Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString() : '',
       // @ts-ignore
       padding: crypto.constants.RSA_PKCS1_PADDING,
     }, randKey);
@@ -109,10 +109,10 @@ export class AccountRepository extends Repository {
       trustThisDevice: '1',
       verificationMethod: '1',
     });
-    const { body } = await this.client.request.send<AccountRepositoryLoginResponseLogged_in_user>({
+    const { data }= await this.client.request.send<AccountRepositoryLoginResponseLogged_in_user>({
       url: '/api/v1/accounts/two_factor_login/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         verification_code: options.verificationCode,
         _csrftoken: this.client.state.cookieCsrfToken,
         two_factor_identifier: options.twoFactorIdentifier,
@@ -123,14 +123,14 @@ export class AccountRepository extends Repository {
         verification_method: options.verificationMethod,
       }),
     });
-    return body;
+    return data;
   }
 
   public async logout() {
-    const { body } = await this.client.request.send<StatusResponse>({
+    const { data }= await this.client.request.send<StatusResponse>({
       method: 'POST',
       url: '/api/v1/accounts/logout/',
-      form: {
+      data: {
         guid: this.client.state.uuid,
         phone_id: this.client.state.phoneId,
         _csrftoken: this.client.state.cookieCsrfToken,
@@ -138,15 +138,15 @@ export class AccountRepository extends Repository {
         _uuid: this.client.state.uuid,
       },
     });
-    return body;
+    return data;
   }
 
   async create({ username, password, email, first_name }: { username: any, password: any, email: any, first_name: any, }) {
-    const { body } = await Bluebird.try(() =>
+    const { data }= await Bluebird.try(() =>
       this.client.request.send({
         method: 'POST',
         url: '/api/v1/accounts/create/',
-        form: this.client.request.sign({
+        data: this.client.request.sign({
           username,
           password,
           email,
@@ -172,24 +172,24 @@ export class AccountRepository extends Repository {
         }
       }
     });
-    return body;
+    return data;
   }
 
   public async currentUser() {
-    const { body } = await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
+    const { data }= await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
       url: '/api/v1/accounts/current_user/',
-      qs: {
+      params: {
         edit: true,
       },
     });
-    return body.user;
+    return data.user;
   }
 
   public async setBiography(text: string) {
-    const { body } = await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
+    const { data }= await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
       url: '/api/v1/accounts/set_biography/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
         device_id: this.client.state.deviceId,
@@ -197,7 +197,7 @@ export class AccountRepository extends Repository {
         raw_text: text,
       }),
     });
-    return body.user;
+    return data.user;
   }
 
   public async changeProfilePicture(picture: Buffer): Promise<AccountRepositoryCurrentUserResponseRootObject> {
@@ -206,24 +206,24 @@ export class AccountRepository extends Repository {
       file: picture,
       uploadId,
     });
-    const { body } = await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
+    const { data }= await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
       url: '/api/v1/accounts/change_profile_picture/',
       method: 'POST',
-      form: {
+      data: {
         _csrftoken: this.client.state.cookieCsrfToken,
         _uuid: this.client.state.uuid,
         use_fbuploader: true,
         upload_id: uploadId,
       },
     });
-    return body;
+    return data;
   }
 
   public async editProfile(options: AccountEditProfileOptions) {
-    const { body } = await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
+    const { data }= await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
       url: '/api/v1/accounts/edit_profile/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         ...options,
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
@@ -231,14 +231,14 @@ export class AccountRepository extends Repository {
         _uuid: this.client.state.uuid,
       }),
     });
-    return body.user;
+    return data.user;
   }
 
   public async changePassword(oldPassword: string, newPassword: string) {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: '/api/v1/accounts/change_password/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
         _uuid: this.client.state.uuid,
@@ -247,7 +247,7 @@ export class AccountRepository extends Repository {
         new_password2: newPassword,
       }),
     });
-    return body;
+    return data;
   }
 
   public async removeProfilePicture() {
@@ -263,76 +263,76 @@ export class AccountRepository extends Repository {
   }
 
   private async command(command: string): Promise<AccountRepositoryCurrentUserResponseRootObject> {
-    const { body } = await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
+    const { data }= await this.client.request.send<AccountRepositoryCurrentUserResponseRootObject>({
       url: `/api/v1/accounts/${command}/`,
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
         _uuid: this.client.state.uuid,
       }),
     });
-    return body;
+    return data;
   }
 
   public async readMsisdnHeader(usage = 'default') {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       method: 'POST',
       url: '/api/v1/accounts/read_msisdn_header/',
       headers: {
         'X-DEVICE-ID': this.client.state.uuid,
       },
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         mobile_subno_usage: usage,
         device_id: this.client.state.uuid,
       }),
     });
-    return body;
+    return data;
   }
 
   public async msisdnHeaderBootstrap(usage = 'default') {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       method: 'POST',
       url: '/api/v1/accounts/msisdn_header_bootstrap/',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         mobile_subno_usage: usage,
         device_id: this.client.state.uuid,
       }),
     });
-    return body;
+    return data;
   }
 
   public async contactPointPrefill(usage = 'default') {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       method: 'POST',
       url: '/api/v1/accounts/contact_point_prefill/',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         phone_id: this.client.state.phoneId,
         _csrftoken: this.client.state.cookieCsrfToken,
         usage,
       }),
     });
-    return body;
+    return data;
   }
 
   public async getPrefillCandidates() {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       method: 'POST',
       url: '/api/v1/accounts/get_prefill_candidates/',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         android_device_id: this.client.state.deviceId,
         usages: '["account_recovery_omnibox"]',
         device_id: this.client.state.uuid,
       }),
     });
-    return body;
+    return data;
   }
 
   public async processContactPointSignals() {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       method: 'POST',
       url: '/api/v1/accounts/process_contact_point_signals/',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         phone_id: this.client.state.phoneId,
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
@@ -341,14 +341,14 @@ export class AccountRepository extends Repository {
         google_tokens: '[]',
       }),
     });
-    return body;
+    return data;
   }
 
   public async sendRecoveryFlowEmail(query: string) {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: '/api/v1/accounts/send_recovery_flow_email/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         adid: '' /*this.client.state.adid ? not available on pre-login?*/,
         guid: this.client.state.uuid,
@@ -356,6 +356,6 @@ export class AccountRepository extends Repository {
         query,
       }),
     });
-    return body;
+    return data;
   }
 }

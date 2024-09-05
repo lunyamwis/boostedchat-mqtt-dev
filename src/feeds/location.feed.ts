@@ -4,12 +4,12 @@ import { Feed } from '../core/feed';
 import { LocationFeedResponse, LocationFeedResponseMedia } from '../responses';
 
 export class LocationFeed extends Feed<LocationFeedResponse, LocationFeedResponseMedia> {
-  id: string | number;
-  tab: 'recent' | 'ranked';
+  id: string | number = '';
+  tab: 'recent' | 'ranked' = 'recent';
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId: string = ''; // Assign a default value to nextMaxId
   @Expose()
-  private nextPage: number;
+  private nextPage: number = 0; // Assign a default value to nextPage
   @Expose()
   private nextMediaIds: Array<string> = [];
 
@@ -21,10 +21,10 @@ export class LocationFeed extends Feed<LocationFeedResponse, LocationFeedRespons
   }
 
   public async request() {
-    const { body } = await this.client.request.send<LocationFeedResponse>({
+    const { data }= await this.client.request.send<LocationFeedResponse>({
       url: `/api/v1/locations/${this.id}/sections/`,
       method: 'POST',
-      form: {
+      data: {
         _csrftoken: this.client.state.cookieCsrfToken,
         tab: this.tab,
         _uuid: this.client.state.uuid,
@@ -34,8 +34,8 @@ export class LocationFeed extends Feed<LocationFeedResponse, LocationFeedRespons
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   public async items() {

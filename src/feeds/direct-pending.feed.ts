@@ -5,9 +5,9 @@ import { DirectThreadEntity } from '../entities';
 
 export class DirectPendingInboxFeed extends Feed<DirectInboxFeedResponse, DirectInboxFeedResponseThreadsItem> {
   @Expose()
-  private cursor: string;
+  private cursor!: string;
   @Expose()
-  private seqId: number;
+  private seqId!: number;
 
   set state(body: DirectInboxFeedResponse) {
     this.moreAvailable = body.inbox.has_older;
@@ -16,9 +16,9 @@ export class DirectPendingInboxFeed extends Feed<DirectInboxFeedResponse, Direct
   }
 
   async request() {
-    const { body } = await this.client.request.send<DirectInboxFeedResponse>({
+    const response = await this.client.request.send<DirectInboxFeedResponse>({
       url: `/api/v1/direct_v2/pending_inbox/`,
-      qs: {
+      params: {
         visual_message_return_type: 'unseen',
         cursor: this.cursor,
         direction: this.cursor ? 'older' : void 0,
@@ -28,6 +28,7 @@ export class DirectPendingInboxFeed extends Feed<DirectInboxFeedResponse, Direct
         limit: 20,
       },
     });
+    const body = response.data;
     this.state = body;
     return body;
   }

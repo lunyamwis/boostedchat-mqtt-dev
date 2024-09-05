@@ -224,15 +224,15 @@ export class State {
   }
 
   public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
-    this.cookieJar['_jar'] = await Bluebird.fromCallback(cb => CookieJar.deserialize(cookies, this.cookieStore, cb));
+    (this.cookieJar as any)['_jar'] = await Bluebird.fromCallback(cb => CookieJar.deserialize(cookies, this.cookieStore, cb)) as any;
   }
 
   public async serializeCookieJar(): Promise<CookieJar.Serialized> {
-    return Bluebird.fromCallback(cb => this.cookieJar['_jar'].serialize(cb));
+    return Bluebird.fromCallback(cb => (this.cookieJar as any)['_jar'].serialize(cb));
   }
 
   public async serialize(): Promise<{ constants: any; cookies: any } & any> {
-    const obj = {
+    const obj: { [key: string]: any } = { // Add index signature
       constants: this.constants,
       cookies: JSON.stringify(await this.serializeCookieJar()),
     };
@@ -259,7 +259,7 @@ export class State {
       delete obj.cookies;
     }
     for (const [key, value] of Object.entries(obj)) {
-      this[key] = value;
+      this[key as keyof this] = value as this[keyof this];
     }
   }
 

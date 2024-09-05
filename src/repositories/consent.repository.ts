@@ -4,7 +4,7 @@ import Bluebird = require('bluebird');
 
 export class ConsentRepository extends Repository {
   public async auto() {
-    const response = await this.existingUserFlow();
+    const response = await this.existingUserFlow() ?? {};
     if (response.screen_key === 'already_finished') {
       return response;
     }
@@ -38,17 +38,17 @@ export class ConsentRepository extends Repository {
     });
   }
 
-  public async existingUserFlow(data?: { [x: string]: any }) {
-    const { body } = await this.client.request.send({
+  public async existingUserFlow(formData?: { [x: string]: any }) {
+    const { data }= await this.client.request.send({
       url: '/api/v1/consent/existing_user_flow/',
       method: 'POST',
-      form: this.client.request.sign({
+      data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uid: this.client.state.cookieUserId,
         _uuid: this.client.state.uuid,
-        ...data,
+        ...formData,
       }),
     });
-    return body;
+    return data;
   }
 }

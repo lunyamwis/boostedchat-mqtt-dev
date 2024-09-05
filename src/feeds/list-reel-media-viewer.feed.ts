@@ -7,7 +7,7 @@ export class ListReelMediaViewerFeed extends Feed<
   ListReelMediaViewerFeedResponseUsersItem
 > {
   @Expose()
-  private mediaId: string;
+  private mediaId!: string;
   @Expose()
   private nextMaxId?: string = undefined;
 
@@ -17,20 +17,20 @@ export class ListReelMediaViewerFeed extends Feed<
   }
 
   protected set state(response: ListReelMediaViewerFeedResponseRootObject) {
-    this.nextMaxId = response.next_max_id;
+    this.nextMaxId = response.next_max_id!;
   }
 
   async request(): Promise<ListReelMediaViewerFeedResponseRootObject> {
-    const { body } = await this.client.request.send<ListReelMediaViewerFeedResponseRootObject>({
+    const { data }= await this.client.request.send<ListReelMediaViewerFeedResponseRootObject>({
       url: `/api/v1/media/${this.mediaId}/list_reel_media_viewer`,
       method: 'GET',
-      qs: {
+      params: {
         supported_capabilities_new: this.client.state.supportedCapabilities,
         max_id: this.nextMaxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   isMoreAvailable(): boolean {

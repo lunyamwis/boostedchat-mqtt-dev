@@ -13,8 +13,8 @@ import { PublishService } from '../services/publish.service';
 import * as Bluebird from 'bluebird';
 
 export class DirectThreadEntity extends Entity {
-  threadId: string = null;
-  userIds: string[] = null;
+  threadId: string | null = null;
+  userIds: string[] | null = null;
 
   public async deleteItem(itemId: string | number) {
     if (!this.threadId) {
@@ -217,30 +217,34 @@ export class DirectThreadEntity extends Entity {
   }
 
   public async updateTitle(title: string) {
+    if (this.threadId === null) {
+      throw new Error('DirectThread: Thread ID is null');
+    }
     return await this.client.directThread.updateTitle(this.threadId, title);
   }
 
-  public async mute() {
-    return await this.client.directThread.mute(this.threadId);
-  }
-
   public async unmute() {
-    return await this.client.directThread.unmute(this.threadId);
+    if (this.threadId === null) {
+      throw new Error('DirectThread: Thread ID is null');
+    }
+    return await this.client.directThread.unmute(this.threadId || '');
   }
 
   public async hide() {
-    return await this.client.directThread.hide(this.threadId);
-  }
-
-  public async leave() {
-    return await this.client.directThread.leave(this.threadId);
+    return await this.client.directThread.hide(this.threadId || '');
   }
 
   public async addUser(userIds: string[] | number[]) {
+    if (this.threadId === null) {
+      throw new Error('DirectThread: Thread ID is null');
+    }
     return await this.client.directThread.addUser(this.threadId, userIds);
   }
 
   public async markItemSeen(threadItemId: string) {
+    if (this.threadId === null) {
+      throw new Error('DirectThread: Thread ID is null');
+    }
     return await this.client.directThread.markItemSeen(this.threadId, threadItemId);
   }
 

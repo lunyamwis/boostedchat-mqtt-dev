@@ -8,9 +8,10 @@ export class MusicGenreFeed extends Feed<MusicGenreFeedResponseRootObject, Music
   protected nextCursor?: string;
 
   @Expose()
-  public product: IgAppModule;
+  public product: IgAppModule = 'default value'; // Assign a default value to the 'product' property
+
   @Expose()
-  public id: number | string;
+  public id: number | string = ''; // Assign a default value to the 'id' property
 
   async items(): Promise<MusicGenreFeedResponseItemsItem[]> {
     const response = await this.request();
@@ -18,10 +19,10 @@ export class MusicGenreFeed extends Feed<MusicGenreFeedResponseRootObject, Music
   }
 
   async request(): Promise<MusicGenreFeedResponseRootObject> {
-    const { body } = await this.client.request.send<MusicGenreFeedResponseRootObject>({
+    const { data }= await this.client.request.send<MusicGenreFeedResponseRootObject>({
       url: `/api/v1/music/genres/${this.id}/`,
       method: 'POST',
-      form: {
+      data: {
         cursor: this.nextCursor || '0',
         _csrftoken: this.client.state.cookieCsrfToken,
         product: this.product,
@@ -29,8 +30,8 @@ export class MusicGenreFeed extends Feed<MusicGenreFeedResponseRootObject, Music
         browse_session_id: this.client.state.clientSessionId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: MusicGenreFeedResponseRootObject) {

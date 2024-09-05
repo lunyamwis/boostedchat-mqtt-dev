@@ -4,10 +4,10 @@ import { PostsInsightsFeedOptions } from '../types';
 import { PostsInsightsFeedResponseEdgesItem, PostsInsightsFeedResponseRootObject } from '../responses';
 
 export class PostsInsightsFeed extends Feed<PostsInsightsFeedResponseRootObject, PostsInsightsFeedResponseEdgesItem> {
-  private options: PostsInsightsFeedOptions;
+  private options!: PostsInsightsFeedOptions;
 
   @Expose()
-  private nextCursor: string = null;
+  private nextCursor: string | null = null;
 
   async items(): Promise<PostsInsightsFeedResponseEdgesItem[]> {
     const body = await this.request();
@@ -15,7 +15,7 @@ export class PostsInsightsFeed extends Feed<PostsInsightsFeedResponseRootObject,
   }
 
   async request(): Promise<PostsInsightsFeedResponseRootObject> {
-    const body = await this.client.ads.graphQL<PostsInsightsFeedResponseRootObject>({
+    const data = await this.client.ads.graphQL<PostsInsightsFeedResponseRootObject>({
       surface: { friendlyName: 'IgInsightsPostGridSurfaceQuery' },
       documentId: '1981884911894608',
       variables: {
@@ -29,8 +29,8 @@ export class PostsInsightsFeed extends Feed<PostsInsightsFeedResponseRootObject,
         ...this.options,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: PostsInsightsFeedResponseRootObject) {

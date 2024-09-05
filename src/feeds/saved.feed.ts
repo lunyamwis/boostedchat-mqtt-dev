@@ -4,7 +4,7 @@ import { SavedFeedResponseRootObject, SavedFeedResponseMedia } from '../response
 
 export class SavedFeed extends Feed<SavedFeedResponseRootObject, SavedFeedResponseMedia> {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   set state(body: SavedFeedResponseRootObject) {
     this.moreAvailable = body.more_available;
@@ -12,15 +12,15 @@ export class SavedFeed extends Feed<SavedFeedResponseRootObject, SavedFeedRespon
   }
 
   async request(): Promise<SavedFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: '/api/v1/feed/saved/',
-      qs: {
+      params: {
         max_id: this.nextMaxId,
         include_igtv_preview: false,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items(): Promise<SavedFeedResponseMedia[]> {

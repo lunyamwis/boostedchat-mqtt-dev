@@ -6,10 +6,10 @@ import {
 } from '../responses/igtv.channel.feed.response';
 
 export class IgtvChannelFeed extends Feed<IgtvChannelFeedResponseRootObject, IgtvChannelFeedResponseItemsItem> {
-  channelId: string;
+  channelId!: string;
 
   @Expose()
-  private maxId: string;
+  private maxId!: string;
 
   protected set state(response: IgtvChannelFeedResponseRootObject) {
     this.moreAvailable = response.more_available;
@@ -17,9 +17,9 @@ export class IgtvChannelFeed extends Feed<IgtvChannelFeedResponseRootObject, Igt
   }
 
   async request(): Promise<IgtvChannelFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: '/api/v1/igtv/channel/',
-      form: {
+      data: {
         id: this.channelId,
         max_id: this.maxId,
         phone_id: this.client.state.phoneId,
@@ -31,8 +31,8 @@ export class IgtvChannelFeed extends Feed<IgtvChannelFeedResponseRootObject, Igt
       },
       method: 'POST',
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items(): Promise<IgtvChannelFeedResponseItemsItem[]> {

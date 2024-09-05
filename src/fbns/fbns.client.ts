@@ -1,4 +1,5 @@
-import { IgApiClient, StatusResponse } from './core/client';
+import { IgApiClient } from '../core/client';
+import { StatusResponse } from '../responses';
 import { FBNS, FbnsTopics, INSTAGRAM_PACKAGE_NAME } from '../constants';
 import { FbnsDeviceAuth } from './fbns.device-auth';
 import {
@@ -205,10 +206,10 @@ export class FbnsClient extends EventEmitter<ToEventFn<FbnsClientEvents & { [x: 
    }
 
    public async sendPushRegister(token: string): Promise<StatusResponse> {
-      const { body } = await this.ig.request.send({
+      const response = await this.ig.request.send({
          url: `/api/v1/push/register/`,
          method: 'POST',
-         form: {
+         data: {
             device_type: 'android_mqtt',
             is_main_push_channel: true,
             device_sub_type: 2,
@@ -220,6 +221,7 @@ export class FbnsClient extends EventEmitter<ToEventFn<FbnsClientEvents & { [x: 
             family_device_id: new Chance().guid({ version: 4 }),
          },
       });
+      const body = response.data;
       return body;
    }
 }

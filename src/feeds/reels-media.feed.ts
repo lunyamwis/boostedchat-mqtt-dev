@@ -10,7 +10,7 @@ export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, Reels
   protected set state(body: any) { }
 
   async request() {
-    const { data } = await this.client.request.send<ReelsMediaFeedResponseRootObject>({
+    const { data }= await this.client.request.send<ReelsMediaFeedResponseRootObject>({
       url: `/api/v1/feed/reels_media/`,
       method: 'POST',
       data: this.client.request.sign({

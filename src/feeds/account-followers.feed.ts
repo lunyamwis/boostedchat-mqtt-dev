@@ -11,9 +11,9 @@ export class AccountFollowersFeed extends Feed<AccountFollowersFeedResponse, Acc
   query = '';
   enableGroups = true;
 
-  id: number | string;
+  id!: number | string;
   @Expose()
-  public nextMaxId: string;
+  public nextMaxId: string = ''; // Add initializer for nextMaxId
 
   set state(body: AccountFollowersFeedResponse) {
     this.moreAvailable = !!body.next_max_id;
@@ -21,9 +21,9 @@ export class AccountFollowersFeed extends Feed<AccountFollowersFeedResponse, Acc
   }
 
   async request() {
-    const { body } = await this.client.request.send<AccountFollowersFeedResponse>({
+    const response = await this.client.request.send<AccountFollowersFeedResponse>({
       url: `/api/v1/friendships/${this.id}/followers/`,
-      qs: {
+      params: { // Replace 'qs' with 'params'
         max_id: this.nextMaxId,
         search_surface: this.searchSurface,
         order: this.order,
@@ -31,6 +31,7 @@ export class AccountFollowersFeed extends Feed<AccountFollowersFeedResponse, Acc
         enable_groups: this.enableGroups,
       },
     });
+    const body = response.data;
     this.state = body;
     return body;
   }

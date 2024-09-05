@@ -4,7 +4,7 @@ import { LikedFeedResponseItemsItem, LikedFeedResponseRootObject } from '../resp
 
 export class LikedFeed extends Feed<LikedFeedResponseRootObject, LikedFeedResponseItemsItem> {
   @Expose()
-  private maxId: string;
+  private maxId!: string;
 
   async items(): Promise<LikedFeedResponseItemsItem[]> {
     const res = await this.request();
@@ -12,15 +12,15 @@ export class LikedFeed extends Feed<LikedFeedResponseRootObject, LikedFeedRespon
   }
 
   async request(): Promise<LikedFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: `/api/v1/feed/liked/`,
       method: 'GET',
-      qs: {
+      params: {
         max_id: this.maxId,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: LikedFeedResponseRootObject) {

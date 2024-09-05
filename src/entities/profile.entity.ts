@@ -1,7 +1,7 @@
 import { Entity } from '../core/entity';
 
 export class ProfileEntity extends Entity {
-  pk: string | number;
+  pk: string | number = ''; // Add an initializer or assign a value to the 'pk' property
   public async checkFollow() {
     const friendshipStatus = await this.client.friendship.show(this.pk);
     if (friendshipStatus.following === true) return friendshipStatus;

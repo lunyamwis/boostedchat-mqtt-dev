@@ -1,5 +1,5 @@
-import { IgApiClient } from './core/client';
-import { Enumerable } from './core/client/dist/decorators';
+import { IgApiClient } from '../core/client';
+import { Enumerable } from '../decorators';
 import { debugChannel } from '../shared';
 
 export class FbnsDeviceAuth {

@@ -81,9 +81,9 @@ export class SimulateService extends Repository {
 
   private async facebookOta() {
     const uid = this.client.state.cookieUserId;
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: '/api/v1/facebook_ota/',
-      qs: {
+      params: {
         fields: this.client.state.fbOtaFields,
         custom_user_id: uid,
         signed_body: this.client.request.signature('') + '.',
@@ -94,6 +94,6 @@ export class SimulateService extends Repository {
         custom_device_id: this.client.state.uuid,
       },
     });
-    return body;
+    return data;
   }
 }

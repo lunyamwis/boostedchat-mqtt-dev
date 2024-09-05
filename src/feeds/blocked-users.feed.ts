@@ -7,7 +7,7 @@ export class BlockedUsersFeed extends Feed<
   BlockedUsersFeedResponseBlockedListItem
 > {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId!: string;
 
   set state(body: BlockedUsersFeedResponseRootObject) {
     this.moreAvailable = !!body.next_max_id;
@@ -15,12 +15,13 @@ export class BlockedUsersFeed extends Feed<
   }
 
   async request() {
-    const { body } = await this.client.request.send<BlockedUsersFeedResponseRootObject>({
+    const response = await this.client.request.send<BlockedUsersFeedResponseRootObject>({
       url: `/api/v1/users/blocked_list/`,
-      qs: {
+      params: {
         max_id: this.nextMaxId,
       },
     });
+    const body = response.data;
     this.state = body;
     return body;
   }

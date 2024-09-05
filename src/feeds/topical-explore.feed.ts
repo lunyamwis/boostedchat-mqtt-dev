@@ -29,10 +29,10 @@ export class TopicalExploreFeed extends Feed<TopicalExploreFeedResponseRootObjec
   }
 
   async request(): Promise<TopicalExploreFeedResponseRootObject> {
-    const { body } = await this.client.request.send({
+    const { data }= await this.client.request.send({
       url: '/api/v1/discover/topical_explore/',
       method: 'GET',
-      qs: {
+      params: {
         is_prefetch: false,
         omit_cover_media: true,
         max_id: this.nextMaxId,
@@ -47,6 +47,6 @@ export class TopicalExploreFeed extends Feed<TopicalExploreFeedResponseRootObjec
         include_fixed_destinations: true,
       },
     });
-    return body;
+    return data;
   }
 }

@@ -20,11 +20,11 @@ export class LauncherRepository extends Repository {
     });
   }
   public async sync(data: Object) {
-    const { body } = await this.client.request.send({
+    const response = await this.client.request.send({
       method: 'POST',
       url: '/api/v1/launcher/sync/',
-      form: this.client.request.sign(data),
+      data: this.client.request.sign(data),
     });
-    return body;
+    return response.data;
   }
 }

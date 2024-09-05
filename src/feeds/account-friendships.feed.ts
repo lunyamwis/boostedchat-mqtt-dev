@@ -7,21 +7,22 @@ export class PendingFriendshipsFeed extends Feed<
   PendingFriendshipsFeedResponseUsersItem
 > {
   @Expose()
-  private nextMaxId: string;
+  private nextMaxId: string = '';
 
   set state(body: PendingFriendshipsFeedResponse) {
     this.moreAvailable = !!body.next_max_id;
-    this.nextMaxId = body.next_max_id;
+    this.nextMaxId = body.next_max_id ?? '';
   }
 
   async request() {
-    const { body } = await this.client.request.send<PendingFriendshipsFeedResponse>({
+    const response = await this.client.request.send<PendingFriendshipsFeedResponse>({
       url: `/api/v1/friendships/pending`,
-      qs: {
+      params: {
         rank_token: this.rankToken,
         max_id: this.nextMaxId,
       },
     });
+    const body = response.data;
     this.state = body;
     return body;
   }

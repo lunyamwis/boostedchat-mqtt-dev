@@ -18,7 +18,7 @@ export class StoriesInsightsFeed extends Feed<
   }
 
   async request(): Promise<StoriesInsightsFeedResponseRootObject> {
-    const body = await this.client.ads.graphQL<StoriesInsightsFeedResponseRootObject>({
+    const data = await this.client.ads.graphQL<StoriesInsightsFeedResponseRootObject>({
       surface: { friendlyName: 'IgInsightsStoryGridSurfaceQuery' },
       documentId: '1995528257207653',
       variables: {
@@ -32,8 +32,8 @@ export class StoriesInsightsFeed extends Feed<
         timeframe: this.timeframe,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   protected set state(response: StoriesInsightsFeedResponseRootObject) {

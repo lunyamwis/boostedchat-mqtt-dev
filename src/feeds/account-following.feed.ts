@@ -9,19 +9,19 @@ export class AccountFollowingFeed extends Feed<AccountFollowingFeedResponse, Acc
   enableGroups = true;
   includesHashtags = true;
 
-  id: number | string;
+  id!: number | string;
   @Expose()
-  public nextMaxId: string;
+  public nextMaxId: string = ''; // Add initializer to nextMaxId property
 
   set state(body: AccountFollowingFeedResponse) {
     this.moreAvailable = !!body.next_max_id;
-    this.nextMaxId = body.next_max_id;
+    this.nextMaxId = body.next_max_id ?? '';
   }
 
   async request() {
-    const { body } = await this.client.request.send<AccountFollowingFeedResponse>({
+    const { data } = await this.client.request.send<AccountFollowingFeedResponse>({
       url: `/api/v1/friendships/${this.id}/following/`,
-      qs: {
+      params: {
         rank_token: this.rankToken,
         max_id: this.nextMaxId,
         search_surface: this.searchSurface,
@@ -31,8 +31,8 @@ export class AccountFollowingFeed extends Feed<AccountFollowingFeedResponse, Acc
         includes_hashtags: this.includesHashtags,
       },
     });
-    this.state = body;
-    return body;
+    this.state = data;
+    return data;
   }
 
   async items() {
