@@ -20,7 +20,8 @@
       "lint": "eslint --fix --ext .js,.ts src/**",
       "format": "prettier -w . --log-level warn",
       "check-format": "prettier -c .",
-      "typecheck": "tsc -p tsconfig.build.json --noEmit"
+      "typecheck": "tsc -p tsconfig.build.json --noEmit",
+       "dev": "tsx --env-file=.env src/app.ts"
    },
    "engines": {
       "node": ">=18.0.0"
