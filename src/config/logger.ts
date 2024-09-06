@@ -1,5 +1,5 @@
+require("winston-daily-rotate-file");
 const winston = require("winston");
-const DailyRotateFile = require("winston-daily-rotate-file").DailyRotateFile;
 const { createLogger, format } = winston;
 const { combine, timestamp } = format;
 
@@ -20,7 +20,7 @@ const prodFormat = () => {
 };
 
 const transport = (fileName: string) =>
-    new DailyRotateFile({
+    new winston.transports.DailyRotateFile({
         filename: `${fileName}-%DATE%.log`,
         datePattern: "YYYY-MM-DD",
         dirname: `./logs/${fileName}/`,
