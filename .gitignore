@@ -7,3 +7,7 @@ src/main.ts
 src/reversing.ts
 dev/
 .env
+logs/mqtt-lib/mqtt-lib-2024-09-06.log
+logs/mqtt-events/mqtt-events-2024-09-06.log
+logs/http/http-2024-09-06.log
+logs/app/app-2024-09-06.log
