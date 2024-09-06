@@ -8,7 +8,7 @@ export class CreativesRepository extends Repository {
       data: this.client.request.sign({
         supported_capabilities_new: JSON.stringify(this.client.state.supportedCapabilities),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });

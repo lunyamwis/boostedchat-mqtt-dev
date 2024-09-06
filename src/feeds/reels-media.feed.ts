@@ -17,7 +17,7 @@ export class ReelsMediaFeed extends Feed<ReelsMediaFeedResponseRootObject, Reels
         user_ids: this.userIds,
         source: this.source,
         _uuid: this.client.state.uuid,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _csrftoken: this.client.state.cookieCsrfToken,
         device_id: this.client.state.deviceId,
         supported_capabilities_new: JSON.stringify(SUPPORTED_CAPABILITIES),

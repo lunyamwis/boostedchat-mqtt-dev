@@ -59,7 +59,7 @@ export class UserRepository extends Repository {
   }
 
   async accountDetails(id?: string | number) {
-    id = id || this.client.state.cookieUserId;
+    id = id || await this.client.state.getCookieUserId();
     const { data }= await this.client.request.send({
       url: `/api/v1/users/${id}/account_details/`,
     });
@@ -67,7 +67,7 @@ export class UserRepository extends Repository {
   }
 
   async formerUsernames(id?: string | number) {
-    id = id || this.client.state.cookieUserId;
+    id = id || await this.client.state.getCookieUserId();
     const { data }= await this.client.request.send({
       url: `/api/v1/users/${id}/former_usernames/`,
     });
@@ -87,7 +87,7 @@ export class UserRepository extends Repository {
       method: 'POST',
       data: {
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: this.client.state.getCookieUserId,
         _uuid: this.client.state.uuid,
         reason_id: 1,
         user_id: id,

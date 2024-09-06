@@ -14,7 +14,7 @@ export class LocationSearch extends Repository {
       method: 'GET',
       params: {
         _uuid: this.client.state.uuid,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _csrftoken: this.client.state.cookieCsrfToken,
         rank_token: '',
         latitude,

@@ -18,7 +18,7 @@ export class InsightsService extends Repository {
         contentTab: options.contentTab || true,
         query_params: {
           access_token: options.accessToken || '',
-          id: options.userId || this.client.state.cookieUserId,
+          id: options.userId || this.client.state.getCookieUserId,
         },
         timezone: 'Environment/Local',
       },

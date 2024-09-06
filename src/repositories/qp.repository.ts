@@ -16,7 +16,7 @@ export class QpRepository extends Repository {
         surfaces_to_queries: this.surfacesToQueries,
         vc_policy: 'default',
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         scale: '3',
         version: '1',

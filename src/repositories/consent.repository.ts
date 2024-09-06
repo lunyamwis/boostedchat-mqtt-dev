@@ -44,7 +44,7 @@ export class ConsentRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         ...formData,
       }),

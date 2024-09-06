@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
 import * as Chance from 'chance';
-import { jar } from 'request';
 import { Cookie, CookieJar, MemoryCookieStore } from 'tough-cookie';
 import * as devices from '../samples/devices.json';
 import * as builds from '../samples/builds.json';

@@ -191,7 +191,7 @@ export class AccountRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.deviceId,
         _uuid: this.client.state.uuid,
         raw_text: text,
@@ -226,7 +226,7 @@ export class AccountRepository extends Repository {
       data: this.client.request.sign({
         ...options,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.deviceId,
         _uuid: this.client.state.uuid,
       }),
@@ -240,7 +240,7 @@ export class AccountRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         old_password: oldPassword,
         new_password1: newPassword,
@@ -268,7 +268,7 @@ export class AccountRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -335,7 +335,7 @@ export class AccountRepository extends Repository {
       data: this.client.request.sign({
         phone_id: this.client.state.phoneId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.uuid,
         _uuid: this.client.state.uuid,
         google_tokens: '[]',

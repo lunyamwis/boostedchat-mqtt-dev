@@ -60,7 +60,7 @@ export class FeedFactory {
       | Partial<Pick<AccountFollowersFeed, 'searchSurface' | 'order' | 'query' | 'enableGroups' | 'id'>>,
   ): AccountFollowersFeed {
     return plainToClassFromExist(new AccountFollowersFeed(this.client), {
-      id: options && typeof options !== 'object' ? options : this.client.state.cookieUserId,
+      id: options && typeof options !== 'object' ? options : this.client.state.getCookieUserId,
       ...(typeof options === 'object' ? options : undefined),
     });
   }
@@ -74,7 +74,7 @@ export class FeedFactory {
         >,
   ): AccountFollowingFeed {
     return plainToClassFromExist(new AccountFollowingFeed(this.client), {
-      id: options && typeof options !== 'object' ? options : this.client.state.cookieUserId,
+      id: options && typeof options !== 'object' ? options : this.client.state.getCookieUserId,
       ...(typeof options === 'object' ? options : undefined),
     });
   }

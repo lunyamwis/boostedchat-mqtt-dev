@@ -80,7 +80,7 @@ export class SimulateService extends Repository {
   }
 
   private async facebookOta() {
-    const uid = this.client.state.cookieUserId;
+    const uid = await this.client.state.getCookieUserId();
     const { data }= await this.client.request.send({
       url: '/api/v1/facebook_ota/',
       params: {

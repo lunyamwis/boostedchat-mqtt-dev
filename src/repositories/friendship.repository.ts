@@ -63,7 +63,7 @@ export class FriendshipRepository extends Repository {
         _csrftoken: this.client.state.cookieCsrfToken,
         user_id: id,
         radio_type: this.client.state.radioType,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.deviceId,
         _uuid: this.client.state.uuid,
         media_id_attribution: mediaIdAttribution,
@@ -78,7 +78,7 @@ export class FriendshipRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.deviceId,
         _uuid: this.client.state.uuid,
         module: 'favorites_home_list',
@@ -119,7 +119,7 @@ export class FriendshipRepository extends Repository {
       method: 'POST',
       data: {
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         ...options,
       },

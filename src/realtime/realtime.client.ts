@@ -72,7 +72,7 @@ export class RealtimeClient extends EventEmitter<ToEventFn<RealtimeClientEvents>
       this.connection = new MQTToTConnection({
          clientIdentifier: deviceId.substring(0, 20),
          clientInfo: {
-            userId: BigInt(Number(this.ig.state.cookieUserId)),
+            userId: BigInt(Number(this.ig.state.getCookieUserId)),
             userAgent,
             clientCapabilities: 183,
             endpointCapabilities: 0,

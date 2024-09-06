@@ -27,7 +27,7 @@ export class StoriesInsightsFeed extends Feed<
         IgInsightsGridMediaImage_SIZE: 256,
         queryParams: {
           access_token: '',
-          id: this.client.state.cookieUserId,
+          id: await this.client.state.getCookieUserId(),
         },
         timeframe: this.timeframe,
       },

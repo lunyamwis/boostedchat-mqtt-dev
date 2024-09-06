@@ -12,7 +12,7 @@ export class IgtvRepository extends Repository {
       data: this.client.request.sign({
         seen_state: JSON.stringify(defaults(options, { impressions: {}, grid_impressions: [] })),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -49,7 +49,7 @@ export class IgtvRepository extends Repository {
         description,
         igtv_composer_session_id: new Chance().guid({ version: 4 }),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });

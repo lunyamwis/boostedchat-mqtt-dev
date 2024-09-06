@@ -25,7 +25,7 @@ export class LiveRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -87,7 +87,7 @@ export class LiveRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -182,7 +182,7 @@ export class LiveRepository extends Repository {
       data: this.client.request.sign({
         viewer_id: viewerId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -195,7 +195,7 @@ export class LiveRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         user_like_count: likeCount,
       }),
@@ -235,7 +235,7 @@ export class LiveRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -317,7 +317,7 @@ export class LiveRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         end_after_copyright_warning: endAfterCopyrightWarning,
       }),
@@ -336,7 +336,7 @@ export class LiveRepository extends Repository {
         live_or_vod: '1',
         offset_to_video_start: '0',
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -351,7 +351,7 @@ export class LiveRepository extends Repository {
         offset_to_video_start: 0,
         comment_id: commentId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -366,7 +366,7 @@ export class LiveRepository extends Repository {
         offset_to_video_start: 0,
         comment_id: commentId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -390,7 +390,7 @@ export class LiveRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });

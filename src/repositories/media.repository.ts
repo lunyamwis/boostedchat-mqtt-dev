@@ -40,7 +40,7 @@ export class MediaRepository extends Repository {
         igtv_feed_preview: false,
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -61,7 +61,7 @@ export class MediaRepository extends Repository {
         igtv_feed_preview: false,
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         caption_text: captionText,
       }),
@@ -86,7 +86,7 @@ export class MediaRepository extends Repository {
         igtv_feed_preview: false,
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -100,7 +100,7 @@ export class MediaRepository extends Repository {
       _csrftoken: this.client.state.cookieCsrfToken,
       ...omit(options.moduleInfo, 'module_name'),
       radio_type: this.client.state.radioType,
-      _uid: this.client.state.cookieUserId,
+      _uid: await this.client.state.getCookieUserId(),
       device_id: this.client.state.deviceId,
       _uuid: this.client.state.uuid,
     });
@@ -161,7 +161,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         comment_text: commentText,
       }),
@@ -176,7 +176,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         comment_ids_to_delete: commentIds.join(','),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -202,7 +202,7 @@ export class MediaRepository extends Repository {
         idempotence_token: new Chance().guid(),
         _csrftoken: this.client.state.cookieCsrfToken,
         radio_type: this.client.state.radioType,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.deviceId,
         _uuid: this.client.state.uuid,
         comment_text: text,
@@ -219,7 +219,7 @@ export class MediaRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -232,7 +232,7 @@ export class MediaRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -280,7 +280,7 @@ export class MediaRepository extends Repository {
         timezone_offset: this.client.state.timezoneOffset,
         _csrftoken: this.client.state.cookieCsrfToken,
         source_type: options.source_type,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         device_id: this.client.state.deviceId,
         _uuid: this.client.state.uuid,
         upload_id: options.upload_id,
@@ -303,7 +303,7 @@ export class MediaRepository extends Repository {
     const devicePayload = this.client.state.devicePayload;
     return defaultsDeep(options, {
       _csrftoken: this.client.state.cookieCsrfToken,
-      _uid: this.client.state.cookieUserId,
+      _uid: this.client.state.getCookieUserId(),
       _uuid: this.client.state.uuid,
       device: devicePayload,
       extra: { source_width: width, source_height: height },
@@ -466,7 +466,7 @@ export class MediaRepository extends Repository {
       configure_mode: '1',
       source_type: '3',
       video_result: '',
-      _uid: this.client.state.cookieUserId,
+      _uid: await this.client.state.getCookieUserId(),
       date_time_original: new Date().toISOString().replace(/[-:]/g, ''),
       device_id: this.client.state.deviceId,
       _uuid: this.client.state.uuid,
@@ -515,7 +515,7 @@ export class MediaRepository extends Repository {
     const now = DateTime.local().toFormat('yyyy:mm:dd HH:mm:ss');
     options = defaultsDeep(options, {
       _csrftoken: this.client.state.cookieCsrfToken,
-      _uid: this.client.state.cookieUserId,
+      _uid: await this.client.state.getCookieUserId(),
       _uuid: this.client.state.uuid,
       timezone_offset: '0',
       source_type: '4',
@@ -611,7 +611,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         ...form,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -625,7 +625,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -639,7 +639,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         media_id: mediaId,
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });
@@ -669,7 +669,7 @@ export class MediaRepository extends Repository {
         nuxes: [],
         nuxes_skipped: [],
         _uuid: this.client.state.uuid,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _csrftoken: this.client.state.cookieCsrfToken,
         device_id: this.client.state.deviceId,
       }),
@@ -694,7 +694,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         added_collection_ids: collection_ids ? JSON.stringify(collection_ids) : undefined,
         _uuid: this.client.state.uuid,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _csrftoken: this.client.state.cookieCsrfToken,
         device_id: this.client.state.deviceId,
       }),
@@ -721,7 +721,7 @@ export class MediaRepository extends Repository {
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         radio_type: this.client.state.radioType,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         vote,
         _uuid: this.client.state.uuid,
       }),
@@ -747,7 +747,7 @@ export class MediaRepository extends Repository {
         client_context: chance.guid({ version: 4 }),
         mutation_token: chance.guid({ version: 4 }),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         ...options,
       }),
@@ -765,7 +765,7 @@ export class MediaRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         vote: vote.toFixed(8),
       }),
@@ -805,7 +805,7 @@ export class MediaRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid
       }),
     });

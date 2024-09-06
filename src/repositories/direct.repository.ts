@@ -16,7 +16,7 @@ export class DirectRepository extends Repository {
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
         _uuid: this.client.state.uuid,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         recipient_users: JSON.stringify(recipientUsers),
         thread_title: threadTitle,
       }),

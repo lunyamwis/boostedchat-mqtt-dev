@@ -33,7 +33,7 @@ export class HighlightsRepository extends Repository {
         source: options.source || 'story_viewer_profile',
         creation_id: Date.now().toString(),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         cover: JSON.stringify({
           media_id: options.coverId || options.mediaIds[0],
@@ -53,7 +53,7 @@ export class HighlightsRepository extends Repository {
         source: options.source || 'story_viewer_default',
         added_media_ids: JSON.stringify(options.added || []),
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
         cover: JSON.stringify({
           media_id: options.coverId,
@@ -70,7 +70,7 @@ export class HighlightsRepository extends Repository {
       method: 'POST',
       data: this.client.request.sign({
         _csrftoken: this.client.state.cookieCsrfToken,
-        _uid: this.client.state.cookieUserId,
+        _uid: await this.client.state.getCookieUserId(),
         _uuid: this.client.state.uuid,
       }),
     });

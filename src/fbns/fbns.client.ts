@@ -217,7 +217,7 @@ export class FbnsClient extends EventEmitter<ToEventFn<FbnsClientEvents & { [x: 
             _csrftoken: this.ig.state.cookieCsrfToken,
             guid: this.ig.state.uuid,
             uuid: this.ig.state.uuid,
-            users: this.ig.state.cookieUserId,
+            users: await this.ig.state.getCookieUserId(),
             family_device_id: new Chance().guid({ version: 4 }),
          },
       });
