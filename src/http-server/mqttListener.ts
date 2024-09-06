@@ -2,7 +2,7 @@ import { GraphQLSubscriptions, SkywalkerSubscriptions } from "../";
 import { eventLogger, httpLogger, libLogger } from "../config/logger";
 import { Mailer } from "../mailer/mailer";
 import { AccountInstances, TAccountInstances } from "./instances";
-import {addConnectedAccount, removeConnectedAccount} from "./accounts"
+import { addConnectedAccount, removeConnectedAccount } from "./accounts"
 import { Timer } from 'node:timers';
 
 
@@ -46,8 +46,6 @@ export class MQTTListener {
           this.accountInstances.get(this.username)!.userId
         )
       );
-          
-    
 
 
     this.accountInstances
@@ -58,8 +56,8 @@ export class MQTTListener {
       );
 
     this.accountInstances
-    .get(this.username)
-    ?.instance.realtime.on("direct", this.logEvent("direct"));
+      .get(this.username)
+      ?.instance.realtime.on("direct", this.logEvent("direct"));
 
     this.accountInstances
       .get(this.username)
@@ -94,13 +92,10 @@ export class MQTTListener {
         });
         await this.mailer.send({
           subject: `${this.username}'s MQTT client error`,
-          text: `Hi team, There was an error in ${
-            this.username
-          }'s mqtt client.\nThe error message is \n${
-            (err as Error).message
-          }\nand the stack trace is as follows:\n${
-            (err as Error).stack
-          }\nPlease check on this.`,
+          text: `Hi team, There was an error in ${this.username
+            }'s mqtt client.\nThe error message is \n${(err as Error).message
+            }\nand the stack trace is as follows:\n${(err as Error).stack
+            }\nPlease check on this.`,
         });
       });
 
@@ -136,39 +131,48 @@ export class MQTTListener {
   }
 
   public async connectMQTTBroker() {
-    await this.accountInstances.get(this.username)?.instance.realtime.connect({
-      graphQlSubs: [
-        // these are some subscriptions
-        GraphQLSubscriptions.getAppPresenceSubscription(),
-        GraphQLSubscriptions.getZeroProvisionSubscription(
-          this.accountInstances.get(this.username)!.instance.state.phoneId
-        ),
-        GraphQLSubscriptions.getDirectStatusSubscription(),
-        GraphQLSubscriptions.getDirectTypingSubscription(
-          this.accountInstances.get(this.username)!.instance.state.cookieUserId
-        ),
-        GraphQLSubscriptions.getAsyncAdSubscription(
-          this.accountInstances.get(this.username)!.instance.state.cookieUserId
-        ),
-        // GraphQLSubscriptions.getLiveRealtimeCommentsSubscription(
-        //   this.accountInstances.get(this.username)!.instance.state.deviceId
-        // )
-      ],
-      // optional
-      skywalkerSubs: [
-        SkywalkerSubscriptions.directSub(
-          this.accountInstances.get(this.username)!.instance.state.cookieUserId
-        ),
-        SkywalkerSubscriptions.liveSub(
-          this.accountInstances.get(this.username)!.instance.state.cookieUserId
-        ),
-      ],
-      irisData: await this.accountInstances
-        .get(this.username)!
-        .instance.feed.directInbox()
-        .request(),
-      connectOverrides: {},
-    });
+    // old way of accessing userID for reference
+    //   userID = this.accountInstances.get(this.username)!.instance.state.deviceId
+    var userId = await this.accountInstances.get(this.username)!.instance.state.getCookieUserId();
+    if (userId) {
+      await this.accountInstances.get(this.username)?.instance.realtime.connect({
+        graphQlSubs: [
+          // these are some subscriptions
+          GraphQLSubscriptions.getAppPresenceSubscription(),
+          GraphQLSubscriptions.getZeroProvisionSubscription(
+            this.accountInstances.get(this.username)!.instance.state.phoneId
+          ),
+          GraphQLSubscriptions.getDirectStatusSubscription(),
+          GraphQLSubscriptions.getDirectTypingSubscription(
+            userId
+          ),
+          GraphQLSubscriptions.getAsyncAdSubscription(
+            userId
+          ),
+          // GraphQLSubscriptions.getLiveRealtimeCommentsSubscription(
+          //   this.accountInstances.get(this.username)!.instance.state.deviceId
+          // )
+        ],
+        // optional
+        skywalkerSubs: [
+          SkywalkerSubscriptions.directSub(
+            // this.accountInstances.get(this.username)!.instance.state.cookieUserId
+            userId
+          ),
+          SkywalkerSubscriptions.liveSub(
+            userId
+          ),
+        ],
+        irisData: await this.accountInstances
+          .get(this.username)!
+          .instance.feed.directInbox()
+          .request(),
+        connectOverrides: {},
+      });
+    } else {
+      console.error("User ID is UNDEFINED");
+    }
+
 
     // simulate turning the device off after 2s and turning it back on after another 2s
     setTimeout(() => {
@@ -200,8 +204,8 @@ export class MQTTListener {
       }
     }, 4000);
     // an example on how to subscribe to live comments
-   // you can add other GraphQL subs using .subscribe
-  //  await this.accountInstances.get(this.username)!.instance.realtime.graphQlSubscribe(GraphQLSubscriptions.getLiveRealtimeCommentsSubscription('<broadcast-id>'));
+    // you can add other GraphQL subs using .subscribe
+    //  await this.accountInstances.get(this.username)!.instance.realtime.graphQlSubscribe(GraphQLSubscriptions.getLiveRealtimeCommentsSubscription('<broadcast-id>'));
   }
 
   private logEvent(name: string, userId?: number) {
@@ -302,13 +306,10 @@ export class MQTTListener {
         }
         await this.mailer.send({
           subject: `Error restarting listeners for ${this.username}`,
-          text: `Hi team, There was an error starting ${
-            this.username
-          }'s mqtt listeners.\nThe error message is \n${
-            (err as Error).message
-          }\nand the stack trace is as follows:\n${
-            (err as Error).stack
-          }.\n\nThis event triggered a clean disconnect, and will attempt to reconnect. Please check on this.`,
+          text: `Hi team, There was an error starting ${this.username
+            }'s mqtt listeners.\nThe error message is \n${(err as Error).message
+            }\nand the stack trace is as follows:\n${(err as Error).stack
+            }.\n\nThis event triggered a clean disconnect, and will attempt to reconnect. Please check on this.`,
         });
       }
     }, 30000);
@@ -345,13 +346,10 @@ export class MQTTListener {
       httpLogger.error(err);
       await this.mailer.send({
         subject: `Sending ${this.username}'s message error`,
-        text: `Hi team, There was an error trying to send ${
-          this.username
-        }'s message(${message}).\nThe error message is \n${
-          (err as Error).message
-        }\nand the stack trace is as follows:\n${
-          (err as Error).stack
-        }\nPlease check on this.`,
+        text: `Hi team, There was an error trying to send ${this.username
+          }'s message(${message}).\nThe error message is \n${(err as Error).message
+          }\nand the stack trace is as follows:\n${(err as Error).stack
+          }\nPlease check on this.`,
       });
     }
   }
@@ -402,13 +400,13 @@ export class MQTTListener {
         username: string;
         assigned_to: "Robot" | "Human";
       };
-      
+
       delete this.messageHolder[threadId];
-      
+
       if (body.assigned_to === "Human") {
         return;
       }
-      
+
       console.log("performing operation check issue----------");
       console.log(body);
       console.log(body.status);
