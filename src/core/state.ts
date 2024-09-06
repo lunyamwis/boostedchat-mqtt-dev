@@ -102,7 +102,7 @@ export class State {
   @Enumerable(false)
   cookieStore = new MemoryCookieStore();
   @Enumerable(false)
-  cookieJar = jar(this.cookieStore);
+  cookieJar = new CookieJar(this.cookieStore);
   @Enumerable(false)
   checkpoint: CheckpointResponse | null = null;
   @Enumerable(false)
@@ -177,18 +177,62 @@ export class State {
     }
   }
 
-  public get cookieUserId() {
-    const cookie = this.extractCookie('ds_user_id');
+  // public get cookieUserId() {
+  //   const cookie = this.extractCookie('ds_user_id');
+  //   if (cookie !== null) {
+  //     return cookie.value;
+  //   }
+  //   this.updateAuthorization();
+  //   if (!this.parsedAuthorization) {
+  //     State.stateDebug('Could not find ds_user_id');
+  //     throw new IgCookieNotFoundError('ds_user_id');
+  //   }
+  //   return this.parsedAuthorization.ds_user_id;
+  // }
+
+  // public get cookieUserId(): Promise<string | undefined> {
+  //   return this.extractCookie('ds_user_id').then(cookie => {
+  //     if (cookie !== null) {
+  //       return cookie.value;
+  //     }
+  //     this.updateAuthorization();
+  //     if (!this.parsedAuthorization) {
+  //       State.stateDebug('Could not find ds_user_id');
+  //       throw new IgCookieNotFoundError('ds_user_id');
+  //     }
+  //     return this.parsedAuthorization.ds_user_id;
+  //   });
+  // } 
+
+  // public get cookieUserId(): string | undefined {
+  //   this.extractCookie('ds_user_id').then(cookie => {
+  //     if (cookie !== null) {
+  //       return cookie.value;
+  //     }
+  //     this.updateAuthorization();
+  //     if (!this.parsedAuthorization) {
+  //       throw new IgCookieNotFoundError('ds_user_id');
+  //     }
+  //     return this.parsedAuthorization.ds_user_id;
+  //   });
+
+  //   return undefined;
+  // }
+
+  public async getCookieUserId(): Promise<string | undefined> {
+    const cookie = await this.extractCookie('ds_user_id');
     if (cookie !== null) {
       return cookie.value;
     }
+    
     this.updateAuthorization();
     if (!this.parsedAuthorization) {
-      State.stateDebug('Could not find ds_user_id');
       throw new IgCookieNotFoundError('ds_user_id');
     }
+    
     return this.parsedAuthorization.ds_user_id;
   }
+  
 
   public get cookieUsername() {
     return this.extractCookieValue('ds_user');
@@ -198,23 +242,45 @@ export class State {
     return this.experiments.includes(experiment);
   }
 
-  public extractCookie(key: string): Cookie | null {
-    const cookies = this.cookieJar.getCookies(this.constants.HOST);
-    return (_.find(cookies, { key }) as Cookie) || null;
+  // public extractCookie(key: string): Cookie | null {
+  //   const cookies = this.cookieJar.getCookies(this.constants.HOST);
+  //   return (_.find(cookies, { key }) as Cookie) || null;
+  // }
+
+  public extractCookie(key: string): Promise<Cookie | null> {
+    return new Promise((resolve, reject) => {
+      this.cookieJar.getCookies(this.constants.HOST, (err: Error | null, cookies: Cookie[]) => {
+        if (err) {
+          return reject(err);
+        }
+        const cookie = _.find(cookies, { key }) as Cookie;
+        resolve(cookie || null);
+      });
+    });
   }
 
-  public extractCookieValue(key: string): string {
-    const cookie = this.extractCookie(key);
-    if (cookie === null) {
-      State.stateDebug(`Could not find ${key}`);
-      throw new IgCookieNotFoundError(key);
-    }
-    return cookie.value;
+  // public extractCookieValue(key: string): string {
+  //   const cookie = this.extractCookie(key);
+  //   if (cookie === null) {
+  //     State.stateDebug(`Could not find ${key}`);
+  //     throw new IgCookieNotFoundError(key);
+  //   }
+  //   return cookie.value;
+  // }
+
+  public extractCookieValue(key: string): Promise<string> {
+    return this.extractCookie(key).then(cookie => {
+      if (cookie === null) {
+        State.stateDebug(`Could not find ${key}`);
+        throw new IgCookieNotFoundError(key);
+      }
+      return cookie.value;
+    });
   }
 
-  public extractUserId(): string {
+  public async extractUserId(): Promise<string | undefined> {
     try {
-      return this.cookieUserId;
+      return await this.getCookieUserId();
     } catch (e) {
       if (this.challenge === null || !this.challenge.user_id) {
         throw new IgUserIdNotFoundError();
