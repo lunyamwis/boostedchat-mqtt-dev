@@ -20,6 +20,7 @@ import {
 import { IgResponse } from '../types';
 import JSONbigInt from 'json-bigint';
 import debug from 'debug';
+import { Cookie } from 'tough-cookie';
 
 const JSONbigString = JSONbigInt({ storeAsString: true });
 
@@ -190,7 +191,7 @@ export class Request {
       'X-IG-EU-DC-ENABLED': this.client.state.euDCEnabled?.toString(),
       'X-IG-Extended-CDN-Thumbnail-Cache-Busting-Value': this.client.state.thumbnailCacheBustingValue.toString(),
       'X-Bloks-Version-Id': this.client.state.bloksVersionId,
-      'X-MID': this.client.state.extractCookie('mid')?.value,
+      'X-MID': this.client.state.extractCookie('mid')?.then((value: Cookie | null)=>{ return value?.value}),
       'X-IG-WWW-Claim': this.client.state.igWWWClaim || '0',
       'X-Bloks-Is-Layout-RTL': this.client.state.isLayoutRTL.toString(),
       'X-IG-Connection-Type': this.client.state.connectionTypeHeader,
