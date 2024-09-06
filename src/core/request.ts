@@ -20,7 +20,7 @@ import {
 import { IgResponse } from '../types';
 import JSONbigInt from 'json-bigint';
 import debug from 'debug';
-import { Cookie } from 'tough-cookie';
+// import { Cookie } from 'tough-cookie';
 
 import { HttpsProxyAgent } from 'https-proxy-agent';
 

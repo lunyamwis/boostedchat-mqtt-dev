@@ -1,16 +1,16 @@
 import { Repository } from '../core/repository';
 import {
   AccountRepositoryCurrentUserResponseRootObject,
-  AccountRepositoryLoginErrorResponse,
+  // AccountRepositoryLoginErrorResponse,
   AccountRepositoryLoginResponseLogged_in_user,
-  AccountRepositoryLoginResponseRootObject,
+  // AccountRepositoryLoginResponseRootObject,
   SpamResponse,
   StatusResponse,
 } from '../responses';
 import {
-  IgLoginBadPasswordError,
-  IgLoginInvalidUserError,
-  IgLoginTwoFactorRequiredError,
+  // IgLoginBadPasswordError,
+  // IgLoginInvalidUserError,
+  // IgLoginTwoFactorRequiredError,
   IgResponseError,
 } from '../errors';
 import { IgResponse, AccountEditProfileOptions, AccountTwoFactorLoginOptions } from '../types';
@@ -20,7 +20,7 @@ import Bluebird = require('bluebird');
 import debug from 'debug';
 import * as crypto from 'crypto';
 const axios = require('axios');
-const http = require('http');
+// const http = require('http');
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
