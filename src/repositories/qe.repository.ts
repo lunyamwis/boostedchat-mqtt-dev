@@ -9,14 +9,18 @@ export class QeRepository extends Repository {
   }
   public async sync(experiments: any) {
     let data;
+    console.log("tumeficka------")
     try {
-      const uid = await this.client.state.getCookieUserId();
+      // const uid = await this.client.state.getCookieUserId();
+      const uid = 65110623138;
+      console.log(uid);
       data = {
         _csrftoken: this.client.state.cookieCsrfToken,
         id: uid,
         _uid: uid,
         _uuid: this.client.state.uuid,
       };
+      console.log(data)
     } catch {
       data = {
         id: this.client.state.uuid,

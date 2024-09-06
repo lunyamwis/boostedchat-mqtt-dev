@@ -22,6 +22,9 @@ import JSONbigInt from 'json-bigint';
 import debug from 'debug';
 import { Cookie } from 'tough-cookie';
 
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
+
 const JSONbigString = JSONbigInt({ storeAsString: true });
 
 type Payload = { [key: string]: any } | string;
@@ -54,18 +57,30 @@ export class Request {
   }
 
   public async send<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
+    const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
     const options = defaultsDeep(
       userOptions,
       {
         baseURL: 'https://i.instagram.com/',
         transformResponse: (data: any, headers: any) => Request.requestTransform(data, headers),
-        jar: this.client.state.cookieJar, // Axios does not natively support cookie jar; consider using axios-cookiejar-support
+        // jar: this.client.state.cookieJar, // Axios does not natively support cookie jar; consider using axios-cookiejar-support
         withCredentials: true,
         headers: this.getDefaultHeaders(),
         method: 'GET',
+        // proxy: {
+        //   host: 'ke.smartproxy.com',
+        //   port: 45001,
+        //   auth: {
+        //     username: 'sp8zty8v3u',
+        //     password: 'ysg6wa+6pGs6CG9Pde'
+        //   }
+        // },
+        
+        httpsAgent: proxyAgent,
       },
       this.defaults,
     );
+    // console.log(options)
     Request.requestDebug(`Requesting ${options.method} ${options.url || '[could not find url]'}`);
     const response = await this.faultTolerantRequest(options);
     this.updateState(response);
@@ -191,7 +206,7 @@ export class Request {
       'X-IG-EU-DC-ENABLED': this.client.state.euDCEnabled?.toString(),
       'X-IG-Extended-CDN-Thumbnail-Cache-Busting-Value': this.client.state.thumbnailCacheBustingValue.toString(),
       'X-Bloks-Version-Id': this.client.state.bloksVersionId,
-      'X-MID': this.client.state.extractCookie('mid')?.then((value: Cookie | null)=>{ return value?.value}),
+      // 'X-MID': this.client.state.extractCookie('mid')?.then((value: Cookie | null)=>{ return value?.value}),
       'X-IG-WWW-Claim': this.client.state.igWWWClaim || '0',
       'X-Bloks-Is-Layout-RTL': this.client.state.isLayoutRTL.toString(),
       'X-IG-Connection-Type': this.client.state.connectionTypeHeader,

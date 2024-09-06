@@ -27,6 +27,7 @@ import { validateEnv } from "./utils/environment";
 
   // let httpServer = new HttpServer();
   // httpServer.start();
+  console.log("Starting HTTP server...");
 
   const httpServer = new HttpServer();
   httpServer.initHttpServer();

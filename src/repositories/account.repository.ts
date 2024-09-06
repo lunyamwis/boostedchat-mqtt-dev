@@ -19,33 +19,142 @@ import { IgSignupBlockError } from '../errors/ig-signup-block.error';
 import Bluebird = require('bluebird');
 import debug from 'debug';
 import * as crypto from 'crypto';
+const axios = require('axios');
+const http = require('http');
+import { HttpsProxyAgent } from 'https-proxy-agent';
+
+const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
+
 
 export class AccountRepository extends Repository {
   private static accountDebug = debug('ig:account');
   public async login(username: string, password: string): Promise<AccountRepositoryLoginResponseLogged_in_user> {
-    if (!this.client.state.passwordEncryptionPubKey) {
-      await this.client.qe.syncLoginExperiments();
-    }
-    const { encrypted, time } = this.encryptPassword(password);
+    console.log("whereeeeee--------")
+    // if (!this.client.state.passwordEncryptionPubKey) {
+      // console.log("test------------")
+      // await this.client.qe.syncLoginExperiments();
+    // }
+    // const { encrypted, time } = this.encryptPassword(password);
+    // console.log(time,'-------------------afadf--------');
+    console.log('-------------------afadf--------');
+    
+    // const config = {
+    //   method: 'post',
+    //   url: 'https://i.instagram.com/api/v1/accounts/login/',
+    //   data: this.client.request.sign({
+    //     jazoest: "22372",
+    //     phone_id: "8119a2c1-e35a-4d97-b4a4-ba995163ac94",
+    //     enc_password: "#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
+    //     username: "martobiro",
+    //     adid: "f83895a2-3b7c-42dc-9541-99c4326f3a85",
+    //     guid: "382ea762-63be-4763-b206-b0dbfd4a9d49",
+    //     device_id: "android-cb1fb5c88371199e",
+    //     google_tokens: "[]",
+    //     login_attempt_count: "0",
+    //     country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
+    //   }),
+     
+    //   // proxy: {
+    //   //   host: 'ke.smartproxy.com',
+    //   //   port: 45001,
+    //   //   auth: {
+    //   //     username: 'sp8zty8v3u',
+    //   //     password: 'ysg6wa+6pGs6CG9Pde'
+    //   //   }
+    //   // },
+    //   // httpAgent: new http.Agent({rejectUnauthorized: false, keepAlive: true }),
+    //   httpsAgent: proxyAgent,
+    // };
+  
+    // const response = axios(config)
+    //   .then((response: any) => {
+    //     console.log(response.headers);
+    //     console.log('Response:', response.data);
+    //   })
+    //   .catch((error: any) => { // Explicitly specify the type of 'error' parameter
+    //     console.log();
+    //     console.error('Error:', error.message);
+    //   });
+    
+    // instance.post('/', data)
+    //   .then(response => {
+    //     console.log(response.data);
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+    // const instance = axios.create({
+    //   baseURL: 'https://i.instagram.com',
+    //   headers: this.client.request.getDefaultHeaders(),
+    //   httpsAgent: proxyAgent
+    //   // proxy: {
+    //   //   host: 'ke.smartproxy.com',
+    //   //   port: 45001,
+    //   //   auth: {
+    //   //     username: 'sp8zty8v3u',
+    //   //     password: 'ysg6wa+6pGs6CG9Pde'
+    //   //   }
+    //   // }
+    // });
+
+    // const data = this.client.request.sign({
+    //   jazoest: "22372",
+    //   phone_id: "8119a2c1-e35a-4d97-b4a4-ba995163ac94",
+    //   enc_password: "#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
+    //   username: "martobiro",
+    //   adid: "f83895a2-3b7c-42dc-9541-99c4326f3a85",
+    //   guid: "382ea762-63be-4763-b206-b0dbfd4a9d49",
+    //   device_id: "android-cb1fb5c88371199e",
+    //   google_tokens: "[]",
+    //   login_attempt_count: "0",
+    //   country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
+    // });
+
+    // const response = instance.post('/api/v1/accounts/login/', data)
+    //   .then((response: any) => {
+    //     console.log(response.data);
+    //   })
+    //   .catch((error: any) => { // Explicitly specify the type of 'error' parameter
+    //     console.log(error,'----error login----');
+    //     // console.error(error);
+    //   });
+
+
     const response = await Bluebird.try(() =>
       this.client.request.send<AccountRepositoryLoginResponseRootObject>({
         method: 'POST',
         url: '/api/v1/accounts/login/',
-        data: this.client.request.sign({
-          username,
-          enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
-          guid: this.client.state.uuid,
-          phone_id: this.client.state.phoneId,
-          _csrftoken: this.client.state.cookieCsrfToken,
-          device_id: this.client.state.deviceId,
-          adid: this.client.state.adid,
-          google_tokens: '[]',
-          login_attempt_count: 0,
-          country_codes: JSON.stringify([{ country_code: '1', source: 'default' }]),
-          jazoest: AccountRepository.createJazoest(this.client.state.phoneId),
-        }),
+        data: this.client.request.sign({            
+            jazoest:"22372",
+            phone_id:"8119a2c1-e35a-4d97-b4a4-ba995163ac94",
+            enc_password:"#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
+            username:"martobiro",
+            adid:"f83895a2-3b7c-42dc-9541-99c4326f3a85",
+            guid:"382ea762-63be-4763-b206-b0dbfd4a9d49",
+            device_id:"android-cb1fb5c88371199e",
+            google_tokens:"[]",
+            login_attempt_count:"0",
+            country_codes: JSON.stringify([{ country_code: '254', source: 'default' }]),
+         
+        })
+        // data: this.client.request.sign({
+        //   username,
+        //   // enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
+        //   enc_password: "#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
+        //   guid: this.client.state.uuid,
+        //   phone_id: this.client.state.phoneId,
+        //   // _csrftoken: this.client.state.cookieCsrfToken,
+        //   device_id: this.client.state.deviceId,
+        //   adid: this.client.state.adid,
+        //   google_tokens: '[]',
+        //   login_attempt_count: 0,
+        //   country_codes: JSON.stringify([{ country_code: '254', source: 'default' }]),
+        //   jazoest: AccountRepository.createJazoest(this.client.state.phoneId),
+        // }),
+
       }),
     ).catch(IgResponseError, error => {
+      console.log(error);
       if (error.response.data.two_factor_required) {
         AccountRepository.accountDebug(
           `Login failed, two factor auth required: ${JSON.stringify(error.response.data.two_factor_info)}`,
@@ -64,6 +173,8 @@ export class AccountRepository extends Repository {
         }
       }
     });
+    console.log(response.data,'--------response.data--------');
+    // console.log(response.headers)
     return response.data.logged_in_user;
   }
 

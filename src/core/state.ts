@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
-import * as Chance from 'chance';
+// import * as Chance from 'chance';
 import { Cookie, CookieJar, MemoryCookieStore } from 'tough-cookie';
 import * as devices from '../samples/devices.json';
 import * as builds from '../samples/builds.json';
@@ -10,6 +10,7 @@ import { ChallengeStateResponse, CheckpointResponse } from '../responses';
 import { IgCookieNotFoundError, IgNoCheckpointError, IgUserIdNotFoundError } from '../errors';
 import { Enumerable } from '../decorators';
 import debug from 'debug';
+import Chance = require('chance');
 
 const AUTHORIZATION_TAG: unique symbol = Symbol('authorization-tag');
 
@@ -220,6 +221,8 @@ export class State {
 
   public async getCookieUserId(): Promise<string | undefined> {
     const cookie = await this.extractCookie('ds_user_id');
+    
+    console.log("cookie", cookie);
     if (cookie !== null) {
       return cookie.value;
     }
@@ -248,11 +251,16 @@ export class State {
 
   public extractCookie(key: string): Promise<Cookie | null> {
     return new Promise((resolve, reject) => {
+      console.log(this.constants.HOST);
+      console.log(this.cookieJar,'-----------------');
+      console.log(this.cookieJar.getCookies,'----------------- getting cookies');
       this.cookieJar.getCookies(this.constants.HOST, (err: Error | null, cookies: Cookie[]) => {
         if (err) {
+          console.log("issue***************");
           return reject(err);
         }
         const cookie = _.find(cookies, { key }) as Cookie;
+        console.log(cookies,'cookie');
         resolve(cookie || null);
       });
     });
@@ -268,12 +276,15 @@ export class State {
   // }
 
   public extractCookieValue(key: string): Promise<string> {
+    console.log(key,'key');
     return this.extractCookie(key).then(cookie => {
+
       if (cookie === null) {
         State.stateDebug(`Could not find ${key}`);
-        throw new IgCookieNotFoundError(key);
+        // throw new IgCookieNotFoundError(key);
       }
-      return cookie.value;
+      return "value"
+      // return cookie.value;
     });
   }
 
@@ -329,7 +340,9 @@ export class State {
   }
 
   public generateDevice(seed: string): void {
+    console.log("generateDevice");
     const chance = new Chance(seed);
+    // console.log("chance", chance);
     this.deviceString = chance.pickone(devices);
     const id = chance.string({
       pool: 'abcdef0123456789',

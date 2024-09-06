@@ -35,7 +35,9 @@ export const disconnect = async (igname: string) => {
 }
 
 export const login = async (salesRepAccount: SalesRepAccount) => {
+  console.log("Logging in to account: ", salesRepAccount.igname);
   const igInstance = withRealtime(new IgApiClient());
+  console.log("Logginga in to account: ", salesRepAccount.igname);
   igInstance.state.generateDevice(salesRepAccount.igname);
   console.log("are we even reaching here first!");
   
