@@ -24,6 +24,7 @@ const axios = require('axios');
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
+// const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@us.smartproxy.com:10001');
 
 
 export class AccountRepository extends Repository {
