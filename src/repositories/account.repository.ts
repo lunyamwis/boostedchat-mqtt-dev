@@ -31,8 +31,8 @@ export class AccountRepository extends Repository {
   public async login(username: string, password: string): Promise<AccountRepositoryLoginResponseLogged_in_user> {
     console.log("whereeeeee--------")
     // if (!this.client.state.passwordEncryptionPubKey) {
-      // console.log("test------------")
-      // await this.client.qe.syncLoginExperiments();
+    //   console.log("test------------")
+    //   await this.client.qe.syncLoginExperiments();
     // }
     // const { encrypted, time } = this.encryptPassword(password);
     // console.log(time,'-------------------afadf--------');
@@ -42,18 +42,19 @@ export class AccountRepository extends Repository {
       method: 'post',
       url: 'https://i.instagram.com/api/v1/accounts/login/',
       data: this.client.request.sign({
-        jazoest: "22372",
-        phone_id: "8119a2c1-e35a-4d97-b4a4-ba995163ac94",
-        enc_password: "#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
-        username: "martobiro",
-        adid: "f83895a2-3b7c-42dc-9541-99c4326f3a85",
-        guid: "382ea762-63be-4763-b206-b0dbfd4a9d49",
-        device_id: "android-cb1fb5c88371199e",
-        google_tokens: "[]",
-        login_attempt_count: "0",
+        jazoest:"22422",
+        phone_id:"b9ebdb38-1e13-4777-b8d9-6107bc1c06e3",
+        enc_password:"#PWD_INSTAGRAM:4:1725879233:AaqB1TYJji6wavojyYEAAUUURK15lMuF78OCZAixo0HJemdwfsBhG/TebmCo1P6HTC8xgB1AAZP2YFJWbTT7pEBbqjco4386jLrvWkBesvHAcj2haPgV4svA9oJG4Ect0+M/t+XjIQNYcarxVFEPoxqLrsgyWdqa58K1H0C5dMiGsEP3ChV6hJJOHEfA4L1mtQVsoXVm13DOGMlWGq0TvZDcrq9TnLMMYvpfOPmj9K/ghxiOaDEg1EvnDTloOSvWt7krcqVQE6uBv/a7K5W7FlISkjgnTxzDOQhlMbnzs1r0Mnus9ZNWWv7wNigFtJS+9wUtk2ARxWlW61QChasVf95xxG16d4vxBNKWyM9KRAk42GsxGyqRtn6FHJQH17I5Hi6G4hVoF1N0fix7Zp4=",
+        username:"martobiro",
+        adid:"a4d0e0aa-b36f-4d24-a3cf-d6c7e5cdb582",
+        guid:"f5edfc9a-fa1e-4b58-bc4d-0f61fb6ef95f",
+        device_id:"android-fdd2ab98d4922503",
+        google_tokens:"[]",
+        login_attempt_count:"0",
+        _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
         country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
       }),
-     
+      headers: this.client.request.getDefaultHeaders(),
       httpsAgent: proxyAgent,
     };
   
@@ -64,6 +65,7 @@ export class AccountRepository extends Repository {
       })
       .catch((error: any) => { // Explicitly specify the type of 'error' parameter
         console.log();
+        console.log(error.response.data);
         console.error('Error:', error.message);
       });
     
@@ -164,6 +166,7 @@ export class AccountRepository extends Repository {
     //     }
     //   }
     // });
+    
     console.log(response.data,'--------response.data--------');
     // console.log(response.headers)
     return response.data.logged_in_user;

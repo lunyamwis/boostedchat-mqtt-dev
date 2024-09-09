@@ -15,4 +15,6 @@ logs/app/.723378a3fde00f61976d607b1fbaae68c7028433-audit.json
 logs/mqtt-events/.4b5f3e30e8144702d9b5e2bc56aa105506d693fa-audit.json
 logs/mqtt-lib/.82aa4f1cbb7d62f87971eab10cc11197ca3323df-audit.json
 logs/http/.1a3669600472e51a9bc8498ad617cf9911b8b58a-audit.json
+logs/.723378a3fde00f61976d607b1fbaae68c7028433-audit.json
+logs/
 package-lock.json
