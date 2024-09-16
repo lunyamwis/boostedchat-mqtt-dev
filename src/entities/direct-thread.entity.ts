@@ -138,7 +138,7 @@ export class DirectThreadEntity extends Entity {
       ...videoInfo,
     });
 
-    await Bluebird.try(() =>
+    await Bluebird.Promise.try(() =>
       this.client.media.uploadFinish({
         upload_id: uploadId,
         source_type: '2',
@@ -167,7 +167,7 @@ export class DirectThreadEntity extends Entity {
       mediaType: '11',
     });
 
-    await Bluebird.try(() =>
+    await Bluebird.Promise.try(() =>
       this.client.media.uploadFinish({
         upload_id: uploadId,
         source_type: '4',

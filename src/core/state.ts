@@ -11,6 +11,7 @@ import { IgCookieNotFoundError, IgNoCheckpointError, IgUserIdNotFoundError } fro
 import { Enumerable } from '../decorators';
 import debug from 'debug';
 import Chance = require('chance');
+import { promisify } from 'util';
 
 const AUTHORIZATION_TAG: unique symbol = Symbol('authorization-tag');
 
@@ -219,7 +220,7 @@ export class State {
   //   return undefined;
   // }
 
-  public async getCookieUserId(): Promise<string | undefined> {
+  public async getCookieUserId(): Promise<string | ''> {
     const cookie = await this.extractCookie('ds_user_id');
     
     console.log("cookie", cookie);
@@ -252,8 +253,9 @@ export class State {
   public extractCookie(key: string): Promise<Cookie | null> {
     return new Promise((resolve, reject) => {
       console.log(this.constants.HOST);
-      console.log(this.cookieJar,'-----------------');
-      console.log(this.cookieJar.getCookies,'----------------- getting cookies');
+      console.log('-----------------');
+      console.log(this.cookieJar.toJSON());
+      console.log('----------------- getting cookies');
       this.cookieJar.getCookies(this.constants.HOST, (err: Error | null, cookies: Cookie[]) => {
         if (err) {
           console.log("issue***************");
@@ -299,12 +301,26 @@ export class State {
     }
   }
 
-  public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
-    (this.cookieJar as any)['_jar'] = await Bluebird.fromCallback(cb => CookieJar.deserialize(cookies, this.cookieStore, cb)) as any;
+  // public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
+  //   (this.cookieJar as any)['_jar'] = await Bluebird.Promise.promisify<CookieJar.Serialized>(cb => CookieJar.deserialize(cookies, this.cookieStore, cb)) as any;
+  // }
+   deserializeAsync = promisify(CookieJar.deserialize.bind(CookieJar));
+   public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
+    // Deserialize cookies and get the deserialized CookieJar
+    const jar = await this.deserializeAsync(cookies);
+  
+    // Assign the deserialized jar to this.cookieJar
+    (this.cookieJar as any)['_jar'] = jar;
+  
+    // If you need to assign the cookieStore, do it here if needed
+    (this.cookieJar as any)._cookieStore = this.cookieStore;
   }
 
   public async serializeCookieJar(): Promise<CookieJar.Serialized> {
-    return Bluebird.fromCallback(cb => (this.cookieJar as any)['_jar'].serialize(cb));
+    // return Bluebird //fromCallback(cb => (this.cookieJar as any)['_jar'].serialize(cb));
+    const serializeAsync = Bluebird.Promise.promisify<CookieJar.Serialized>((cb: any) => (this.cookieJar as any)['_jar'].serialize(cb));
+    const serializedData = await serializeAsync(); 
+    return serializedData
   }
 
   public async serialize(): Promise<{ constants: any; cookies: any } & any> {

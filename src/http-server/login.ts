@@ -38,12 +38,22 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
   console.log("Logging in to account: ", salesRepAccount.igname);
   const igInstance = withRealtime(new IgApiClient());
   console.log("Logginga in to account: ", salesRepAccount.igname);
-  igInstance.state.generateDevice(salesRepAccount.igname);
+  igInstance.state.generateDevice('martobiro');
   console.log("are we even reaching here first!");
   
   const user = await igInstance.account.login(  // check.
-    salesRepAccount.igname,
-    salesRepAccount.password
+    // salesRepAccount.igname,
+    // salesRepAccount.password
+    // 'denn_mokaya',
+    // 'sinnedmokaya'
+    // 'bitely_inc',
+    // 'sinnedmokaya'
+    'martobiro',
+    'luthersaved96-'
+    // 'anyoksdenn@gmail.com',
+    // 'sinnedmokaya'
+    // 'orinabree',
+    // '33512733@BK6'
   );
   // console.log(`Logged in ${salesRepAccount.igname} successfully`);
   AccountInstances.addAccountInstance(salesRepAccount.igname, {

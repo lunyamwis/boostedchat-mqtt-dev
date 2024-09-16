@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { IgApiClientRealtime, withRealtime } from '../src';
 import { GraphQLSubscriptions } from '../src/realtime/subscriptions';
-import { IgApiClient } from './core/client';
+// import { IgApiClient } from './core/client';
+import { IgApiClient } from "../";
 import { SkywalkerSubscriptions } from '../src/realtime/subscriptions';
 
 (async () => {
@@ -41,13 +42,17 @@ import { SkywalkerSubscriptions } from '../src/realtime/subscriptions';
          GraphQLSubscriptions.getAppPresenceSubscription(),
          GraphQLSubscriptions.getZeroProvisionSubscription(ig.state.phoneId),
          GraphQLSubscriptions.getDirectStatusSubscription(),
-         GraphQLSubscriptions.getDirectTypingSubscription(ig.state.cookieUserId),
-         GraphQLSubscriptions.getAsyncAdSubscription(ig.state.cookieUserId),
+         // GraphQLSubscriptions.getDirectTypingSubscription( ig.state.cookieUserId),
+         GraphQLSubscriptions.getDirectTypingSubscription(await ig.state.getCookieUserId()),
+         // GraphQLSubscriptions.getAsyncAdSubscription(ig.state.cookieUserId),
+         GraphQLSubscriptions.getAsyncAdSubscription(await ig.state.getCookieUserId()),
       ],
       // optional
       skywalkerSubs: [
-         SkywalkerSubscriptions.directSub(ig.state.cookieUserId),
-         SkywalkerSubscriptions.liveSub(ig.state.cookieUserId),
+         // SkywalkerSubscriptions.directSub(ig.state.cookieUserId),
+         SkywalkerSubscriptions.directSub(await ig.state.getCookieUserId()),
+         // SkywalkerSubscriptions.liveSub(ig.state.cookieUserId),
+         SkywalkerSubscriptions.liveSub(await ig.state.getCookieUserId()),
       ],
       // optional
       // this enables you to get direct messages
@@ -71,7 +76,7 @@ import { SkywalkerSubscriptions } from '../src/realtime/subscriptions';
       console.log('Device off');
       // from now on, you won't receive any realtime-data as you "aren't in the app"
       // the keepAliveTimeout is somehow a 'constant' by instagram
-      ig.realtime.direct.sendForegroundState({
+      ig.realtime.direct?.sendForegroundState({
          inForegroundApp: false,
          inForegroundDevice: false,
          keepAliveTimeout: 900,
@@ -79,7 +84,7 @@ import { SkywalkerSubscriptions } from '../src/realtime/subscriptions';
    }, 2000);
    setTimeout(() => {
       console.log('In App');
-      ig.realtime.direct.sendForegroundState({
+      ig.realtime.direct?.sendForegroundState({
          inForegroundApp: true,
          inForegroundDevice: true,
          keepAliveTimeout: 60,

@@ -1,5 +1,4 @@
-import * as Chance from 'chance';
-
+import Chance = require('chance');
 // src: com.instagram.realtimeclient.RealtimeSubscription
 export const QueryIDs = {
    appPresence: '17846944882223835',

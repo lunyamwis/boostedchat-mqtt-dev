@@ -21,10 +21,8 @@ import { IgResponse } from '../types';
 import JSONbigInt from 'json-bigint';
 import debug from 'debug';
 // import { Cookie } from 'tough-cookie';
-
 import { HttpsProxyAgent } from 'https-proxy-agent';
-// import { Cookie } from 'tough-cookie';
-// import { Cookie } from 'tough-cookie';
+
 
 
 const JSONbigString = JSONbigInt({ storeAsString: true });
@@ -61,7 +59,8 @@ export class Request {
   public async send<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
     console.log("this is the send method udding")
     console.log(userOptions);
-    console.log('-------Send<>-----------')
+    console.log('------------------')
+    console.log(onlyCheckHttpStatus);
     // const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
     const proxyAgent = new HttpsProxyAgent('http://instagramUser:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
     const options = defaultsDeep(
@@ -73,10 +72,21 @@ export class Request {
         withCredentials: true,
         headers: this.getDefaultHeaders(),
         method: 'GET',
+        // proxy: {
+        //   host: 'ke.smartproxy.com',
+        //   port: 45001,
+        //   auth: {
+        //     username: 'sp8zty8v3u',
+        //     password: 'ysg6wa+6pGs6CG9Pde'
+        //   }
+        // },
+        // proxy: 'http://instagramUser:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001',
         httpsAgent: proxyAgent,
       },
       this.defaults,
     );
+    console.log('888888')
+    console.log(options)
     Request.requestDebug(`Requesting ${options.method} ${options.url || '[could not find url]'}`);
     const response = await this.faultTolerantRequest(options);
     console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
@@ -84,9 +94,7 @@ export class Request {
     this.updateState(response);
     process.nextTick(() => this.end$.next());
     if (response.data.status === 'ok' || (onlyCheckHttpStatus && response.status === 200)) {
-      console.log('-------> RETURNING');
-      console.log(response.data.logged_in_user);
-      return response;
+      return response.data;
     }
     const error = this.handleResponseError(response);
     process.nextTick(() => this.error$.next(error));
@@ -199,8 +207,8 @@ export class Request {
       'X-CM-Latency': '-1.000',
       "Accept-Encoding":"gzip, deflate",
       "Accept":"*/*",
-      "Connection":"keep-alive",
-      // Connection: 'close',
+      // "Connection":"keep-alive",
+      Connection: 'close',
       "X-IG-App-Locale": this.client.state.language,//"en_US",
       "X-IG-Device-Locale": this.client.state.language,//"en_US",
       "X-IG-Mapped-Locale":"en_US",

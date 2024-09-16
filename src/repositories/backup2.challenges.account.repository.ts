@@ -29,7 +29,7 @@ const axios = require('axios');
 // const http = require('http');
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
-const proxyAgent = new HttpsProxyAgent('http://user-instagramUser-sessionduration-60:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
+const proxyAgent = new HttpsProxyAgent('http://instagramUser:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
 // const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@us.smartproxy.com:10001');
 
 
@@ -46,19 +46,101 @@ export class AccountRepository extends Repository {
     console.log(encrypted);
     console.log('-------------------afadf--------');
 
+
+
+    // ------working code ------
+
+    // const config = {
+    //   method: 'post',
+    //   url: 'https://i.instagram.com/api/v1/accounts/login/',
+    //   data: this.client.request.sign({
+    //     jazoest: AccountRepository.createJazoest(this.client.state.phoneId),//"22422",
+    //     phone_id: this.client.state.phoneId,//"b9ebdb38-1e13-4777-b8d9-6107bc1c06e3",
+    //     enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
+    //     // enc_password:"#PWD_INSTAGRAM:4:1725879233:AaqB1TYJji6wavojyYEAAUUURK15lMuF78OCZAixo0HJemdwfsBhG/TebmCo1P6HTC8xgB1AAZP2YFJWbTT7pEBbqjco4386jLrvWkBesvHAcj2haPgV4svA9oJG4Ect0+M/t+XjIQNYcarxVFEPoxqLrsgyWdqa58K1H0C5dMiGsEP3ChV6hJJOHEfA4L1mtQVsoXVm13DOGMlWGq0TvZDcrq9TnLMMYvpfOPmj9K/ghxiOaDEg1EvnDTloOSvWt7krcqVQE6uBv/a7K5W7FlISkjgnTxzDOQhlMbnzs1r0Mnus9ZNWWv7wNigFtJS+9wUtk2ARxWlW61QChasVf95xxG16d4vxBNKWyM9KRAk42GsxGyqRtn6FHJQH17I5Hi6G4hVoF1N0fix7Zp4=",
+    //     username: username,// "martobiro",
+    //     adid: this.client.state.adid,//"a4d0e0aa-b36f-4d24-a3cf-d6c7e5cdb582",
+    //     guid: this.client.state.uuid,//"f5edfc9a-fa1e-4b58-bc4d-0f61fb6ef95f",
+    //     device_id: this.client.state.deviceId,//"android-fdd2ab98d4922503",
+    //     google_tokens: "[]",
+    //     login_attempt_count: "0",
+    //     // _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
+    //     country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
+    //   }),
+    //   headers: this.client.request.getDefaultHeaders(),
+    //   httpsAgent: proxyAgent,
+    // };
+
+
+
+      // ------working code ------
+
+
+    // instance.post('/', data)
+    //   .then(response => {
+    //     console.log(response.data);
+    //   })
+    //   .catch(error => {
+    //     console.error(error);
+    //   });
+    // const instance = axios.create({
+    //   baseURL: 'https://i.instagram.com',
+    //   headers: this.client.request.getDefaultHeaders(),
+    //   httpsAgent: proxyAgent
+    //   // proxy: {
+    //   //   host: 'ke.smartproxy.com',
+    //   //   port: 45001,
+    //   //   auth: {
+    //   //     username: 'sp8zty8v3u',
+    //   //     password: 'ysg6wa+6pGs6CG9Pde'
+    //   //   }
+    //   // }
+    // });
+
+    // const data = this.client.request.sign({
+    //   jazoest: "22372",
+    //   phone_id: "8119a2c1-e35a-4d97-b4a4-ba995163ac94",
+    //   enc_password: "#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
+    //   username: "martobiro",
+    //   adid: "f83895a2-3b7c-42dc-9541-99c4326f3a85",
+    //   guid: "382ea762-63be-4763-b206-b0dbfd4a9d49",
+    //   device_id: "android-cb1fb5c88371199e",
+    //   google_tokens: "[]",
+    //   login_attempt_count: "0",
+    //   country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
+    // });
+
+ 
+
     const response = await Bluebird.try(() =>
+      // console.log("BLUUUUUUUUU")
       this.client.request.send<AccountRepositoryLoginResponseRootObject>({
+        // method: 'POST',
+        // url: '/api/v1/accounts/login/',
+        // data: this.client.request.sign({            
+        //     jazoest:"22372",
+        //     phone_id:"8119a2c1-e35a-4d97-b4a4-ba995163ac94",
+        //     enc_password:"#PWD_INSTAGRAM:4:1725622248:AadzlLJr8uRAx5qbyrwAATiZ8AfvNuRJBpRnffaCIBR59p6MF+2A9f+2V0gA99eCftlkoxY8FUx1mDZXNRpLW7UW818TrQKoCcEGTX66i99RDLLgjWQ4fYFab4TQI7XoWnsEI2PGHTwdJNMwe0GTYdSn00BPy7UzYXzBYw5FrJ6dP4hz3MUeET2SMtAuSMgu1MUFfQWCeV5B3K45yHhTYfcVUiZ6Wp7Qd0uuT6M9CAE2dx15XkqO74KavpbnQQfAp/azHiRVGFdfkSFPi+diPwfTAYnD327CD6r5RSt8gBZw6DIntDTq7FS6t7wwgTEOFOlkg1Uia8wXcxZnztSQDVbOgVddbU7FuQGWlU64OakLoiZ7raHw5iSuH+rnn9O5A5qK4x3EU0BDT1D7aB4=",
+        //     username:"martobiro",
+        //     adid:"f83895a2-3b7c-42dc-9541-99c4326f3a85",
+        //     guid:"382ea762-63be-4763-b206-b0dbfd4a9d49",
+        //     device_id:"android-cb1fb5c88371199e",
+        //     google_tokens:"[]",
+        //     login_attempt_count:"0",
+        //     country_codes: JSON.stringify([{ country_code: '254', source: 'default' }]),
+
+        // })
         method: 'post',
         url: 'https://i.instagram.com/api/v1/accounts/login/',
         data: this.client.request.sign({
           jazoest: AccountRepository.createJazoest(this.client.state.phoneId),//"22422",
-          phone_id: this.client.state.phoneId, //"b9ebdb38-1e13-4777-b8d9-6107bc1c06e3",//
+          phone_id: this.client.state.phoneId,//"b9ebdb38-1e13-4777-b8d9-6107bc1c06e3",
           enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
           // enc_password:"#PWD_INSTAGRAM:4:1725879233:AaqB1TYJji6wavojyYEAAUUURK15lMuF78OCZAixo0HJemdwfsBhG/TebmCo1P6HTC8xgB1AAZP2YFJWbTT7pEBbqjco4386jLrvWkBesvHAcj2haPgV4svA9oJG4Ect0+M/t+XjIQNYcarxVFEPoxqLrsgyWdqa58K1H0C5dMiGsEP3ChV6hJJOHEfA4L1mtQVsoXVm13DOGMlWGq0TvZDcrq9TnLMMYvpfOPmj9K/ghxiOaDEg1EvnDTloOSvWt7krcqVQE6uBv/a7K5W7FlISkjgnTxzDOQhlMbnzs1r0Mnus9ZNWWv7wNigFtJS+9wUtk2ARxWlW61QChasVf95xxG16d4vxBNKWyM9KRAk42GsxGyqRtn6FHJQH17I5Hi6G4hVoF1N0fix7Zp4=",
           username: username,// "martobiro",
           adid: this.client.state.adid,//"a4d0e0aa-b36f-4d24-a3cf-d6c7e5cdb582",
           guid: this.client.state.uuid,//"f5edfc9a-fa1e-4b58-bc4d-0f61fb6ef95f",
-          device_id: this.client.state.deviceId,//"android-fdd2ab98d4922503", // <---the issue is here & it is required
+          device_id: this.client.state.deviceId,//"android-fdd2ab98d4922503",
           google_tokens: "[]",
           login_attempt_count: "0",
           // _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
@@ -66,8 +148,14 @@ export class AccountRepository extends Repository {
         }),
         // headers: this.client.request.getDefaultHeaders(),
         httpsAgent: proxyAgent,
+
+
       }),
     ).catch(IgResponseError, error => {
+      console.log("DOING ERRORSSSSSSSSSSSSSSSS");
+      console.log();
+        console.log(error.response.data);
+        console.error('Error:', error.message);
       if (error.response.data.two_factor_required) {
         AccountRepository.accountDebug(
           `Login failed, two factor auth required: ${JSON.stringify(error.response.data.two_factor_info)}`,
@@ -87,17 +175,8 @@ export class AccountRepository extends Repository {
       }
     });
 
-    console.log( '--------stUFF--------');
-    console.log(this.client.state.phoneId);
-    console.log(this.client.state.adid);
-    console.log(this.client.state.uuid);
-    console.log(this.client.state.deviceId);
-    console.log(this.client.state.appUserAgent);
-    console.log( '--------response.data--------');
-    // // console.log(response.data.logged_in_user);
-    // console.log(response.data.logged_in_user);
-    // console.log("----Headers--------");
-    // console.log(response.data)
+    console.log(response.data, '--------response.data--------');
+    // console.log(response.headers)
     return response.data.logged_in_user;
   }
 
@@ -111,7 +190,8 @@ export class AccountRepository extends Repository {
   }
 
   public async encryptPassword(password: string): Promise<{ time: string; encrypted: string; }> {
-
+    console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+    console.log(password);
     const randKey = crypto.randomBytes(32);
     console.log('randKey--------------------------------');
     console.log(randKey);
@@ -181,13 +261,13 @@ export class AccountRepository extends Repository {
         country_codes: JSON.stringify([{ country_code: '254', source: 'default' }]),
         server_config_retrieval: "1",
       }),
-      headers: this.client.request.getDefaultHeaders(), 
+      headers: this.client.request.getDefaultHeaders(),
       httpsAgent: proxyAgent,
     };
     console.log('<-----resp--->');
     const resp = await axios(config);
     console.log('resp--->');
-    console.log(resp);
+    // console.log(resp);
     const publickeyid = parseInt(resp.headers['ig-set-password-encryption-key-id']);
     const publickey = resp.headers['ig-set-password-encryption-pub-key'];
     console.log(publickey);
@@ -195,10 +275,6 @@ export class AccountRepository extends Repository {
     return { publickeyid, publickey };
   }
   ///
-
-
-
-
 
 
   public async twoFactorLogin(

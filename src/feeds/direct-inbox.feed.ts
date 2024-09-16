@@ -28,6 +28,8 @@ export class DirectInboxFeed extends Feed<DirectInboxFeedResponse, DirectInboxFe
         limit: 20,
       },
     });
+    console.log("---------response Request-------")
+    console.log(response)
     const body = response.data;
     this.state = body;
     return body;

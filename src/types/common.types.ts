@@ -33,3 +33,5 @@ export type IgAppModule =
   | string;
 
 export type IgResponse<Body> = Pick<AxiosResponse, Exclude<keyof AxiosResponse, 'data'>> & { data: Body };
+// export type IgResponse<Body> = Pick<AxiosResponse, Exclude<keyof AxiosResponse, 'data'>> & Body;
+
