@@ -38,22 +38,34 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
   console.log("Logging in to account: ", salesRepAccount.igname);
   const igInstance = withRealtime(new IgApiClient());
   console.log("Logginga in to account: ", salesRepAccount.igname);
-  igInstance.state.generateDevice('martobiro');
+  // igInstance.state.generateDevice('denn_mokaya');
+  // igInstance.state.generateDevice('orinabree');
+
+  igInstance.state.generateDevice('johhn.ycraig');
+  
   console.log("are we even reaching here first!");
+  // igInstance.state.proxyUrl =''
   
   const user = await igInstance.account.login(  // check.
     // salesRepAccount.igname,
     // salesRepAccount.password
     // 'denn_mokaya',
     // 'sinnedmokaya'
+
     // 'bitely_inc',
     // 'sinnedmokaya'
-    'martobiro',
-    'luthersaved96-'
-    // 'anyoksdenn@gmail.com',
-    // 'sinnedmokaya'
-    // 'orinabree',
-    // '33512733@BK6'
+
+    // 'martobiro',
+    // 'luthersaved96-'
+
+
+
+    // Note working
+    // "dreamydaze.22",
+    // "Dreamy@15"
+
+    "johhn.ycraig",
+    "carterlucio6859"
   );
   // console.log(`Logged in ${salesRepAccount.igname} successfully`);
   AccountInstances.addAccountInstance(salesRepAccount.igname, {
