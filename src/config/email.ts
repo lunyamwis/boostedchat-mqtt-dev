@@ -9,11 +9,20 @@ export interface CustomTransportOptions extends nodemailer.TransportOptions {
     };
 }
 
-export const mailConfig: CustomTransportOptions = {
+// export const mailConfig: CustomTransportOptions = {
+//     host: process.env.SMTP_HOST ?? '',
+//     port: Number(process.env.SMTP_PORT),
+//     auth: {
+//         user: process.env.EMAIL_USER ?? '',
+//         pass: process.env.EMAIL_PASSWORD ?? '',
+//     },
+// };
+
+export const mailConfig = nodemailer.createTransport({
     host: process.env.SMTP_HOST ?? '',
     port: Number(process.env.SMTP_PORT),
     auth: {
         user: process.env.EMAIL_USER ?? '',
         pass: process.env.EMAIL_PASSWORD ?? '',
     },
-};
+});

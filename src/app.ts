@@ -3,7 +3,7 @@ import { MQTTListener } from "../src/http-server/mqttListener";
 import { SalesRepAccount } from "../src/http-server/receiveAccounts";
 import { addLoggedInAccount } from "../src/http-server/accounts";
 
-export const initServers = async (salesRepAccounts: SalesRepAccount[], accountToCheck:any=false) => {
+export const initServers = async (salesRepAccounts: SalesRepAccount[], accountToCheck: any = false) => {
   return new Promise(async (resolve, reject) => {
 
     const promises = [];
@@ -13,44 +13,43 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
 
     let ret: string[] = [];
     let faileds = {};
-    await Promise.allSettled(promises).then((results) => {
+    await Promise.allSettled(promises).then((results: any) => {
       const successfulInitializations = results
-        .filter((result) => result.status === "fulfilled")
-        .map((result) => result); // Extract the account
+        .filter((result: any) => result.status === "fulfilled")
+        .map((result: any) => result); // Extract the account
 
       const failedInitializations = results
-        .filter((result) => result.status === "rejected")
-        .map((result) => result); // Extract the error and account
+        .filter((result: any) => result.status === "rejected")
+        .map((result: any) => result); // Extract the error and account
 
-    if (successfulInitializations.length > 0) {
+      if (successfulInitializations.length > 0) {
         console.log(
-            "Successfully initialized accounts:",
-            successfulInitializations
+          "Successfully initialized accounts:",
+          successfulInitializations
         );
         // add to redis and remove when disconnected...
         // function to add key, function to check key
-        successfulInitializations.map((result) => {
-            if (result.status === "fulfilled") {
-                ret.push(result.value as string); // Explicitly type 'ret' as an array of 'string'
-                addLoggedInAccount(result.value as string); // Explicitly type 'result.value' as a string
-            }
+        successfulInitializations.map((result: any) => {
+          if (result.status === "fulfilled") {
+            ret.push(result.value as string); // Explicitly type 'ret' as an array of 'string'
+            addLoggedInAccount(result.value as string); // Explicitly type 'result.value' as a string
+          }
         });
-    }
+      }
 
       if (failedInitializations.length > 0) {
         console.error("Failed to log in to accounts:");
-        failedInitializations.forEach((result) =>
-          {
-            let failedAccount = Object.keys((result as PromiseRejectedResult).reason)[0];
-            console.error(
-                `account: ${failedAccount}`
-            );
-            let err_str: string = `${Object.values((result as PromiseRejectedResult).reason)[0]}`;
-            // console.log(err_str)
-            // console.log(err_str.match("IgCheckpointError:"))
-            if(err_str.match("IgCheckpointError:")){
+        failedInitializations.forEach((result: any) => {
+          let failedAccount = Object.keys((result as PromiseRejectedResult).reason)[0];
+          console.error(
+            `account: ${failedAccount}`
+          );
+          let err_str: string = `${Object.values((result as PromiseRejectedResult).reason)[0]}`;
+          // console.log(err_str)
+          // console.log(err_str.match("IgCheckpointError:"))
+          if (err_str.match("IgCheckpointError:")) {
             interface Faileds {
-                [key: string]: { status: number, msg: string };
+              [key: string]: { status: number, msg: string };
             }
 
             // ...
@@ -64,14 +63,14 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
             // ...
 
             faileds[failedAccount] = { status: status_code, msg: status_msg };
-            }
-          
+          }
+
         }
         );
       }
     });
-    if(accountToCheck){
-        return resolve([ret.includes(accountToCheck), faileds] as [boolean, any]); // Explicitly type the return value as a tuple of 'boolean' and 'any'
+    if (accountToCheck) {
+      return resolve([ret.includes(accountToCheck), faileds] as [boolean, any]); // Explicitly type the return value as a tuple of 'boolean' and 'any'
     }
     resolve([ret, faileds] as [any[], any]); // Explicitly type the return value as a tuple of 'any[]' and 'any'
   });

@@ -23,7 +23,7 @@ class Mailer {
   }): Promise<boolean | Error> => {
     try {
       await new Promise((rsv, rjt) => {
-        (mailConfig as any).sendMail(
+        mailConfig.sendMail(
           {
             text: message.text,
             from: process.env.EMAIL_USER,
@@ -45,6 +45,7 @@ class Mailer {
       return true;
     } catch (error) {
       appLogger.error((error as Error).message);
+      console.error((error as Error).message);
       throw new Error((error as Error).message);
     }
   };

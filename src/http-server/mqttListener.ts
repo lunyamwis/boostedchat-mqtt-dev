@@ -134,6 +134,10 @@ export class MQTTListener {
     // old way of accessing userID for reference
     //   userID = this.accountInstances.get(this.username)!.instance.state.deviceId
     var userId = await this.accountInstances.get(this.username)!.instance.state.getCookieUserId();
+    console.log(await this.accountInstances.get(this.username)!.instance.state.cookieJar.toJSON());
+    
+    console.log("<------------------------------------------userId----------------------------------------------->");
+    console.log(userId);
     if (userId) {
       await this.accountInstances.get(this.username)?.instance.realtime.connect({
         graphQlSubs: [
@@ -451,6 +455,7 @@ export class MQTTListener {
         }
       }
     } else {
+      console.log("here is errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
       await this.mailer.send({
         subject: `Response generation failed on ${this.username}`,
         text: `Hi team, There was an error generating a response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this.`,
