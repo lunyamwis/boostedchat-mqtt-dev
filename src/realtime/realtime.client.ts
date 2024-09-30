@@ -67,12 +67,13 @@ export class RealtimeClient extends EventEmitter<ToEventFn<RealtimeClientEvents>
    private constructConnection() {
       const userAgent = this.ig.state.appUserAgent;
       const deviceId = this.ig.state.phoneId;
-      const sessionid = this.ig.state.parsedAuthorization?.sessionid ?? this.ig.state.extractCookieValue('sessionid');
+      const sessionid = this.ig.state.parsedAuthorization?.sessionid ?? this.ig.state.extractCookieValueSync('sessionid');// "65110623138%3Awn2GJE2jkolPLr%3A27%3AAYcopDiKZkjCx40oPlyJG8Mjq2P1rVKxnH2QrlSOLg";;
       const password = `sessionid=${sessionid}`;
+      // const password = `1086450624%3AHjznryLYkY6MEi%3A0%3AAYdcMTMqbNyfnOVyFgl7fVTdSwtIev9O5ouLThpllg`;//`sessionid="65110623138%3ARCvBJfHrPb6Em0%3A12%3AAYd9bY7Roiv8wzh6ASr2yO-fJiYJY4BrXBqlYoneDA"`;  
       this.connection = new MQTToTConnection({
          clientIdentifier: deviceId.substring(0, 20),
          clientInfo: {
-            userId: BigInt(Number(this.ig.state.getCookieUserId)),
+            userId: BigInt(Number( this.ig.state.getCookieUserIdSync() /*'65110623138'*/ /*this.ig.state.getCookieUserId*/)),
             userAgent,
             clientCapabilities: 183,
             endpointCapabilities: 0,
@@ -112,6 +113,8 @@ export class RealtimeClient extends EventEmitter<ToEventFn<RealtimeClientEvents>
    }
 
    public async connect(initOptions?: RealtimeClientInitOptions | string[]): Promise<any> {
+      console.log("MQRTT INIT OPTIOS")
+      console.log(initOptions);
       this.realtimeDebug('Connecting to realtime-broker...');
       this.setInitOptions(initOptions);
       this.realtimeDebug(`Overriding: ${Object.keys(this.initOptions?.connectOverrides || {}).join(', ')}`);
@@ -152,6 +155,8 @@ export class RealtimeClient extends EventEmitter<ToEventFn<RealtimeClientEvents>
             this.emit('receiveRaw', msg);
          }
       });
+
+      console.log("------------------------------------------------=============Working mqtt")
       this.mqtt!.on('error', e => this.emitError(e));
       this.mqtt!.on('warning', w => this.emitWarning(w));
       this.mqtt!.on('disconnect', () =>

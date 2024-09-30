@@ -103,7 +103,8 @@ export class State {
   @Enumerable(false)
   cookieStore = new MemoryCookieStore();
   @Enumerable(false)
-  cookieJar = new CookieJar(this.cookieStore);
+  // cookieJar = new CookieJar(this.cookieStore);
+  cookieJar = new CookieJar();
   @Enumerable(false)
   checkpoint: CheckpointResponse | null = null;
   @Enumerable(false)
@@ -173,8 +174,62 @@ export class State {
     try {
       return this.extractCookieValue('csrftoken');
     } catch {
-      State.stateDebug('csrftoken lookup failed, returning "missing".');
+      // State.stateDebug('csrftoken lookup failed, returning "missing".');
       return 'missing';
+      // this.genToken(64);
+    }
+  }
+
+  // This method creates cookiesf from headers
+  setIgCookiesFromHeaders(headers: any) {
+    // Iterate over the headers and extract ig-set headers
+    Object.keys(headers).forEach((header) => {
+      if (header.startsWith('ig-set')) {
+        const cookieName = header.replace('ig-set-', '').replace('ig-u-', '').replace(/-/g, '_'); // Normalize the cookie name
+        const cookieValue = headers[header];
+
+        if (cookieValue) {
+          const cookieString = `${cookieName}=${cookieValue}; Path=/; Domain=.instagram.com`;
+
+          // Add the cookie to the jar
+          this.cookieJar.setCookieSync(cookieString, this.constants.HOST);
+          console.log(`Set cookie: ${cookieString}`);
+
+           // Special handling for 'ig-set-authorization'
+        if (header === 'ig-set-authorization') {
+          // Call the setSessionId function to decode and set the sessionid
+          this.setSessionId(cookieValue);
+        }
+        }
+      }
+    });
+  }
+
+  setSessionId(authorizationHeader: string) {
+    try {
+      if (authorizationHeader.startsWith('Bearer IGT:2:')) {
+        // Extract the Base64 token after 'Bearer IGT:2:'
+        const base64Token = authorizationHeader.split('Bearer IGT:2:')[1];
+  
+        // Decode the Base64 token
+        const decodedToken = JSON.parse(Buffer.from(base64Token, 'base64').toString('utf-8'));
+  
+        // Extract the sessionid from the decoded token
+        const sessionId = decodedToken.sessionid;
+  
+        // Set the sessionid as a cookie
+        if (sessionId) {
+          const sessionCookieString = `sessionid=${sessionId}; Path=/; Domain=.instagram.com`;
+          this.cookieJar.setCookieSync(sessionCookieString, this.constants.HOST);
+          console.log(`Set sessionid cookie: ${sessionCookieString}`);
+        } else {
+          console.error('No sessionid found in the decoded token.');
+        }
+      } else {
+        console.error('Invalid authorization header format.');
+      }
+    } catch (error) {
+      console.error('Error decoding ig-set-authorization:', error);
     }
   }
 
@@ -222,20 +277,28 @@ export class State {
 
   public async getCookieUserId(): Promise<string | ''> {
     const cookie = await this.extractCookie('ds_user_id');
-    
-    console.log("cookie", cookie);
     if (cookie !== null) {
       return cookie.value;
     }
-    
     this.updateAuthorization();
     if (!this.parsedAuthorization) {
       throw new IgCookieNotFoundError('ds_user_id');
     }
-    
     return this.parsedAuthorization.ds_user_id;
   }
-  
+
+  public getCookieUserIdSync(): string  {
+    const cookie =  this.extractCookieSync('ds_user_id');
+    if (cookie !== null) {
+      return cookie.value;
+    }
+    this.updateAuthorization();
+    if (!this.parsedAuthorization) {
+      throw new IgCookieNotFoundError('ds_user_id');
+    }
+    return this.parsedAuthorization.ds_user_id;
+  }
+
 
   public get cookieUsername() {
     return this.extractCookieValue('ds_user');
@@ -252,44 +315,69 @@ export class State {
 
   public extractCookie(key: string): Promise<Cookie | null> {
     return new Promise((resolve, reject) => {
-      console.log(this.constants.HOST);
-      console.log('-----------------');
-      console.log(this.cookieJar.toJSON());
-      console.log('----------------- getting cookies');
+      // console.log(this.constants.HOST);
+      // console.log('-----------------');
+      // console.log(this.cookieJar.toJSON());
+      // console.log('----------------- getting cookies');
       this.cookieJar.getCookies(this.constants.HOST, (err: Error | null, cookies: Cookie[]) => {
         if (err) {
-          console.log("issue***************");
+          // console.log("issue***************");
           return reject(err);
         }
         const cookie = _.find(cookies, { key }) as Cookie;
-        console.log(cookies,'cookie');
+        // console.log(cookie);
+        // console.log('^^^-----------------^^');
+        // console.log(this.cookieJar.toJSON());
         resolve(cookie || null);
       });
     });
   }
 
-  // public extractCookieValue(key: string): string {
-  //   const cookie = this.extractCookie(key);
-  //   if (cookie === null) {
-  //     State.stateDebug(`Could not find ${key}`);
-  //     throw new IgCookieNotFoundError(key);
+  public extractCookieSync(key: string): Cookie | null {
+    try {
+      const cookies: Cookie[] = this.cookieJar.getCookiesSync(this.constants.HOST);
+      const cookie = _.find(cookies, { key }) as Cookie;
+      return cookie || null;
+    } catch (err) {
+      console.error(`Error getting cookies for host ${this.constants.HOST}:`, err);
+      return null;
+    }
+  }
+
+  // private genToken(size: number = 10, symbols: boolean = false): string {
+  //   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //   const symbolsChars = '!@#$%^&*()_+-=[]{}|;:",.<>?/';
+  //   const availableChars = symbols ? chars + symbolsChars : chars;
+
+  //   let token = '';
+  //   for (let i = 0; i < size; i++) {
+  //     token += availableChars.charAt(Math.floor(Math.random() * availableChars.length));
   //   }
-  //   return cookie.value;
+  //   return token;
   // }
 
   public extractCookieValue(key: string): Promise<string> {
-    console.log(key,'key');
+    console.log(key, 'key');
     return this.extractCookie(key).then(cookie => {
-
       if (cookie === null) {
         State.stateDebug(`Could not find ${key}`);
         // throw new IgCookieNotFoundError(key);
       }
-      return "value"
-      // return cookie.value;
+      // return "value"
+      return cookie?.value || "";
     });
   }
 
+  public extractCookieValueSync(key: string): string {
+    const cookie = this.extractCookieSync(key);
+    if (cookie === null) {
+      console.warn(`Could not find cookie with key: ${key}`);
+      return "";
+    }
+    return cookie.value || "";
+  }
+
+ 
   public async extractUserId(): Promise<string | undefined> {
     try {
       return await this.getCookieUserId();
@@ -304,14 +392,14 @@ export class State {
   // public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
   //   (this.cookieJar as any)['_jar'] = await Bluebird.Promise.promisify<CookieJar.Serialized>(cb => CookieJar.deserialize(cookies, this.cookieStore, cb)) as any;
   // }
-   deserializeAsync = promisify(CookieJar.deserialize.bind(CookieJar));
-   public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
+  deserializeAsync = promisify(CookieJar.deserialize.bind(CookieJar));
+  public async deserializeCookieJar(cookies: string | CookieJar.Serialized) {
     // Deserialize cookies and get the deserialized CookieJar
     const jar = await this.deserializeAsync(cookies);
-  
+
     // Assign the deserialized jar to this.cookieJar
     (this.cookieJar as any)['_jar'] = jar;
-  
+
     // If you need to assign the cookieStore, do it here if needed
     (this.cookieJar as any)._cookieStore = this.cookieStore;
   }
@@ -319,7 +407,7 @@ export class State {
   public async serializeCookieJar(): Promise<CookieJar.Serialized> {
     // return Bluebird //fromCallback(cb => (this.cookieJar as any)['_jar'].serialize(cb));
     const serializeAsync = Bluebird.Promise.promisify<CookieJar.Serialized>((cb: any) => (this.cookieJar as any)['_jar'].serialize(cb));
-    const serializedData = await serializeAsync(); 
+    const serializedData = await serializeAsync();
     return serializedData
   }
 

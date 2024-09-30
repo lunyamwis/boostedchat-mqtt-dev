@@ -29,6 +29,7 @@ const axios = require('axios');
 // const http = require('http');
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
+
 const proxyAgent = new HttpsProxyAgent('http://user-instagramUser-sessionduration-60:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
 // const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@us.smartproxy.com:10001');
 
@@ -42,9 +43,8 @@ export class AccountRepository extends Repository {
     //   await this.client.qe.syncLoginExperiments();
     // }
     const { encrypted, time } = await this.encryptPassword(password);
-    // const pass = await this.passwordEncrypt(password);
-    console.log(encrypted);
-    console.log('-------------------afadf--------');
+    // console.log(encrypted);
+    // console.log('-------------------afadf--------');
 
     const response = await Bluebird.try(() =>
       this.client.request.send<AccountRepositoryLoginResponseRootObject>({
@@ -64,7 +64,6 @@ export class AccountRepository extends Repository {
           // _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
           country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
         }),
-        // headers: this.client.request.getDefaultHeaders(),
         httpsAgent: proxyAgent,
       }),
     ).catch(IgResponseError, error => {
@@ -86,18 +85,9 @@ export class AccountRepository extends Repository {
         }
       }
     });
-
-    console.log( '--------stUFF--------');
-    console.log(this.client.state.phoneId);
-    console.log(this.client.state.adid);
-    console.log(this.client.state.uuid);
-    console.log(this.client.state.deviceId);
-    console.log(this.client.state.appUserAgent);
-    console.log( '--------response.data--------');
-    // // console.log(response.data.logged_in_user);
-    // console.log(response.data.logged_in_user);
-    // console.log("----Headers--------");
-    // console.log(response.data)
+    console.log("----Headers--------");
+    console.log(response.headers);
+    console.log("----END Headers--------");
     return response.data.logged_in_user;
   }
 
@@ -110,14 +100,11 @@ export class AccountRepository extends Repository {
     return `2${sum}`;
   }
 
+  // This is a new method to encrypt password
   public async encryptPassword(password: string): Promise<{ time: string; encrypted: string; }> {
 
     const randKey = crypto.randomBytes(32);
-    console.log('randKey--------------------------------');
-    console.log(randKey);
     const iv = crypto.randomBytes(12);
-    console.log('XX00000XXX')
-    console.log(this.client.state.passwordEncryptionPubKey);
     const { publickeyid, publickey } = await this.passwordPublickeys();
     const rsaEncrypted = crypto.publicEncrypt({
       // key: this.client.state.passwordEncryptionPubKey ? Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString() : '',
@@ -125,8 +112,6 @@ export class AccountRepository extends Repository {
       // @ts-ignore
       padding: crypto.constants.RSA_PKCS1_PADDING,
     }, randKey);
-
-    console.log('11111111111111111', rsaEncrypted)
     const cipher = crypto.createCipheriv('aes-256-gcm', randKey, iv);
     const time = Math.floor(Date.now() / 1000).toString();
     cipher.setAAD(Buffer.from(time));
@@ -146,7 +131,7 @@ export class AccountRepository extends Repository {
     return {
       time,
       encrypted: Buffer.concat([
-        Buffer.from([1, 
+        Buffer.from([1,
           // this.client.state.passwordEncryptionKeyId
           publickeyid
         ]),
@@ -177,11 +162,11 @@ export class AccountRepository extends Repository {
         device_id: this.client.state.deviceId,//"android-fdd2ab98d4922503",
         google_tokens: "[]",
         login_attempt_count: "0",
-        _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
+        // _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
         country_codes: JSON.stringify([{ country_code: '254', source: 'default' }]),
         server_config_retrieval: "1",
       }),
-      headers: this.client.request.getDefaultHeaders(), 
+      headers: this.client.request.getDefaultHeaders(),
       httpsAgent: proxyAgent,
     };
     console.log('<-----resp--->');
@@ -194,12 +179,6 @@ export class AccountRepository extends Repository {
     console.log('done')
     return { publickeyid, publickey };
   }
-  ///
-
-
-
-
-
 
   public async twoFactorLogin(
     options: AccountTwoFactorLoginOptions,
