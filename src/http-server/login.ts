@@ -64,8 +64,10 @@ export const login = async (salesRepAccount: SalesRepAccount) => {
     // "dreamydaze.22",
     // "Dreamy@15"
 
-    "johhn.ycraig",
-    "carterlucio6859"
+    // "johhn.ycraig",
+    // "carterlucio6859"
+    'anyoksdenn@gmail.com',
+    'sinnedmokaya'
   );
   // console.log(`Logged in ${salesRepAccount.igname} successfully`);
   AccountInstances.addAccountInstance(salesRepAccount.igname, {
