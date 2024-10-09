@@ -428,7 +428,7 @@ export class MQTTListener {
                         }
 
                         console.log("performing operation check issue----------");
-                        console.log(result);
+                        // console.log(result);
                         console.log(result.status);
                         console.log(result.generated_comment);
                         console.log(result.text);
@@ -463,6 +463,9 @@ export class MQTTListener {
                                     text: `Hi team, The server responded with a 'Come again' to the message(s): ${messages} belonging to thread ${threadId} on ${this.username}'s account.\nThis will most likely result in a human takeover\n. Please check on this.`,
                                 });
                             } else {
+                                console.log("this.username=>",this.username)
+                                console.log("result.username=>",result.username)
+                                console.log("result.generated_comment=>",result.generated_comment)
                                 setTimeout(async () => {
                                     const userId = await this.accountInstances
                                         .get(this.username)!
@@ -497,13 +500,13 @@ export class MQTTListener {
                 text: `Hi team, There was an error generating a response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this.`,
             });
         }
-    } catch (error) {
-        // Handle unexpected errors
-        console.error("An unexpected error occurred:", error);
-        await this.mailer.send({
-            subject: `Unexpected error on ${this.username}`,
-            text: `Hi team, An unexpected error occurred while processing the message(s): ${messages} belonging to thread ${threadId}\n. Error details: ${error.message}`,
-        });
+    } catch (error: any) {
+      // Handle unexpected errors
+      console.error("An unexpected error occurred:", error);
+      await this.mailer.send({
+        subject: `Unexpected error on ${this.username}`,
+        text: `Hi team, An unexpected error occurred while processing the message(s): ${messages} belonging to thread ${threadId}\n. Error details: ${error.message}`,
+      });
     }
   }
 
