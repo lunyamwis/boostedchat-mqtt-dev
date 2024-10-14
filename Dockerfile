@@ -52,7 +52,6 @@ COPY package.json  ./
 COPY tsconfig.json tsconfig.json
 RUN npm run tsc
 RUN npm install
-RUN npm run tsc
 
 
 # Production install (only production dependencies)
@@ -65,7 +64,8 @@ RUN npm install --production --ignore-scripts
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
 COPY . .
-RUN npm install --production
+RUN npm install --production --ignore-scripts
+
 
 # COPY .env /home/ubuntu/.env
 
