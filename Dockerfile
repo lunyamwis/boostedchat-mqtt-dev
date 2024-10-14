@@ -39,44 +39,83 @@
 # ENTRYPOINT [ "npm", "run", "dev" ]
 
 # Use an official Node.js runtime as a parent image
-FROM node:18-alpine as base
-WORKDIR /usr/src/app
+# FROM node:18-alpine as base
+# ENV NODE_ENV=production
+# WORKDIR /usr/src/app
 
-# Install build dependencies in Alpine
-RUN apk add --no-cache bash
+# # Install build dependencies in Alpine
+# RUN apk add --no-cache bash
 
-# Install development dependencies
-FROM base AS install
+# # Install development dependencies
+# FROM base AS install
+# COPY . .
+# COPY package.json  ./
+# COPY tsconfig.json tsconfig.json
+# RUN npm run tsc
+# RUN npm install
+
+
+# # Production install (only production dependencies)
+# FROM base AS prod_install
+# COPY package.json ./
+# COPY tsconfig.json tsconfig.json
+# RUN npm i typescript --save-dev 
+# RUN npm install --production --ignore-scripts
+
+# # Prepare the release (copy files)
+# FROM prod_install AS prerelease
+# COPY . .
+# RUN npm install --production --ignore-scripts
+
+
+# # COPY .env /home/ubuntu/.env
+
+# # Final production build
+# FROM base AS release
+# WORKDIR /usr/src/app
+# COPY --from=prod_install /usr/src/app/node_modules ./node_modules
+# COPY --from=prerelease /usr/src/app/ .
+
+# # Expose the port (optional, adjust as necessary)
+
+
+# # Start the application
+# ENTRYPOINT [ "npm", "run", "dev" ]
+
+# Step 1: Use an official Node.js image as the base
+FROM node:18-alpine AS build
+
+# Step 2: Set the working directory
+WORKDIR /app
+
+# Step 3: Copy the package.json and package-lock.json files
+COPY package*.json ./
+
+# Step 4: Install production dependencies and build dependencies
+RUN npm install --production --legacy-peer-deps
+
+# Step 5: Install dev dependencies (for TypeScript build)
+RUN npm install --only=dev
+
+# Step 6: Copy the rest of the application code
 COPY . .
-COPY package.json  ./
-COPY tsconfig.json tsconfig.json
-RUN npm run tsc
-RUN npm install
 
+# Step 7: Build the TypeScript code (compile it to JavaScript)
+RUN npm run build
 
-# Production install (only production dependencies)
-FROM base AS prod_install
-COPY package.json ./
-COPY tsconfig.json tsconfig.json
-RUN npm i typescript --save-dev 
-RUN npm install --production --ignore-scripts
+# Step 8: Use a smaller image for production
+FROM node:18-alpine
 
-# Prepare the release (copy files)
-FROM prod_install AS prerelease
-COPY . .
-RUN npm install --production --ignore-scripts
+# Step 9: Set the working directory
+WORKDIR /app
 
+# Step 10: Copy only the necessary files from the build stage
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
 
-# COPY .env /home/ubuntu/.env
+# Step 11: Expose the necessary port (optional, depending on your app's config)
+EXPOSE 3000
 
-# Final production build
-FROM base AS release
-WORKDIR /usr/src/app
-COPY --from=prod_install /usr/src/app/node_modules ./node_modules
-COPY --from=prerelease /usr/src/app/ .
-
-# Expose the port (optional, adjust as necessary)
-
-
-# Start the application
-ENTRYPOINT [ "npm", "run", "dev" ]
+# Step 12: Define the command to run your app
+CMD ["node", "dist/index.js"]
