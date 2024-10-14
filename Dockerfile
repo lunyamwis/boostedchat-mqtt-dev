@@ -54,7 +54,7 @@ RUN npm install
 # Production install step (only install production dependencies)
 FROM base AS prod_install
 COPY package.json package-lock.json ./
-RUN npm install --only=production
+RUN npm install 
 
 # Build step (if needed)
 FROM install AS prerelease
