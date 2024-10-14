@@ -48,19 +48,25 @@ RUN apk add --no-cache bash
 # Install development dependencies
 FROM base AS install
 COPY . .
-COPY package.json package-lock.json ./
-RUN npm i typescript --save-dev 
+COPY package.json  ./
+COPY tsconfig.json tsconfig.json
+RUN npm run tsc
 RUN npm install
+RUN npm run tsc
+
 
 # Production install (only production dependencies)
 FROM base AS prod_install
-COPY package.json package-lock.json ./
+COPY package.json ./
+COPY tsconfig.json tsconfig.json
 RUN npm i typescript --save-dev 
 RUN npm install --production --ignore-scripts
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
 COPY . .
+RUN npm install --production
+
 # COPY .env /home/ubuntu/.env
 
 # Final production build
