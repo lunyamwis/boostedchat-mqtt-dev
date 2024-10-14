@@ -84,7 +84,7 @@
 
 # Step 1: Use an official Node.js image as the base
 FROM node:18-alpine AS build
-
+ENV NODE_ENV=production
 # Step 2: Set the working directory
 WORKDIR /app
 
