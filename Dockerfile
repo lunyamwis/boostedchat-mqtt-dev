@@ -118,4 +118,4 @@ COPY --from=build /app/node_modules ./node_modules
 EXPOSE 3000
 
 # Step 12: Define the command to run your app
-CMD ["node", "dist/index.js"]
+ENTRYPOINT ["node", "dist/index.js"]
