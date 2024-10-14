@@ -63,7 +63,7 @@ jobs:
       with:
         context: .
         # push: true
-        # tags: lunyamwimages/boostedchat-api-dev:latest
+        # tags: lunyamwimages/boostedchat-api-dev:latest 
         # registry: docker.io  
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }} 
