@@ -1,29 +1,61 @@
+# FROM node:18-alpine as base
+# WORKDIR /usr/src/app
+
+# # Install step
+# FROM base AS install
+# # RUN mkdir -p /temp/dev
+# # COPY package.json bun.lockb /temp/dev/
+# # RUN cd /temp/dev && bun install
+# COPY package.json package-lock.json ./
+# RUN npm install
+
+# # RUN mkdir -p /temp/prod
+# # COPY package.json bun.lockb /temp/prod/
+# # RUN cd /temp/prod && bun install
+# # RUN cd /temp/prod && bun install --production
+
+
+# FROM install AS prerelease
+# COPY --from=install /temp/dev/node_modules node_modules
+# COPY . .
+
+
+# # Release step
+# # FROM base AS release
+# # COPY --from=install /temp/prod/node_modules node_modules
+# # COPY --from=prerelease /usr/src/app/ .
+
+# # Release step
+# FROM base AS release
+# # Copy only production dependencies
+# COPY --from=prod_install /usr/src/app/node_modules ./node_modules
+# COPY --from=prerelease /usr/src/app/ .
+
+# # run the app
+
+# # COPY state.js /usr/src/app/node_modules/instagram_mqtt/node_modules/instagram-private-api/dist/core/state.js
+# # COPY account.repository.js /usr/src/app/node_modules/instagram_mqtt/node_modules/instagram-private-api/dist/repositories/account.repository.js
+
+# ENTRYPOINT [ "npm", "run", "dev" ]
+
+
+# Use an official Node.js runtime as a parent image
 FROM node:18-alpine as base
 WORKDIR /usr/src/app
 
 # Install step
 FROM base AS install
-# RUN mkdir -p /temp/dev
-# COPY package.json bun.lockb /temp/dev/
-# RUN cd /temp/dev && bun install
 COPY package.json package-lock.json ./
 RUN npm install
 
-# RUN mkdir -p /temp/prod
-# COPY package.json bun.lockb /temp/prod/
-# RUN cd /temp/prod && bun install
-# RUN cd /temp/prod && bun install --production
+# Production install step (only install production dependencies)
+FROM base AS prod_install
+COPY package.json package-lock.json ./
+RUN npm install --only=production
 
-
+# Build step (if needed)
 FROM install AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
-
-
-# Release step
-# FROM base AS release
-# COPY --from=install /temp/prod/node_modules node_modules
-# COPY --from=prerelease /usr/src/app/ .
 
 # Release step
 FROM base AS release
@@ -31,9 +63,8 @@ FROM base AS release
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 
-# run the app
+# Expose the port your app runs on (optional, replace with your app port)
+# EXPOSE 3000
 
-# COPY state.js /usr/src/app/node_modules/instagram_mqtt/node_modules/instagram-private-api/dist/core/state.js
-# COPY account.repository.js /usr/src/app/node_modules/instagram_mqtt/node_modules/instagram-private-api/dist/repositories/account.repository.js
-
+# Command to run the app
 ENTRYPOINT [ "npm", "run", "dev" ]
