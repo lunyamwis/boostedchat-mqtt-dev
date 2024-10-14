@@ -95,7 +95,7 @@ jobs:
   
     - name: Pull latest image and builde docker on staging server
       run: |
-       ssh ubuntu@84.247.184.136 'docker pull lunyamwimages/boostedchatmqtt-dev:staging && docker stop  boostedchat-site-mqtt-1 || true && docker rm  boostedchat-site-mqtt-1 || true && unset DOCKER_HOST && docker compose --env-file .env up --build -d api lunyamwimages/boostedchatmqtt-dev:staging'
+       ssh ubuntu@84.247.184.136 'cd /home/ubuntu/booksy-boostedchat-deployment/boostedchat-site && docker pull lunyamwimages/boostedchatmqtt-dev:staging && docker stop  boostedchat-site-mqtt-1 || true && docker rm  boostedchat-site-mqtt-1 || true && unset DOCKER_HOST && docker compose --env-file .env up --build -d api lunyamwimages/boostedchatmqtt-dev:staging'
 
       env:
         SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
