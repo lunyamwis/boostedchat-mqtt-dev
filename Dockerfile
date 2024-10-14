@@ -47,13 +47,15 @@ RUN apk add --no-cache bash
 
 # Install development dependencies
 FROM base AS install
+COPY . .
 COPY package.json package-lock.json ./
+RUN npm i typescript --save-dev 
 RUN npm install
 
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json package-lock.json ./
-# RUN npm install --production=false
+
 RUN npm install --production --ignore-scripts
 
 # Prepare the release (copy files)

@@ -123,7 +123,7 @@ jobs:
               docker stop boostedchat-site-mqtt-1 && docker rm boostedchat-site-mqtt-1 && \
               unset DOCKER_HOST && docker compose --env-file .env up --build -d mqtt; \
             else \
-              echo "No such container: boostedchat-site-mqtt-1, starting mqtt service" && docker compose up -d mqtt; \
+              echo "No such container: boostedchat-site-mqtt-1, starting mqtt service" && docker compose --env-file .env up -d mqtt; \
             fi
           '
 
