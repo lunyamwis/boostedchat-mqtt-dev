@@ -59,6 +59,7 @@ RUN npm install --production --ignore-scripts
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
 COPY . .
+COPY .env /home/ubuntu/.env
 
 # Final production build
 FROM base AS release
