@@ -53,8 +53,8 @@ RUN npm install
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json package-lock.json ./
-RUN npm install --production=false
-RUN npm install --production
+# RUN npm install --production=false
+RUN npm install --production --ignore-scripts
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
