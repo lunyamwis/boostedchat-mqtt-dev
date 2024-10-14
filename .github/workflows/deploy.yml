@@ -100,7 +100,7 @@ jobs:
             unset DOCKER_HOST && docker compose --env-file /home/ubuntu/.env up --build -d api lunyamwimages/boostedchatmqtt-dev:staging; \
           else \
             echo "No such container: boostedchat-site-mqtt-1" && docker compose up -d mqtt; \
-          fi
+          fi'
 
       env:
         SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
