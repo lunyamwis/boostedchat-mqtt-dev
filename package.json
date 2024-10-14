@@ -30,6 +30,7 @@
    "author": "nerix",
    "license": "MIT",
    "dependencies": {
+      "@api/smartproxy": "file:.api/apis/smartproxy",
       "@lifeomic/attempt": "^3.0.0",
       "@types/chance": "^1.0.2",
       "@types/request-promise": "^4.1.43",

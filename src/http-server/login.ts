@@ -13,10 +13,10 @@ export const logout = async (igname: string) => {
   let accountInstances = AccountInstances.allAccountInstances()
   // disconnect if is connected
   let isConnected = await isConnectedAccount(igname)
-  if(isConnected){
+  if (isConnected) {
     console.log(`${igname} is connected. Disconnecting before logout`)
     await disconnect(igname)
-  }else{
+  } else {
     console.log(`${igname} is not connected. Not disconnecting`)
   }
   clearMQTTRealTimeListeners(igname)
@@ -26,7 +26,7 @@ export const logout = async (igname: string) => {
   removeLoggedInAccount(igname)
   return tmp
 
-  
+
 }
 export const disconnect = async (igname: string) => {
   let accountInstances = AccountInstances.allAccountInstances()
@@ -34,40 +34,32 @@ export const disconnect = async (igname: string) => {
   return true
 }
 
-export const login = async (salesRepAccount: SalesRepAccount) => {
+
+export const login = async (salesRepAccount: SalesRepAccount, proxy_url: string) => {
   console.log("Logging in to account: ", salesRepAccount.igname);
   const igInstance = withRealtime(new IgApiClient());
+  igInstance.state.proxyUrl = proxy_url;
   console.log("Logginga in to account: ", salesRepAccount.igname);
-  // igInstance.state.generateDevice('denn_mokaya');
-  // igInstance.state.generateDevice('orinabree');
 
-  igInstance.state.generateDevice('johhn.ycraig');
+  
+  igInstance.state.generateDevice(salesRepAccount.igname);
   
   console.log("are we even reaching here first!");
-  // igInstance.state.proxyUrl =''
-  
-  const user = await igInstance.account.login(  // check.
+ 
+  const user = await igInstance.account.login(
     // salesRepAccount.igname,
     // salesRepAccount.password
-    // 'denn_mokaya',
-    // 'sinnedmokaya'
-
-    // 'bitely_inc',
-    // 'sinnedmokaya'
 
     // 'martobiro',
     // 'luthersaved96-'
 
+    'denn_mokaya',
+    'sinnedmokaya'
 
-
-    // Note working
-    // "dreamydaze.22",
-    // "Dreamy@15"
-
-    "johhn.ycraig",
-    "carterlucio6859"
+    // 'orinabree',
+    // '33512733@BK6'
   );
-  // console.log(`Logged in ${salesRepAccount.igname} successfully`);
+  console.log(`Logged in ${salesRepAccount.igname} successfully`);
   AccountInstances.addAccountInstance(salesRepAccount.igname, {
     userId: user.pk,
     instance: igInstance,

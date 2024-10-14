@@ -29,19 +29,22 @@ const axios = require('axios');
 // const http = require('http');
 import { HttpsProxyAgent } from 'https-proxy-agent';
 
-
-const proxyAgent = new HttpsProxyAgent('http://user-instagramUser-sessionduration-60:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
-// const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@us.smartproxy.com:10001');
-
+const createProxyAgent = (proxyUrl: string) =>{
+  return new HttpsProxyAgent(
+    proxyUrl
+  );
+}
 
 export class AccountRepository extends Repository {
   private static accountDebug = debug('ig:account');
+
   public async login(username: string, password: string): Promise<AccountRepositoryLoginResponseLogged_in_user> {
     console.log("whereeeeee--------")
     // if (!this.client.state.passwordEncryptionPubKey) {
     //   console.log("test------------")
     //   await this.client.qe.syncLoginExperiments();
     // }
+    let proxyAgent = createProxyAgent(this.client.state.proxyUrl);
     const { encrypted, time } = await this.encryptPassword(password);
     // console.log(encrypted);
     // console.log('-------------------afadf--------');
@@ -64,7 +67,7 @@ export class AccountRepository extends Repository {
           // _csrftoken: "Q1xd3LXRFcKaq6ozUEcR7dJzJP9z3bQaYmKdfbu0nN6AOyipapCbFKy2ts39MtSF",
           country_codes: JSON.stringify([{ country_code: '254', source: 'default' }])
         }),
-        httpsAgent: proxyAgent,
+        httpsAgent: proxyAgent //this.client.state.proxyUrl // ,
       }),
     ).catch(IgResponseError, error => {
       if (error.response.data.two_factor_required) {
@@ -150,6 +153,8 @@ export class AccountRepository extends Repository {
 
   async passwordPublickeys(): Promise<{ publickeyid: number; publickey: string }> {
     console.log('000000000000000------========')
+    let proxyAgent = createProxyAgent(this.client.state.proxyUrl);
+    console.log(proxyAgent);
     const config = {
       method: 'post',
       url: 'https://i.instagram.com/api/v1/qe/sync/',
@@ -167,9 +172,12 @@ export class AccountRepository extends Repository {
         server_config_retrieval: "1",
       }),
       headers: this.client.request.getDefaultHeaders(),
-      httpsAgent: proxyAgent,
+      httpsAgent: proxyAgent //this.client.state.proxyUrl// proxyAgent,
     };
     console.log('<-----resp--->');
+    console.log(this.client.state.proxyUrl);
+    console.log('<-----resp--->');
+    console.log(config);
     const resp = await axios(config);
     console.log('resp--->');
     console.log(resp);
