@@ -5,6 +5,7 @@ services:
     image: mqtt-prod
     build:
       context: .
+    env_file: .env
     ports:
       - "1883:1883"
       - "8883:8883"
