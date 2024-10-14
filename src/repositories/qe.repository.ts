@@ -1,8 +1,13 @@
 import { Repository } from '../core/repository';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 const axios = require('axios');
-const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
 
+const createProxyAgent = (proxyUrl: string) =>{
+  return new HttpsProxyAgent(
+    proxyUrl
+    // 'http://user-instagramUser-sessionduration-60:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001'
+  );
+}
 
 export class QeRepository extends Repository {
   public syncExperiments() {
@@ -15,6 +20,7 @@ export class QeRepository extends Repository {
     let data;
     console.log("tumeficka------")
     const uid = 65110623138;
+    const proxyAgent = createProxyAgent(this.client.state.proxyUrl);
     try {
       // const uid = await this.client.state.getCookieUserId();
       data = {
