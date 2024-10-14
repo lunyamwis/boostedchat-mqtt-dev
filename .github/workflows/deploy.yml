@@ -50,7 +50,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker-compose build --no-cache --force-rm 
+      run: docker compose build --no-cache --force-rm 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
