@@ -53,6 +53,7 @@ RUN npm install
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json package-lock.json ./
+RUN npm install --production=false
 RUN npm install --production
 
 # Prepare the release (copy files)
@@ -66,7 +67,7 @@ COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 
 # Expose the port (optional, adjust as necessary)
-EXPOSE 3000
+
 
 # Start the application
 ENTRYPOINT [ "npm", "run", "dev" ]
