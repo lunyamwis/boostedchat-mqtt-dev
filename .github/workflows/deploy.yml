@@ -121,7 +121,7 @@ jobs:
             docker pull lunyamwimages/boostedchatmqtt-dev:staging && \
             if [ "$(docker ps -a -q -f name=boostedchat-site-mqtt-1)" ]; then \
               docker stop boostedchat-site-mqtt-1 && docker rm boostedchat-site-mqtt-1 && \
-              unset DOCKER_HOST && docker compose --env-file .env up --build -d api lunyamwimages/boostedchatmqtt-dev:staging; \
+              unset DOCKER_HOST && docker compose --env-file .env up --build -d mqtt; \
             else \
               echo "No such container: boostedchat-site-mqtt-1, starting mqtt service" && docker compose up -d mqtt; \
             fi
