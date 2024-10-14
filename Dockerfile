@@ -40,7 +40,7 @@
 
 
 # Use an official Node.js runtime as a parent image
-FROM node:18-alpine as base
+FROM node:18 as base
 WORKDIR /usr/src/app
 
 # Install step
