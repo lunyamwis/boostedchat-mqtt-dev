@@ -40,8 +40,11 @@
 
 
 # Use an official Node.js runtime as a parent image
-FROM node:18 as base
+FROM node:18-alpine as base
 WORKDIR /usr/src/app
+
+# Install necessary packages for Alpine, including npm and build tools
+RUN apk add --no-cache python3 make g++ bash
 
 # Install step
 FROM base AS install
