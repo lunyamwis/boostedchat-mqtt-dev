@@ -38,36 +38,35 @@
 
 # ENTRYPOINT [ "npm", "run", "dev" ]
 
-
 # Use an official Node.js runtime as a parent image
 FROM node:18-alpine as base
 WORKDIR /usr/src/app
 
-# Install necessary packages for Alpine, including npm and build tools
-RUN apk add --no-cache python3 make g++ bash
+# Install build dependencies in Alpine
+RUN apk add --no-cache bash
 
-# Install step
+# Install development dependencies
 FROM base AS install
 COPY package.json package-lock.json ./
 RUN npm install
 
-# Production install step (only install production dependencies)
+# Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json package-lock.json ./
-RUN npm install 
+RUN npm install --production
 
-# Build step (if needed)
-FROM install AS prerelease
+# Prepare the release (copy files)
+FROM prod_install AS prerelease
 COPY . .
 
-# Release step
+# Final production build
 FROM base AS release
-# Copy only production dependencies
+WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 
-# Expose the port your app runs on (optional, replace with your app port)
-# EXPOSE 3000
+# Expose the port (optional, adjust as necessary)
+EXPOSE 3000
 
-# Command to run the app
+# Start the application
 ENTRYPOINT [ "npm", "run", "dev" ]
