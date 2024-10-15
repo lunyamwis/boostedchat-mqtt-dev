@@ -92,7 +92,6 @@ WORKDIR /app
 COPY package*.json ./
 
 # Step 4: Install production dependencies and build dependencies
-RUN npm ci
 
 # Step 5: Install dev dependencies (for TypeScript build)
 RUN npm install --only=dev
