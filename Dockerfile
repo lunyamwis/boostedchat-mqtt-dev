@@ -92,7 +92,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Step 4: Install production dependencies and build dependencies
-RUN npm install --production --legacy-peer-deps
+RUN npm ci
 
 # Step 5: Install dev dependencies (for TypeScript build)
 RUN npm install --only=dev
@@ -113,6 +113,7 @@ WORKDIR /app
 COPY --from=build /app/package*.json ./
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules ./node_modules
+RUN npm install -g typescript
 
 # Step 11: Expose the necessary port (optional, depending on your app's config)
 EXPOSE 3000
