@@ -1,6 +1,5 @@
 import type { FromSchema } from 'json-schema-to-ts';
 import * as schemas from './schemas';
-
 export type AddWhitelistedIpsBodyParam = FromSchema<typeof schemas.AddWhitelistedIps.body>;
 export type AddWhitelistedIpsResponse200 = FromSchema<typeof schemas.AddWhitelistedIps.response['200']>;
 export type AddWhitelistedIpsResponse400 = FromSchema<typeof schemas.AddWhitelistedIps.response['400']>;
