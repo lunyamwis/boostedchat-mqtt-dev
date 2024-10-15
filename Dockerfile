@@ -39,7 +39,7 @@
 # ENTRYPOINT [ "npm", "run", "dev" ]
 
 # Use an official Node.js runtime as a parent image
-FROM node:18-alpine as base
+FROM node:22-alpine as base
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
@@ -85,4 +85,4 @@ RUN npm install -g typescript
 
 
 # Start the application
-ENTRYPOINT [ "npm", "run", "dev" ]
+ENTRYPOINT [ "npm", "run", "prod" ]
