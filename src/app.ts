@@ -1,7 +1,7 @@
-import { login } from "../src/http-server/login";
-import { MQTTListener } from "../src/http-server/mqttListener";
-import { SalesRepAccount } from "../src/http-server/receiveAccounts";
-import { addLoggedInAccount } from "../src/http-server/accounts";
+import { login } from "./http-server/login";
+import { MQTTListener } from "./http-server/mqttListener";
+import { SalesRepAccount } from "./http-server/receiveAccounts";
+import { addLoggedInAccount } from "./http-server/accounts";
 import smartproxy from '@api/smartproxy';
 
 export const initServers = async (salesRepAccounts: SalesRepAccount[], accountToCheck: any = false) => {

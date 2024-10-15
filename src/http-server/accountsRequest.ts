@@ -3,7 +3,12 @@ import { cache } from "../config/cache";
 import to from "await-to-js";
 import { eventLogger } from "../config/logger";
 import {clearLoggedInAccounts} from "./accounts"
-const paths = require("../config/paths.json");
+import {Endpoints} from "../config/paths"
+
+const paths: { [key: string]: string } = {
+  "login": Endpoints.login,
+  "sales-rep": Endpoints.salesRep,
+};
 
 const getAccessTokenFromRedis = async () => {
   const s = await cache.hget("api", "accessToken");
@@ -23,6 +28,8 @@ const accessTokenIsValid = async (accesToken: string) => {
 
 const getUrl = (action: string) => {
   let rootUrl = process.env.API_URL;
+  console.log("888888888888888888888888888888888888888888888888888888")
+  console.log(paths);
   if (!paths[action]) {
     return false;
   }
