@@ -75,6 +75,7 @@ FROM base AS release
 WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
+RUN npm install tsx
 RUN npm install -g typescript
 # Expose the port (optional, adjust as necessary)
 
