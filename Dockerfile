@@ -100,7 +100,7 @@ RUN npm install --only=dev
 COPY . .
 
 # Step 7: Build the TypeScript code (compile it to JavaScript)
-RUN npm run build
+# RUN npm run build
 
 # Step 8: Use a smaller image for production
 FROM node:18-alpine
