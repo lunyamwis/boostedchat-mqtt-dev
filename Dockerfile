@@ -66,6 +66,9 @@ RUN npm install --production --ignore-scripts
 FROM prod_install AS prerelease
 COPY . .
 RUN npm install --production --ignore-scripts
+RUN npm i typescript --save-dev 
+RUN npm install tsx
+RUN npm install -g typescript
 
 
 # COPY .env /home/ubuntu/.env
@@ -75,6 +78,7 @@ FROM base AS release
 WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
+RUN npm i typescript --save-dev 
 RUN npm install tsx
 RUN npm install -g typescript
 # Expose the port (optional, adjust as necessary)
