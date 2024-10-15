@@ -28,8 +28,6 @@ const accessTokenIsValid = async (accesToken: string) => {
 
 const getUrl = (action: string) => {
   let rootUrl = process.env.API_URL;
-  console.log("888888888888888888888888888888888888888888888888888888")
-  console.log(paths);
   if (!paths[action]) {
     return false;
   }

@@ -21,8 +21,8 @@
       "format": "prettier -w . --log-level warn",
       "check-format": "prettier -c .",
       "typecheck": "tsc -p tsconfig.build.json --noEmit",
-      "dev": "tsx --env-file=.env src/index.ts",
-      "prod": "node --env-file=.env dist/index.js"
+      "dev": "tsx src/index.ts",
+      "prod": "node dist/index.js"
    },
    "engines": {
       "node": ">=18.0.0"

@@ -1,5 +1,6 @@
 import { Redis } from "ioredis";
 import { appLogger } from "./logger";
+require('dotenv').config();
 
 const cache = new Redis({
     host: process.env.REDIS_HOST,
