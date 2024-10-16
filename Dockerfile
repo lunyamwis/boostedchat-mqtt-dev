@@ -44,7 +44,6 @@ ENV NODE_ENV=production
 WORKDIR /usr/src/app
 RUN apk add --no-cache bash
 RUN apk add nano
-
 RUN npm install -g npm@10.8.2
 # Install build dependencies in Alpine
 
@@ -52,8 +51,8 @@ RUN npm install -g npm@10.8.2
 # Install development dependencies
 FROM base AS install
 COPY . .
-COPY ./node_modules/ ./node_modules
 COPY package.json  ./
+COPY .env ./
 COPY tsconfig.json tsconfig.json
 RUN npm install --dev
 # RUN npm i --save-dev @types/node
@@ -70,6 +69,7 @@ RUN npm run build
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json ./
+COPY .env ./
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
 RUN npm install --production --ignore-scripts
