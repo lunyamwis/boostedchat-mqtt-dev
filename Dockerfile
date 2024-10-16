@@ -42,11 +42,12 @@
 FROM node:22.8.0 as base
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
+RUN apk add --no-cache bash
+RUN apk add nano
 
 RUN npm install -g npm@10.8.2
 # Install build dependencies in Alpine
-RUN apk add --no-cache bash
-RUN apk add nano
+
 
 # Install development dependencies
 FROM base AS install
