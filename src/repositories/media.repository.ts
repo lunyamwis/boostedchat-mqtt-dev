@@ -1,6 +1,4 @@
-// @ts-ignore
 import { defaultsDeep, omit } from 'lodash';
-// @ts-ignore
 import { DateTime } from 'luxon';
 import { Repository } from '../core/repository';
 import {

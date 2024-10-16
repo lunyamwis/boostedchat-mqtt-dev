@@ -7,7 +7,6 @@ import {
   StatusResponse,
 } from '../responses';
 import { DirectThreadBroadcastOptions } from '../types';
-// @ts-ignore
 import Chance = require('chance');
 import { DirectThreadRepositoryApproveParticipantRequestResponseRootObject } from '../responses';
 

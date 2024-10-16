@@ -1,7 +1,5 @@
-// @ts-ignore
 import { random } from 'lodash';
 import { Repository } from '../core/repository';
-// @ts-ignore
 import Chance = require('chance');
 import { UploadRepositoryPhotoResponseRootObject } from '../responses';
 import {

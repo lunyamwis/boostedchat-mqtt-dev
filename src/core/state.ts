@@ -1,4 +1,3 @@
-// @ts-ignore
 import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
 // import * as Chance from 'chance';
@@ -10,9 +9,7 @@ import * as Constants from './constants';
 import { ChallengeStateResponse, CheckpointResponse } from '../responses';
 import { IgCookieNotFoundError, IgNoCheckpointError, IgUserIdNotFoundError } from '../errors';
 import { Enumerable } from '../decorators';
-// @ts-ignore
 import debug from 'debug';
-// @ts-ignore
 import Chance = require('chance');
 import { promisify } from 'util';
 

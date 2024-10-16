@@ -1,4 +1,3 @@
-// @ts-ignore
 import Chance = require('chance');
 // src: com.instagram.realtimeclient.RealtimeSubscription
 export const QueryIDs = {

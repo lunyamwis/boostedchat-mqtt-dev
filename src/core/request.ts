@@ -1,4 +1,3 @@
-// @ts-ignore
 import { defaultsDeep, inRange, random } from 'lodash';
 import { createHmac } from 'crypto';
 import { Subject } from 'rxjs';
@@ -20,7 +19,6 @@ import {
 } from '../errors';
 import { IgResponse } from '../types';
 import JSONbigInt from 'json-bigint';
-// @ts-ignore
 import debug from 'debug';
 import { HttpsProxyAgent } from 'https-proxy-agent';
 // import { Cookie } from 'tough-cookie';

@@ -16,9 +16,7 @@ import {
 } from "./accounts";
 
 import { logout, disconnect } from "./login"
-// @ts-ignore
 const express = require('express');
-// @ts-ignore
 import { Request, Response } from 'express';
 // import { Express } from 'express';
 

@@ -24,9 +24,7 @@ import { StatusResponse, UploadRepositoryVideoResponseRootObject } from '../resp
 import { PostingIgtvOptions } from '../types/posting.igtv.options';
 import sizeOf = require('image-size');
 import Bluebird = require('bluebird');
-// @ts-ignore
 import Chance = require('chance');
-// @ts-ignore
 import { random, defaults } from 'lodash';
 import { UploadRepository } from '../repositories/upload.repository';
 import debug from 'debug';

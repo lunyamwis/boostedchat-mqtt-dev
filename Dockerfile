@@ -67,6 +67,7 @@ COPY tsconfig.json tsconfig.json
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json ./
+COPY ./node_modules/ ./node_modules
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
 # RUN npm install --production --ignore-scripts
