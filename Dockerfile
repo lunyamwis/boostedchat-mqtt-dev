@@ -52,7 +52,6 @@ RUN npm install -g npm@10.8.2
 FROM base AS install
 COPY . .
 COPY package.json  ./
-COPY .env ./
 COPY tsconfig.json tsconfig.json
 RUN npm install --dev
 # RUN npm i --save-dev @types/node
@@ -69,7 +68,6 @@ RUN npm run build
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json ./
-COPY .env ./
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
 RUN npm install --production --ignore-scripts
@@ -92,7 +90,6 @@ WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 COPY --from=prerelease /usr/src/app/dist ./dist
-COPY .env ./
 
 # Expose the port (optional, adjust as necessary)
 
