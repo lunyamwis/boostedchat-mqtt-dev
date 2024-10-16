@@ -50,7 +50,7 @@ RUN apk add nano
 # Install development dependencies
 FROM base AS install
 COPY . .
-COPY node_modules ./
+COPY ./node_modules ./
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
 # RUN npm i --save-dev @types/node
