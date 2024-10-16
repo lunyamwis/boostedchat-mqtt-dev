@@ -50,14 +50,16 @@ RUN apk add nano
 # Install development dependencies
 FROM base AS install
 COPY . .
-# COPY ./dist ./
+COPY node_modules ./
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
-RUN npm i --save-dev @types/node
-RUN npm install -g rimraf
-RUN npm install -g ts-node
-RUN npm install -g -D typescript
-RUN npm install -g tsx
+# RUN npm i --save-dev @types/node
+# RUN npm install -g rimraf
+# RUN npm install -g ts-node
+# RUN npm install -g -D typescript
+# RUN npm install -g tsx
+# npm i -g npm
+# npm i --save lodash
 # RUN npm install
 # RUN npm run build 
 
@@ -67,16 +69,16 @@ FROM base AS prod_install
 COPY package.json ./
 # COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
-RUN npm install --production --ignore-scripts
+# RUN npm install --production --ignore-scripts
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
 # COPY --from=install /usr/src/app/dist ./dist
 COPY . .
-RUN npm install --production --ignore-scripts
-RUN npm i typescript --save-dev 
-RUN npm install tsx
-RUN npm install -g typescript
+# RUN npm install --production --ignore-scripts
+# RUN npm i typescript --save-dev 
+# RUN npm install tsx
+# RUN npm install -g typescript
 
 
 # COPY .env /home/ubuntu/.env
@@ -84,8 +86,8 @@ RUN npm install -g typescript
 # Final production build
 FROM base AS release
 WORKDIR /usr/src/app
-COPY --from=prod_install /usr/src/app/node_modules ./node_modules
-COPY --from=prerelease /usr/src/app/ .
+# COPY --from=prod_install /usr/src/app/node_modules ./node_modules
+# COPY --from=prerelease /usr/src/app/ .
 # COPY --from=prerelease /usr/src/app/dist ./dist
 
 # Expose the port (optional, adjust as necessary)
