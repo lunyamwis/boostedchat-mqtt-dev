@@ -51,19 +51,22 @@ FROM base AS install
 COPY . .
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
-RUN npm run tsc
+RUN npm install -g rimraf
+# npm install -g npm-check
 RUN npm install
+RUN npm run build 
 
 
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json ./
-COPY tsconfig.json tsconfig.json
-RUN npm i typescript --save-dev 
+# COPY tsconfig.json tsconfig.json
+# RUN npm i typescript --save-dev 
 RUN npm install --production --ignore-scripts
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
+COPY --from=install /usr/src/app/dist ./dist
 COPY . .
 RUN npm install --production --ignore-scripts
 RUN npm i typescript --save-dev 
@@ -78,9 +81,8 @@ FROM base AS release
 WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
-RUN npm i typescript --save-dev 
-RUN npm install tsx
-RUN npm install -g typescript
+COPY --from=prerelease /usr/src/app/dist ./dist
+
 # Expose the port (optional, adjust as necessary)
 
 
