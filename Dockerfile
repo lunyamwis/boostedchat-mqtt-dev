@@ -92,6 +92,7 @@ WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 COPY --from=prerelease /usr/src/app/dist ./dist
+COPY .env ./
 
 # Expose the port (optional, adjust as necessary)
 
