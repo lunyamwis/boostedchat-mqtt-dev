@@ -39,129 +39,61 @@
 # ENTRYPOINT [ "npm", "run", "dev" ]
 
 # Use an official Node.js runtime as a parent image
-# FROM node:22.8.0-alpine  as base
-# ENV NODE_ENV=production
-# WORKDIR /usr/src/app
-# RUN apk add --no-cache bash
-# RUN apk add nano
-
-# RUN npm install -g npm@10.8.2
-# # Install build dependencies in Alpine
-
-
-# # Install development dependencies
-# FROM base AS install
-# COPY . .
-# COPY ./node_modules/ ./node_modules
-# COPY package.json  ./
-# COPY tsconfig.json tsconfig.json
-# # RUN npm i --save-dev @types/node
-# # RUN npm install -g rimraf
-# # RUN npm install -g ts-node
-# # RUN npm install -g -D typescript
-# # RUN npm install -g tsx
-# # npm i -g npm
-# # npm i --save lodash
-# # RUN npm install
-# # RUN npm run build 
-
-
-# # Production install (only production dependencies)
-# FROM base AS prod_install
-# COPY package.json ./
-# COPY tsconfig.json tsconfig.json
-# # RUN npm i typescript --save-dev 
-# # RUN npm install --production --ignore-scripts
-
-# # Prepare the release (copy files)
-# FROM prod_install AS prerelease
-# # COPY --from=install /usr/src/app/dist ./dist
-# COPY . .
-# # RUN npm install --production --ignore-scripts
-# # RUN npm i typescript --save-dev 
-# # RUN npm install tsx
-# # RUN npm install -g typescript
-
-
-# # COPY .env /home/ubuntu/.env
-
-# # Final production build
-# FROM base AS release
-# WORKDIR /usr/src/app
-# # COPY --from=prod_install /usr/src/app/node_modules ./node_modules
-# COPY --from=prerelease /usr/src/app/ .
-# # COPY --from=prerelease /usr/src/app/dist ./dist
-
-# # Expose the port (optional, adjust as necessary)
-
-
-# # Start the application
-# ENTRYPOINT [ "npm", "run", "prod" ]
-
-# Start with an Ubuntu-based Node.js image
-FROM node:22.8.0-bullseye as base
-
-# Set the environment variable
+FROM node:22.8.0-alpine  as base
 ENV NODE_ENV=production
-
-# Set the working directory
 WORKDIR /usr/src/app
+RUN apk add --no-cache bash
+RUN apk add nano
 
-# Install necessary packages
-RUN apt-get update && \
-    apt-get install -y bash nano && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install a specific version of npm globally
 RUN npm install -g npm@10.8.2
+# Install build dependencies in Alpine
 
-# Install build dependencies in Ubuntu
-FROM base AS install
-
-# Copy the entire application codebase to the working directory
-COPY . .
 
 # Install development dependencies
-# Ensure you have your package.json and package-lock.json in the current directory
-COPY package.json ./
-COPY tsconfig.json ./
+FROM base AS install
+COPY . .
+COPY ./node_modules/ ./node_modules
+COPY package.json  ./
+COPY tsconfig.json tsconfig.json
+# RUN npm i --save-dev @types/node
+# RUN npm install -g rimraf
+# RUN npm install -g ts-node
+# RUN npm install -g -D typescript
+# RUN npm install -g tsx
+# npm i -g npm
+# npm i --save lodash
+# RUN npm install
+# RUN npm run build 
 
-# Optionally install TypeScript and other dev tools
-RUN npm install --save-dev typescript rimraf ts-node tsx
-
-# Install production dependencies
-RUN npm install --production --ignore-scripts
-
-# Prepare the release (copy files)
-FROM base AS prerelease
-
-# Copy only the necessary files to keep the image size smaller
-COPY --from=install /usr/src/app .
 
 # Production install (only production dependencies)
 FROM base AS prod_install
-
-# Copy package.json and tsconfig.json for production install
 COPY package.json ./
-COPY tsconfig.json ./
+COPY tsconfig.json tsconfig.json
+# RUN npm i typescript --save-dev 
+# RUN npm install --production --ignore-scripts
 
-# Copy necessary files for the production environment
-COPY --from=prerelease /usr/src/app/ .
+# Prepare the release (copy files)
+FROM prod_install AS prerelease
+# COPY --from=install /usr/src/app/dist ./dist
+COPY . .
+# RUN npm install --production --ignore-scripts
+# RUN npm i typescript --save-dev 
+# RUN npm install tsx
+# RUN npm install -g typescript
+
+
+# COPY .env /home/ubuntu/.env
 
 # Final production build
 FROM base AS release
-
-# Set the working directory
 WORKDIR /usr/src/app
-
-# Copy production node_modules
-COPY --from=prod_install /usr/src/app/node_modules ./node_modules
-
-# Copy application files from the previous stage
-COPY --from=prerelease /usr/src/app .
+# COPY --from=prod_install /usr/src/app/node_modules ./node_modules
+COPY --from=prerelease /usr/src/app/ .
+# COPY --from=prerelease /usr/src/app/dist ./dist
 
 # Expose the port (optional, adjust as necessary)
-# EXPOSE 3000
+
 
 # Start the application
-ENTRYPOINT ["npm", "run", "prod"]
+ENTRYPOINT [ "npm", "run", "prod" ]
