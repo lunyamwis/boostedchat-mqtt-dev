@@ -52,8 +52,9 @@ COPY . .
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
 RUN npm install -g rimraf
-# npm install -g npm-check
-RUN npm install
+RUN npm install -g ts-node
+RUN npm install -g -D typescript
+RUN npm install -g tsx
 RUN npm run build 
 
 
