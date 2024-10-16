@@ -39,7 +39,7 @@
 # ENTRYPOINT [ "npm", "run", "dev" ]
 
 # Use an official Node.js runtime as a parent image
-FROM node:22.8.0 as base
+FROM node:22.8.0-alpine  as base
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 RUN apk add --no-cache bash
