@@ -1,4 +1,5 @@
 import { plainToClass } from 'class-transformer';
+// @ts-ignore
 import { defaults } from 'lodash';
 import { Diff } from 'utility-types';
 import {

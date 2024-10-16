@@ -1,3 +1,4 @@
+// @ts-ignore
 import { flatten } from 'lodash';
 import { Expose } from 'class-transformer';
 import { Feed } from '../core/feed';

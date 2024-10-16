@@ -14,6 +14,7 @@ import {
   IgResponseError,
 } from '../errors';
 import { IgResponse, AccountEditProfileOptions, AccountTwoFactorLoginOptions } from '../types';
+// @ts-ignore
 import { defaultsDeep } from 'lodash';
 import { IgSignupBlockError } from '../errors/ig-signup-block.error';
 import Bluebird = require('bluebird');

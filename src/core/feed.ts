@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs';
 import { classToPlain, Expose, plainToClassFromExist, serialize } from 'class-transformer';
 import { AttemptOptions, retry } from '@lifeomic/attempt';
+// @ts-ignore
 import Chance = require('chance');
 import { IgResponseError } from '../errors';
 import { Repository } from './repository';

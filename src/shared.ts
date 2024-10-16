@@ -1,5 +1,6 @@
 import { IgApiClient } from './core/client';
 import { CompressCallback, deflate, InputType, unzip, ZlibOptions } from 'zlib';
+// @ts-ignore
 import debug, { Debugger } from 'debug';
 import { MqttClient } from 'mqtts';
 import { promisify } from 'util';

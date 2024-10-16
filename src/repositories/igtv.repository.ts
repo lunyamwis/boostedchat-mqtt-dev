@@ -1,7 +1,9 @@
 import { Repository } from '../core/repository';
 import { IgtvWriteSeenStateOptions } from '../types';
+// @ts-ignore
 import { defaults } from 'lodash';
 import { StatusResponse, IgtvSearchResponseRootObject } from '../responses';
+// @ts-ignore
 import Chance = require('chance');
 export class IgtvRepository extends Repository {
   public async writeSeenState(options: IgtvWriteSeenStateOptions): Promise<StatusResponse> {

@@ -1,4 +1,5 @@
 import { InstaSticker } from './insta-sticker';
+// @ts-ignore
 import { DateTime } from 'luxon';
 
 export class CountdownSticker extends InstaSticker {

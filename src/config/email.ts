@@ -1,3 +1,4 @@
+// @ts-ignore
 import * as nodemailer from "nodemailer";
 
 export interface CustomTransportOptions extends nodemailer.TransportOptions {

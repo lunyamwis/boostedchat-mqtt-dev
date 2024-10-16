@@ -12,6 +12,7 @@ import {
    tryUnzipAsync,
 } from '../shared';
 import { MQTToTConnection, MQTToTClient, MQTToTConnectResponsePacket } from '../mqttot';
+// @ts-ignore
 import { Chance } from 'chance';
 import { FbnsMessageData, FbnsNotificationUnknown } from './fbns.types';
 import { IllegalStateError, MqttMessage } from 'mqtts';

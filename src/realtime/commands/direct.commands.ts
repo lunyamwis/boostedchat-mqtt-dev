@@ -2,6 +2,7 @@ import { MQTToTClient } from '../../mqttot';
 import { Topics } from '../../constants';
 import { compressDeflate, debugChannel, notUndefined } from '../../shared';
 import { MessageSyncMessageTypes } from '../messages';
+// @ts-ignore
 import Chance = require('chance');
 import { ThriftDescriptors, ThriftPacketDescriptor, thriftWriteFromObject } from '../../thrift';
 import { MqttMessageOutgoing } from 'mqtts';

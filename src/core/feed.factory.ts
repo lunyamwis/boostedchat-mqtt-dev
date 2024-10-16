@@ -33,6 +33,7 @@ import {
 } from '../feeds';
 import { DirectInboxFeedResponseThreadsItem } from '../responses';
 import { plainToClassFromExist } from 'class-transformer';
+// @ts-ignore
 import Chance = require('chance');
 import { PostsInsightsFeedOptions, TimelineFeedReason, IgAppModule } from '../types';
 import { UserStoryFeed } from '../feeds/user-story.feed';

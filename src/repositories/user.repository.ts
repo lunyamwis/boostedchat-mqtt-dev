@@ -7,7 +7,9 @@ import {
 } from '../responses';
 import { IgExactUserNotFoundError } from '../errors';
 import { UserLookupOptions } from '../types/user.lookup.options';
+// @ts-ignore
 import { defaults } from 'lodash';
+// @ts-ignore
 import Chance = require('chance');
 export class UserRepository extends Repository {
   async info(id: string | number): Promise<UserRepositoryInfoResponseUser> {

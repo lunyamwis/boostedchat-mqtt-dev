@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+// @ts-ignore
 import { sample } from 'lodash';
 import { Feed } from '../core/feed';
 import { TimelineFeedReason, TimelineFeedsOptions } from '../types/timeline-feed.types';

@@ -18,9 +18,11 @@ import {
   IgResponseError,
 } from '../errors';
 import { IgResponse, AccountEditProfileOptions, AccountTwoFactorLoginOptions } from '../types';
+// @ts-ignore
 import { defaultsDeep } from 'lodash';
 import { IgSignupBlockError } from '../errors/ig-signup-block.error';
 import Bluebird = require('bluebird');
+// @ts-ignore
 import debug from 'debug';
 // import * as crypto from 'crypto';
 

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { shuffle } from 'lodash';
 import { Repository } from '../core/repository';
 import Bluebird = require('bluebird');

@@ -1,4 +1,5 @@
 import { Repository } from '../core/repository';
+// @ts-ignore
 import Chance = require('chance');
 import Bluebird = require('bluebird');
 
