@@ -39,10 +39,11 @@
 # ENTRYPOINT [ "npm", "run", "dev" ]
 
 # Use an official Node.js runtime as a parent image
-FROM node:22-alpine as base
+FROM node:22.8.0 as base
 ENV NODE_ENV=production
 WORKDIR /usr/src/app
 
+RUN npm install -g npm@10.8.2
 # Install build dependencies in Alpine
 RUN apk add --no-cache bash
 RUN apk add nano
@@ -67,7 +68,6 @@ COPY tsconfig.json tsconfig.json
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json ./
-COPY ./node_modules/ ./node_modules
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
 # RUN npm install --production --ignore-scripts
