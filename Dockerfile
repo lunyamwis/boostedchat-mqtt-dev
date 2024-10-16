@@ -76,6 +76,7 @@ COPY tsconfig.json tsconfig.json
 FROM prod_install AS prerelease
 COPY --from=install /usr/src/app/dist ./dist
 COPY . .
+# RUN npm install --include=dev --ignore-scripts
 # RUN npm install --production --ignore-scripts
 # RUN npm i typescript --save-dev 
 # RUN npm install tsx
@@ -87,7 +88,7 @@ COPY . .
 # Final production build
 FROM base AS release
 WORKDIR /usr/src/app
-COPY --from=prod_install /usr/src/app/node_modules ./node_modules
+COPY --from=install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 COPY --from=prerelease /usr/src/app/dist ./dist
 
