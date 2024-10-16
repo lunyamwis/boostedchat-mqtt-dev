@@ -45,11 +45,12 @@ WORKDIR /usr/src/app
 
 # Install build dependencies in Alpine
 RUN apk add --no-cache bash
+RUN apk add nano
 
 # Install development dependencies
 FROM base AS install
 COPY . .
-COPY ./dist ./dist
+# COPY ./dist ./
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
 RUN npm i --save-dev @types/node
@@ -70,7 +71,7 @@ RUN npm install --production --ignore-scripts
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
-COPY --from=install /usr/src/app/dist ./dist
+# COPY --from=install /usr/src/app/dist ./dist
 COPY . .
 RUN npm install --production --ignore-scripts
 RUN npm i typescript --save-dev 
@@ -85,7 +86,7 @@ FROM base AS release
 WORKDIR /usr/src/app
 COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
-COPY --from=prerelease /usr/src/app/dist ./dist
+# COPY --from=prerelease /usr/src/app/dist ./dist
 
 # Expose the port (optional, adjust as necessary)
 
