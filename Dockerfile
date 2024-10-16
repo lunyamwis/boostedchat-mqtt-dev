@@ -67,7 +67,6 @@ COPY tsconfig.json tsconfig.json
 # Production install (only production dependencies)
 FROM base AS prod_install
 COPY package.json ./
-COPY ./node_modules ./
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
 # RUN npm install --production --ignore-scripts
@@ -75,7 +74,6 @@ COPY tsconfig.json tsconfig.json
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
 # COPY --from=install /usr/src/app/dist ./dist
-COPY ./node_modules ./
 COPY . .
 # RUN npm install --production --ignore-scripts
 # RUN npm i typescript --save-dev 
@@ -88,7 +86,7 @@ COPY . .
 # Final production build
 FROM base AS release
 WORKDIR /usr/src/app
-COPY --from=prod_install /usr/src/app/node_modules ./node_modules
+# COPY --from=prod_install /usr/src/app/node_modules ./node_modules
 COPY --from=prerelease /usr/src/app/ .
 # COPY --from=prerelease /usr/src/app/dist ./dist
 
