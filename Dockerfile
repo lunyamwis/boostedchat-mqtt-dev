@@ -51,6 +51,7 @@ FROM base AS install
 COPY . .
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
+RUN npm i --save-dev @types/node
 RUN npm install -g rimraf
 RUN npm install -g ts-node
 RUN npm install -g -D typescript
