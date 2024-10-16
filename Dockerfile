@@ -49,6 +49,7 @@ RUN apk add --no-cache bash
 # Install development dependencies
 FROM base AS install
 COPY . .
+COPY ./dist ./dist
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
 RUN npm i --save-dev @types/node
