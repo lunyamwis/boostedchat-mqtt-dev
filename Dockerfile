@@ -53,7 +53,7 @@ FROM base AS install
 COPY . .
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
-RUN npm install  --dev
+RUN npm install --include=dev
 # RUN npm i --save-dev @types/node
 # RUN npm install -g rimraf
 # RUN npm install -g ts-node
@@ -70,7 +70,7 @@ FROM base AS prod_install
 COPY package.json ./
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
-RUN npm install --dev
+# RUN npm install --include=dev
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
