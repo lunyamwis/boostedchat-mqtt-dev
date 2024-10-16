@@ -40,7 +40,7 @@
 
 # Use an official Node.js runtime as a parent image
 FROM node:22.8.0-alpine  as base
-# ENV NODE_ENV=production
+ENV NODE_ENV=production
 WORKDIR /usr/src/app
 RUN apk add --no-cache bash
 RUN apk add nano
@@ -53,7 +53,7 @@ FROM base AS install
 COPY . .
 COPY package.json  ./
 COPY tsconfig.json tsconfig.json
-RUN npm install 
+RUN npm install  --dev
 # RUN npm i --save-dev @types/node
 # RUN npm install -g rimraf
 # RUN npm install -g ts-node
@@ -70,7 +70,7 @@ FROM base AS prod_install
 COPY package.json ./
 COPY tsconfig.json tsconfig.json
 # RUN npm i typescript --save-dev 
-RUN npm install 
+RUN npm install --dev
 
 # Prepare the release (copy files)
 FROM prod_install AS prerelease
