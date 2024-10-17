@@ -387,87 +387,127 @@ export class MQTTListener {
   }
 
   private async sendNewMessage(threadId: string, messages: string[]) {
-    const response = await fetch(
-      `${process.env.API_URL}/instagram/dflow/${threadId}/generate-response/`,
-      {
-        method: "POST",
-        body: JSON.stringify({ message: messages.join("#*eb4*#") }),
-        headers: { "Content-Type": "application/json" },
-      }
-    );
-    if (response.status === 200) {
-      const body = (await response.json()) as {
-        status: number;
-        generated_comment: string;
-        text: string;
-        success: boolean;
-        username: string;
-        assigned_to: "Robot" | "Human";
-      };
-
-      delete this.messageHolder[threadId];
-
-      if (body.assigned_to === "Human") {
-        return;
-      }
-
-      console.log("performing operation check issue----------");
-      console.log(body);
-      console.log(body.status);
-      console.log(body.generated_comment);
-      console.log(body.text);
-      console.log("finishing performing operation check issue----------");
-      if (body.status === 200) {
-        if (body.generated_comment === "Come again") {
-          const humanTakeover = await fetch(
-            `${process.env.API_URL}/instagram/fallback/${threadId}/assign-operator/`,
+    try {
+        // Send the message to the Django API to start the async task
+        const response = await fetch(
+            `${process.env.API_URL}/instagram/dflow/${threadId}/generate-response/`,
             {
-              method: "POST",
-              body: JSON.stringify({ assigned_to: "Human" }),
-              headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify({ message: messages.join("#*eb4*#") }),
+                headers: { "Content-Type": "application/json" },
             }
-          );
-          if (humanTakeover.status === 200) {
-            const humanTakeoverBody = (await humanTakeover.json()) as {
-              status: number;
-              assign_operator: boolean;
-            };
-            httpLogger.log({
-              level: "info",
-              label: `${this.username} Human Takeover`,
-              message: JSON.stringify(humanTakeoverBody),
-            });
-          }
-          await this.mailer.send({
-            subject: `Human takeover from ${this.username}`,
-            text: `Hi team, The server responded with a 'Come again' to the message(s): ${messages} belonging to thread ${threadId} on ${this.username}'s account.\nThis will most likely result in a human takeover\n. Please check on this.`,
-          });
+        );
+
+        // Check if the response's content type is JSON
+        const contentType = response.headers.get("Content-Type");
+        
+        if (response.status === 200) {
+            if (contentType && contentType.includes("application/json")) {
+                const body = (await response.json()) as {
+                    status: number;
+                    task_id: string; // Django will now return a task_id
+                };
+
+                // Proceed with task polling logic
+                let taskStatusResponse;
+                let taskStatusBody;
+
+                do {
+                    taskStatusResponse = await fetch(`${process.env.API_URL}/instagram/celery-task-status/${body.task_id}/`);
+                    taskStatusBody = await taskStatusResponse.json();
+                    console.log('taskStatusBody=>>',taskStatusBody);
+
+                    if (taskStatusBody.state === 'SUCCESS') {
+                        const result = taskStatusBody.result;
+
+                        // Handle success scenario
+                        delete this.messageHolder[threadId];
+
+                        if (result.assigned_to === "Human") {
+                            return;
+                        }
+
+                        console.log("performing operation check issue----------");
+                        // console.log(result);
+                        console.log(result.status);
+                        console.log(result.generated_comment);
+                        console.log(result.text);
+                        console.log("finishing performing operation check issue----------");
+
+                        if (result.status === 200) {
+                            if (result.generated_comment === "Come again") {
+                                const humanTakeover = await fetch(
+                                    `${process.env.API_URL}/instagram/fallback/${threadId}/assign-operator/`,
+                                    {
+                                        method: "POST",
+                                        body: JSON.stringify({ assigned_to: "Human" }),
+                                        headers: { "Content-Type": "application/json" },
+                                    }
+                                );
+
+                                if (humanTakeover.status === 200) {
+                                    const humanTakeoverBody = (await humanTakeover.json()) as {
+                                        status: number;
+                                        assign_operator: boolean;
+                                    };
+
+                                    httpLogger.log({
+                                        level: "info",
+                                        label: `${this.username} Human Takeover`,
+                                        message: JSON.stringify(humanTakeoverBody),
+                                    });
+                                }
+
+                                await this.mailer.send({
+                                    subject: `Human takeover from ${this.username}`,
+                                    text: `Hi team, The server responded with a 'Come again' to the message(s): ${messages} belonging to thread ${threadId} on ${this.username}'s account.\nThis will most likely result in a human takeover\n. Please check on this.`,
+                                });
+                            } else {
+                                console.log("this.username=>",this.username)
+                                console.log("result.username=>",result.username)
+                                console.log("result.generated_comment=>",result.generated_comment)
+                                setTimeout(async () => {
+                                    const userId = await this.accountInstances
+                                        .get(this.username)!
+                                        .instance.user.getIdByUsername(result.username);
+                                    const thread = this.accountInstances
+                                        .get(this.username)!
+                                        .instance.entity.directThread([userId.toString()]);
+                                    await thread.broadcastText(result.generated_comment);
+                                }, 10);
+                                console.log(result.generated_comment,"==> has been sent successfully");
+                            }
+                        }
+                    } else {
+                        // Add delay before polling again (for example, 1 second)
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                } while (taskStatusBody.state !== 'SUCCESS');
+            } else {
+                // If the response is not JSON, handle it as an error
+                const text = await response.text();
+                console.error("Received non-JSON response:", text);
+                await this.mailer.send({
+                    subject: `Non-JSON response on ${this.username}`,
+                    text: `Hi team, The server returned a non-JSON response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this. Response content: ${text}`,
+                });
+            }
         } else {
-          setTimeout(async () => {
-            const userId = await this.accountInstances
-              .get(this.username)!
-              .instance.user.getIdByUsername(body.username);
-            const thread = this.accountInstances
-              .get(this.username)!
-              .instance.entity.directThread([userId.toString()]);
-            await thread.broadcastText(body.generated_comment);
-          }, 75000);
+            // Handle error status
+            console.log("Error status received:", response.status);
+            await this.mailer.send({
+                subject: `Response generation failed on ${this.username}`,
+                text: `Hi team, There was an error generating a response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this.`,
+            });
         }
-      }
-    } else {
-      console.log("here is errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
+    } catch (error: any) {
+      // Handle unexpected errors
+      console.error("An unexpected error occurred:", error);
       await this.mailer.send({
-        subject: `Response generation failed on ${this.username}`,
-        text: `Hi team, There was an error generating a response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this.`,
-      });
-      httpLogger.log({
-        level: "error",
-        label: `${this.username} Generate response error`,
-        message: JSON.stringify({
-          status: response.status,
-          text: response.text,
-        }),
+        subject: `Unexpected error on ${this.username}`,
+        text: `Hi team, An unexpected error occurred while processing the message(s): ${messages} belonging to thread ${threadId}\n. Error details: ${error.message}`,
       });
     }
   }
+
 }
