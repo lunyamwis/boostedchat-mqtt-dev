@@ -1,8 +1,8 @@
-# name: Deploy to production
+name: Deploy to production
 
-# on:
-#   push:
-#     branches: [ main ]
+on:
+  push:
+    branches: [ main ]
 
 # env:
 #    REGISTRY: docker.io

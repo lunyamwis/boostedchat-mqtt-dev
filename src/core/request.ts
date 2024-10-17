@@ -61,7 +61,7 @@ export class Request {
   public async send<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
     console.log("this is the send method udding")
     console.log(userOptions);
-    console.log('-------Send<>Login Request-----------')
+    console.log(`||-------Sending Request: ${userOptions?.url}-----------||`)
     // const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
     // const proxyAgent = new HttpsProxyAgent('http://instagramUser:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
     const options = defaultsDeep(
@@ -95,7 +95,7 @@ export class Request {
   public async send2<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
     // console.log(userOptions);
     
-    console.log('-------Send<> LIstening Request-----------')
+    console.log(`||-------Sending2 Request: ${userOptions?.url}-----------||`)
     const options = defaultsDeep(
       userOptions,
       {
