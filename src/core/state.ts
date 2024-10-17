@@ -219,22 +219,24 @@ export class State {
         if (!base64Token) {
           // throw new Error('Authorization header missing token after "Bearer IGT:2:"');
           console.error('Authorization header missing token after "Bearer IGT:2:', authorizationHeader);
-        }
-
-        // Decode the Base64 token
-        const decodedToken = JSON.parse(Buffer.from(base64Token, 'base64').toString('utf-8'));
-
-        // Extract the sessionid from the decoded token
-        const sessionId = decodedToken.sessionid;
-
-        // Set the sessionid as a cookie
-        if (sessionId) {
-          const sessionCookieString = `sessionid=${sessionId}; Path=/; Domain=.instagram.com`;
-          this.cookieJar.setCookieSync(sessionCookieString, this.constants.HOST);
-          console.log(`Set sessionid cookie: ${sessionCookieString}`);
+          return
         } else {
-          console.error('No sessionid found in the decoded token.');
+          // Decode the Base64 token
+          const decodedToken = JSON.parse(Buffer.from(base64Token, 'base64').toString('utf-8'));
+
+          // Extract the sessionid from the decoded token
+          const sessionId = decodedToken.sessionid;
+
+          // Set the sessionid as a cookie
+          if (sessionId) {
+            const sessionCookieString = `sessionid=${sessionId}; Path=/; Domain=.instagram.com`;
+            this.cookieJar.setCookieSync(sessionCookieString, this.constants.HOST);
+            console.log(`Set sessionid cookie: ${sessionCookieString}`);
+          } else {
+            console.error('No sessionid found in the decoded token.');
+          }
         }
+
       } else {
         console.error('Invalid authorization header format.');
       }
