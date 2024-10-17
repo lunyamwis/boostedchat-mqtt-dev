@@ -206,8 +206,12 @@ export class State {
   }
 
   setSessionId(authorizationHeader: string) {
+    console.log("SESSION ID BEING CHECKKED");
+    console.log(authorizationHeader);
     try {
       if (authorizationHeader.startsWith('Bearer IGT:2:')) {
+        console.log("SESSION ID BEING CHECKKED AGAIN");
+        console.log(authorizationHeader);
         // Extract the Base64 token after 'Bearer IGT:2:'
         const base64Token = authorizationHeader.split('Bearer IGT:2:')[1];
   
