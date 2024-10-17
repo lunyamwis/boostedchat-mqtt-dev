@@ -83,8 +83,7 @@ const fetchDataFromSmartProxy = async (country: string, city: string) => {
   try {
     // Use default values if country or city is an empty string
     const resolvedCountry = country === '' ? 'us' : country;
-    // const resolvedCity = city === '' ? 'pasadena' : city;
-    const resolvedCity = resolvedCountry === 'us' ? (city === '' ? 'pasadena' : city) : '';
+    const resolvedCity = resolvedCountry === 'us' ? (city === '' ? 'miami' : city) : '';
 
 
      // Prepare the parameters for the SmartProxy API request
@@ -105,7 +104,7 @@ const fetchDataFromSmartProxy = async (country: string, city: string) => {
 
     // Only include the city parameter if the country is 'us'
     if (resolvedCountry === 'us') {
-      params.city = city === '' ? 'pasadena' : resolvedCity;
+      params.city = city === '' ? 'miami' : resolvedCity;
     }
 
     // Fetch the proxy URL from Smart Proxy API

@@ -195,11 +195,11 @@ export class State {
           this.cookieJar.setCookieSync(cookieString, this.constants.HOST);
           console.log(`Set cookie: ${cookieString}`);
 
-           // Special handling for 'ig-set-authorization'
-        if (header === 'ig-set-authorization') {
-          // Call the setSessionId function to decode and set the sessionid
-          this.setSessionId(cookieValue);
-        }
+          // Special handling for 'ig-set-authorization'
+          if (header === 'ig-set-authorization') {
+            // Call the setSessionId function to decode and set the sessionid
+            this.setSessionId(cookieValue);
+          }
         }
       }
     });
@@ -214,13 +214,19 @@ export class State {
         console.log(authorizationHeader);
         // Extract the Base64 token after 'Bearer IGT:2:'
         const base64Token = authorizationHeader.split('Bearer IGT:2:')[1];
-  
+
+        // Check if the token exists and is not empty
+        if (!base64Token) {
+          // throw new Error('Authorization header missing token after "Bearer IGT:2:"');
+          console.error('Authorization header missing token after "Bearer IGT:2:', authorizationHeader);
+        }
+
         // Decode the Base64 token
         const decodedToken = JSON.parse(Buffer.from(base64Token, 'base64').toString('utf-8'));
-  
+
         // Extract the sessionid from the decoded token
         const sessionId = decodedToken.sessionid;
-  
+
         // Set the sessionid as a cookie
         if (sessionId) {
           const sessionCookieString = `sessionid=${sessionId}; Path=/; Domain=.instagram.com`;
@@ -291,8 +297,8 @@ export class State {
     return this.parsedAuthorization.ds_user_id;
   }
 
-  public getCookieUserIdSync(): string  {
-    const cookie =  this.extractCookieSync('ds_user_id');
+  public getCookieUserIdSync(): string {
+    const cookie = this.extractCookieSync('ds_user_id');
     if (cookie !== null) {
       return cookie.value;
     }
@@ -381,7 +387,7 @@ export class State {
     return cookie.value || "";
   }
 
- 
+
   public async extractUserId(): Promise<string | undefined> {
     try {
       return await this.getCookieUserId();
