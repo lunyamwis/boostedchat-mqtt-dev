@@ -114,7 +114,7 @@ const fetchDataFromSmartProxy = async (country: string, city: string) => {
     const proxyUrls = response.data; // or response.body depending on the structure
 
     if (Array.isArray(proxyUrls) && proxyUrls.length > 0) {
-      return "http://user-instagramUser-session-1ab3292b1a471051-sessionduration-10-country-us-city-providence:gate.smartproxy.com:10002:instagramUser:ww~IsJcgn87EqD0s4d@gate.smartproxy.com:7000" //proxyUrls[0]; // Return the first proxy URL, or handle as needed
+      return proxyUrls[0]; // Return the first proxy URL, or handle as needed
     } else {
       throw new Error('No proxy URLs returned');
     }
@@ -126,7 +126,7 @@ const fetchDataFromSmartProxy = async (country: string, city: string) => {
 
 async function initializeAccount(account: any) {
   try {
-    const proxy_url = await fetchDataFromSmartProxy(account.country, account.city);
+    const proxy_url = 'http://user-sp8zty8v3u-country-us-zip-02864:o0ulmi8HwgC4H2=dxW@us.smartproxy.com:10001' //await fetchDataFromSmartProxy(account.country, account.city);
     console.log("_------------------PROXY URL----------------------------------")
     console.log(proxy_url);
     return new Promise(async (resolve, reject) => {
