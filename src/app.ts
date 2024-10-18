@@ -114,7 +114,7 @@ const fetchDataFromSmartProxy = async (country: string, city: string) => {
     const proxyUrls = response.data; // or response.body depending on the structure
 
     if (Array.isArray(proxyUrls) && proxyUrls.length > 0) {
-      return proxyUrls[0]; // Return the first proxy URL, or handle as needed
+      return "http://user-instagramUser-session-1ab3292b1a471051-sessionduration-10-country-us-city-providence:gate.smartproxy.com:10002:instagramUser:ww~IsJcgn87EqD0s4d@gate.smartproxy.com:7000" //proxyUrls[0]; // Return the first proxy URL, or handle as needed
     } else {
       throw new Error('No proxy URLs returned');
     }
