@@ -5,7 +5,10 @@ services:
     image: mqtt-prod
     build:
       context: .
+<<<<<<< HEAD
     env_file: .env
+=======
+>>>>>>> main
     ports:
       - "1883:1883"
       - "8883:8883"
@@ -25,4 +28,8 @@ services:
       - EMAIL_PASSWORD=${EMAIL_PASSWORD}
       - EMAIL_RECIPIENTS=${EMAIL_RECIPIENTS}
       - SMTP_HOST=${SMTP_HOST}
+<<<<<<< HEAD
       - SMTP_PORT=${SMTP_PORT}
+=======
+      - SMTP_PORT=${SMTP_PORT}
+>>>>>>> main
