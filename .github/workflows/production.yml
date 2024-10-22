@@ -5,8 +5,8 @@ on:
     branches: [ main ]
 
 env:
-   REGISTRY: docker.io
-   IMAGE_NAME: lunyamwimages/boostedchatmqtt-dev:latest
+  REGISTRY: docker.io
+  IMAGE_NAME: lunyamwimages/boostedchatmqtt-dev:latest
 
 jobs:
   build:
@@ -23,21 +23,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    # - name: Install Dependencies
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     pip install -r requirements.txt
-    # - name: Run Tests
-    #   run: |
-    #     python manage.py test
-  # test:
-  #   test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - name: Test the Docker image
-  #     run: docker-compose up -d 
-     
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
