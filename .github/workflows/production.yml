@@ -70,18 +70,18 @@ jobs:
 
     - name: Add server to known_hosts
       run: |
-        ssh-keyscan -H 84.247.184.136 >> ~/.ssh/known_hosts
+        ssh-keyscan -H 35.237.192.231 >> ~/.ssh/known_hosts
 
     - name: Test SSH connection
       run: |
-        ssh -v ubuntu@84.247.184.136 'echo "I AM IN THE SERVER"'
+        ssh -v root@35.237.192.231 'echo "I AM IN THE SERVER"'
       env:
         SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
   
     - name: Pull latest image and builde docker on production server
       run: |
-        ssh ubuntu@84.247.184.136 '
-            cd /home/ubuntu/booksy-boostedchat-deployment/boostedchat-site && \
+        ssh root@35.237.192.231 '
+            cd /root/boostedchat-site && \
             docker pull lunyamwimages/boostedchatmqtt-dev:latest && \
             if [ "$(docker ps -a -q -f name=boostedchat-site-mqtt-1)" ]; then \
               docker stop boostedchat-site-mqtt-1 && docker rm boostedchat-site-mqtt-1 && \
