@@ -48,20 +48,26 @@ jobs:
         push: true
         tags: lunyamwimages/boostedchatmqtt-dev:latest
 
-    - name: Set up ssh agent
-      uses: webfactory/ssh-agent@v0.9.0
+    - uses: 'google-github-actions/auth@v2'
       with:
-        ssh-private-key: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
+        project_id: 'boostedchatapi'
+        workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }} 
+  
 
-    - name: Add server to known_hosts
-      run: |
-        ssh-keyscan -H 35.237.192.231 >> ~/.ssh/known_hosts
+    # - name: Set up ssh agent
+    #   uses: webfactory/ssh-agent@v0.9.0
+    #   with:
+    #     ssh-private-key: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
 
-    - name: Test SSH connection
-      run: |
-        ssh -v root@35.237.192.231 'echo "I AM IN THE SERVER"'
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
+    # - name: Add server to known_hosts
+    #   run: |
+    #     ssh-keyscan -H 35.237.192.231 >> ~/.ssh/known_hosts
+
+    # - name: Test SSH connection
+    #   run: |
+    #     ssh -v root@35.237.192.231 'echo "I AM IN THE SERVER"'
+    #   env:
+    #     SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
   
     - name: Pull latest image and builde docker on production server
       run: |
@@ -76,5 +82,5 @@ jobs:
             fi
           '
 
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
+    #   env:
+    #     SSH_PRIVATE_KEY: ${{ secrets.STAGING_DEPLOY_SSH_PRIVATE_KEY }}
