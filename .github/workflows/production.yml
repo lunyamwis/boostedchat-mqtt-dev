@@ -51,6 +51,7 @@ jobs:
         context: "{{defaultContext}}"
         push: true
         tags: lunyamwimages/boostedchatmqtt-dev:latest
+        
     - name: Authenticate with Google Cloud
     - uses: 'google-github-actions/auth@v2'
       with:
