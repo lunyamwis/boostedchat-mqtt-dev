@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  id-token: write
+  contents: read
+
 env:
    REGISTRY: docker.io
    IMAGE_NAME: lunyamwimages/boostedchatmqtt-dev:latest
@@ -47,7 +51,7 @@ jobs:
     #     context: "{{defaultContext}}"
     #     push: true
     #     tags: lunyamwimages/boostedchatmqtt-dev:latest
-
+    - name: Authenticate with Google Cloud
     - uses: 'google-github-actions/auth@v2'
       with:
         project_id: 'boostedchatapi'
