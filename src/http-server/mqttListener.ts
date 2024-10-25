@@ -435,9 +435,9 @@ export class MQTTListener {
                         console.log("finishing performing operation check issue----------");
 
                         if (result.status === 200) {
-                            if (result.generated_comment === "Come again") {
+                            if (result.generated_comment === "assigned_human") {
                                 const humanTakeover = await fetch(
-                                    `${process.env.API_URL}/instagram/fallback/${threadId}/assign-operator/`,
+                                    `${process.env.API_URL}/instagram/fallback/${this.username}/assign-operator/`,
                                     {
                                         method: "POST",
                                         body: JSON.stringify({ assigned_to: "Human" }),
@@ -460,22 +460,26 @@ export class MQTTListener {
 
                                 await this.mailer.send({
                                     subject: `Human takeover from ${this.username}`,
-                                    text: `Hi team, The server responded with a 'Come again' to the message(s): ${messages} belonging to thread ${threadId} on ${this.username}'s account.\nThis will most likely result in a human takeover\n. Please check on this.`,
+                                    text: `Hi team, The server responded with a 'assigned_to_human' to the message(s): ${messages} belonging to thread ${threadId} on ${this.username}'s account.\nThis will most likely result in a human takeover\n. Please check on this.`,
                                 });
                             } else {
                                 console.log("this.username=>",this.username)
                                 console.log("result.username=>",result.username)
                                 console.log("result.generated_comment=>",result.generated_comment)
-                                setTimeout(async () => {
-                                    const userId = await this.accountInstances
-                                        .get(this.username)!
-                                        .instance.user.getIdByUsername(result.username);
-                                    const thread = this.accountInstances
-                                        .get(this.username)!
-                                        .instance.entity.directThread([userId.toString()]);
-                                    await thread.broadcastText(result.generated_comment);
-                                }, 10);
-                                console.log(result.generated_comment,"==> has been sent successfully");
+                                if (result.generated_comment === "already_responded") {
+                                  console.log(`Already responded ${result.username}`);
+                                } else {
+                                  setTimeout(async () => {
+                                      const userId = await this.accountInstances
+                                          .get(this.username)!
+                                          .instance.user.getIdByUsername(result.username);
+                                      const thread = this.accountInstances
+                                          .get(this.username)!
+                                          .instance.entity.directThread([userId.toString()]);
+                                      await thread.broadcastText(result.generated_comment);
+                                  }, 10);
+                                  console.log(result.generated_comment,"==> has been sent successfully");
+                                }
                             }
                         }
                     } else {
