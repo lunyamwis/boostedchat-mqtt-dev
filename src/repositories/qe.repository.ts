@@ -5,7 +5,6 @@ const axios = require('axios');
 const createProxyAgent = (proxyUrl: string) =>{
   return new HttpsProxyAgent(
     proxyUrl
-    // 'http://user-instagramUser-sessionduration-60:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001'
   );
 }
 

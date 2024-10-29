@@ -126,13 +126,16 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
 
 async function initializeAccount(account: any) {
   try {
-    const proxy_url = 'http://user-sp8zty8v3u-country-us-zip-02864:o0ulmi8HwgC4H2=dxW@us.smartproxy.com:10001' //await fetchDataFromSmartProxy(account.country, account.city);
+    // const proxy_url = await fetchDataFromSmartProxy(account.country, account.city);
+    const proxy_url = process.env.SMART_PROXY_URL
     console.log("_------------------PROXY URL----------------------------------")
     console.log(proxy_url);
     return new Promise(async (resolve, reject) => {
       try {
         console.log("i must pass through here again", proxy_url)
-        await login(account, proxy_url);
+        if(proxy_url){
+          await login(account, proxy_url);
+        }
         const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
         mqttListener.registerRealtimeListeners();
         await mqttListener.connectMQTTBroker();
