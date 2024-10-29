@@ -21,8 +21,7 @@ import { IgResponse } from '../types';
 import JSONbigInt from 'json-bigint';
 import debug from 'debug';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-// import { Cookie } from 'tough-cookie';
-// import { Cookie } from 'tough-cookie';
+require('dotenv').config();
 
 const JSONbigString = JSONbigInt({ storeAsString: true });
 
@@ -33,16 +32,23 @@ interface SignedPost {
   ig_sig_key_version: string;
 }
 // axios.defaults.withCredentials = true
+const createProxyAgent = () =>{
+  // need to add default proxy url here or send an erro message if there's none
+  let proxy_url = process.env.SMART_PROXY_URL ? process.env.SMART_PROXY_URL : '';
+  return new HttpsProxyAgent(
+    proxy_url
+  );
+}
 export class Request {
   private static requestDebug = debug('ig:request');
-  
+  private static agent = createProxyAgent();
   end$ = new Subject<void>();
   error$ = new Subject<IgClientError>();
   attemptOptions: Partial<AttemptOptions<any>> = {
     maxAttempts: 1,
   };
   defaults: Partial<AxiosRequestConfig> = {
-    httpsAgent:new HttpsProxyAgent('http://user-instagramUser-sessionduration-60:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001')
+    httpsAgent: Request.agent
   };
 
   constructor(private client: IgApiClient) {}
@@ -61,9 +67,7 @@ export class Request {
   public async send<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
     console.log("this is the send method udding")
     console.log(userOptions);
-    console.log('-------Send<>Login Request-----------')
-    // const proxyAgent = new HttpsProxyAgent('http://sp8zty8v3u:ysg6wa+6pGs6CG9Pde@ke.smartproxy.com:45001');
-    // const proxyAgent = new HttpsProxyAgent('http://instagramUser:ww~IsJcgn87EqD0s4d@ke.smartproxy.com:45001');
+    console.log(`||-------Sending Request: ${userOptions?.url}-----------||`)
     const options = defaultsDeep(
       userOptions,
       {
@@ -95,7 +99,7 @@ export class Request {
   public async send2<T = any>(userOptions: AxiosRequestConfig, onlyCheckHttpStatus?: boolean): Promise<IgResponse<T>> {
     // console.log(userOptions);
     
-    console.log('-------Send<> LIstening Request-----------')
+    console.log(`||-------Sending2 Request: ${userOptions?.url}-----------||`)
     const options = defaultsDeep(
       userOptions,
       {

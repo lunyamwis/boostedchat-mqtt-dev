@@ -21,7 +21,8 @@
       "format": "prettier -w . --log-level warn",
       "check-format": "prettier -c .",
       "typecheck": "tsc -p tsconfig.build.json --noEmit",
-      "dev": "tsx --env-file=.env src/index.ts"
+      "dev": "tsx src/index.ts",
+      "prod": "node dist/index.js"
    },
    "engines": {
       "node": ">=18.0.0"
@@ -30,8 +31,9 @@
    "author": "nerix",
    "license": "MIT",
    "dependencies": {
+      "@api/smartproxy": "file:.api/apis/smartproxy",
       "@lifeomic/attempt": "^3.0.0",
-      "@types/chance": "^1.0.2",
+      "@types/chance": "^1.1.6",
       "@types/request-promise": "^4.1.43",
       "await-to-js": "^3.0.0",
       "axios": "^1.7.7",
@@ -63,7 +65,8 @@
       "url-regex-safe": "^3.0.0",
       "utility-types": "^3.10.0",
       "winston": "^3.14.2",
-      "winston-daily-rotate-file": "^5.0.0"
+      "winston-daily-rotate-file": "^5.0.0",
+      "dotenv": "^6.2.0"
    },
    "devDependencies": {
       "@types/base-64": "^1.0.2",

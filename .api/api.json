@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "smartproxy",
+      "source": "@smartproxy/v1.2#d96x511m0cejz1y",
+      "integrity": "sha512-otFOJdl81v4aetbF+5hQ2Z8X5wd+6nRvm4gVWoAeqy1JH/Tpm0uI4viAgYAjXp/3A6stl5gYeSrKOvC2H3gN9Q==",
+      "installerVersion": "6.1.2"
+    }
+  ]
+}

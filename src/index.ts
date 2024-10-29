@@ -16,10 +16,10 @@ export * from './fbns';
 export * from './thrift';
 export * from './mqttot';
 export * from './errors';
-import { requestAccounts } from "../src/http-server/accountsRequest";
-import { receiveAccounts } from "../src/http-server/receiveAccounts";
+import { requestAccounts } from "./http-server/accountsRequest";
+import { receiveAccounts } from "./http-server/receiveAccounts";
 // import { HttpServer } from "./services/httpServer/httpServer";
-import { HttpServer } from "../src/http-server/httpServer";
+import { HttpServer } from "./http-server/httpServer";
 import { validateEnv } from "./utils/environment";
 
 (async () => {

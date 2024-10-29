@@ -335,12 +335,15 @@ export class HttpServer {
     });
 
     this.app.post('/like', async (req: Request, res: Response) => {
+      console.log("--------------------------------------777777777777777888888888888888888888888888888888888888888888");
+      console.log(req.body);
       try {
         const dataList = req.body as {
           mediaId: string;
           username_from: string;
         }[];
-
+        console.log("--------------------------------------777777777777777888888888888888888888888888888888888888888888");
+        console.log(dataList);
         for (const data of dataList) {
           const clientInstance = this.accountInstances.get(data.username_from)!.instance;
           const userId = clientInstance.user.getIdByUsername(data.username_from);
