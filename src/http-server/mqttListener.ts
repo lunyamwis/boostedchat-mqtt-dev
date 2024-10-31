@@ -466,7 +466,8 @@ export class MQTTListener {
                                 console.log("this.username=>",this.username)
                                 console.log("result.username=>",result.username)
                                 console.log("result.generated_comment=>",result.generated_comment)
-                                if (result.generated_comment === "already_responded") {
+                                console.log("**********")
+				if (result.generated_comment === "already_responded") {
                                   console.log(`Already responded ${result.username}`);
                                 } else {
                                   setTimeout(async () => {
