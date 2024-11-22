@@ -142,38 +142,7 @@ export class MQTTListener {
     console.log("<------------------------------------------userId----------------------------------------------->");
     console.log(userId);
     if (userId) {
-      // Step 2: Fetch existing inbox messages
-      const inboxFeed = await this.accountInstances.get(this.username)!.instance.feed.directInbox().request();
-
-      await Promise.all(inboxFeed.inbox.threads.map(async (thread) => {
-        const threadMessages = [];
-        for (const message of thread.items) {
-          // Get the userId from the message
-          const messageUserId = message.user_id;  // Assuming each message has a user_id field
-          let username = this.userCache.get(messageUserId.toString());
-
-          if (!username) {
-            // Check if the message's userId matches the logged-in userId or get the userName of the client
-            // username = messageUserId.toString() === userId ? this.username : await this.getUsernameFromUserId(messageUserId?.toString());
-
-            // Return the username of the logged in user, otherwise return client to prevent too many Instagram requests
-            username = messageUserId.toString() === userId ? this.username : 'client' //await this.getUsernameFromUserId(messageUserId?.toString());
-            this.userCache.set(messageUserId?.toString(), username);
-          }
-
-          const messageData = this.formatMessageData(username, thread.thread_id, message);
-          // Format the message data and add it to the threadMessages array
-          threadMessages.push(messageData);
-        }
-
-        // Send the entire thread's messages as one payload to the API
-        if (threadMessages.length > 0) {
-          await this.postThreadToApi(thread.thread_id, threadMessages);
-        }
-      }));
-
-
-
+      
       await this.accountInstances.get(this.username)?.instance.realtime.connect({
         graphQlSubs: [
           // these are some subscriptions
@@ -209,6 +178,37 @@ export class MQTTListener {
         //   .request(),
         connectOverrides: {},
       });
+
+      // Fetch existing inbox messages & sync
+
+      const inboxFeed = await this.accountInstances.get(this.username)!.instance.feed.directInbox().request();
+
+      await Promise.all(inboxFeed.inbox.threads.map(async (thread) => {
+        const threadMessages = [];
+        for (const message of thread.items) {
+          // Get the userId from the message
+          const messageUserId = message.user_id;  // Assuming each message has a user_id field
+          let username = this.userCache.get(messageUserId.toString());
+
+          if (!username) {
+            // Check if the message's userId matches the logged-in userId or get the userName of the client
+            // username = messageUserId.toString() === userId ? this.username : await this.getUsernameFromUserId(messageUserId?.toString());
+
+            // Return the username of the logged in user, otherwise return client to prevent too many Instagram requests
+            username = messageUserId.toString() === userId ? this.username : 'client' //await this.getUsernameFromUserId(messageUserId?.toString());
+            this.userCache.set(messageUserId?.toString(), username);
+          }
+
+          const messageData = this.formatMessageData(username, thread.thread_id, message);
+          // Format the message data and add it to the threadMessages array
+          threadMessages.push(messageData);
+        }
+
+        // Send the entire thread's messages as one payload to the API
+        if (threadMessages.length > 0) {
+          await this.postThreadToApi(thread.thread_id, threadMessages);
+        }
+      }));
     } else {
       console.error("User ID is UNDEFINED");
     }
@@ -661,7 +661,7 @@ export class MQTTListener {
       }
 
     } catch (error) {
-      console.error(`Error posting thread ${threadId} to API:`, error);
+      // console.log(`Error posting thread ${threadId} to API:`, error);
     }
   }
 
