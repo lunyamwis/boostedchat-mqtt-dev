@@ -22,6 +22,7 @@ import { defaultsDeep } from 'lodash';
 import { IgSignupBlockError } from '../errors/ig-signup-block.error';
 import Bluebird = require('bluebird');
 import debug from 'debug';
+// import { Mailer } from "../mailer/mailer";
 // import * as crypto from 'crypto';
 
 import crypto from 'crypto';
@@ -37,7 +38,7 @@ const createProxyAgent = (proxyUrl: string) =>{
 
 export class AccountRepository extends Repository {
   private static accountDebug = debug('ig:account');
-
+  // private static mailer= new Mailer();
   public async login(username: string, password: string): Promise<AccountRepositoryLoginResponseLogged_in_user> {
     console.log("whereeeeee--------")
     // if (!this.client.state.passwordEncryptionPubKey) {
@@ -84,7 +85,16 @@ export class AccountRepository extends Repository {
           throw new IgLoginInvalidUserError(error.response as IgResponse<AccountRepositoryLoginErrorResponse>);
         }
         default: {
+          // httpLogger.error(err);
+        //  AccountRepository.mailer.send({
+        //   subject: `Sending message error`,
+        //   text: `Hi team, There was an error sending a message to a lead.\nThe error message is \n${(error as Error).message
+        //     }\nand the stack trace is as follows:\n${(error as Error).stack
+        //     }\nPlease check on this.`,
+        // });
           throw error;
+          
+        
         }
       }
     });
