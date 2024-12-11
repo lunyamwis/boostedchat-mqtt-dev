@@ -172,10 +172,10 @@ export class MQTTListener {
           ),
         ],
 
-        // irisData: await this.accountInstances
-        //   .get(this.username)!
-        //   .instance.feed.directInbox()
-        //   .request(),
+        irisData: await this.accountInstances
+          .get(this.username)!
+          .instance.feed.directInbox()
+          .request(),
         connectOverrides: {},
       });
 
