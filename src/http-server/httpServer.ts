@@ -670,6 +670,11 @@ export class HttpServer {
       }
     });
 
+    this.app.get('/health', (req: Request, res: Response) => {
+      res.status(200).send({ status: 'ok' });
+    });
+    
+
     this.app.use((req: Request, res: Response) => {
       res.send('Hello from Express!');
     });
