@@ -138,6 +138,7 @@ async function initializeAccount(account: any) {
         }
         const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
         mqttListener.registerRealtimeListeners();
+        await mqttListener.connectToFbns();
         await mqttListener.connectMQTTBroker();
         resolve(account.igname);
       } catch (error) {

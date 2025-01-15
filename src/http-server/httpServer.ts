@@ -673,6 +673,34 @@ export class HttpServer {
     this.app.get('/health', (req: Request, res: Response) => {
       res.status(200).send({ status: 'ok' });
     });
+
+    this.app.post('/fetchComments', async (req: Request, res: Response) => {
+      const data = req.body;
+      console.log("dhdhhdhh-----------------------")
+      console.log(data);
+      // check if is logged in first.
+      const clientInstance = this.accountInstances.get(
+        // data.username_from
+        'denn_mokaya'
+      )!.instance;
+      // const inbox = await clientInstance.feed.directPending()
+      const comms = <any>[]
+
+    
+      const commentsFeed = await clientInstance.feed.mediaComments('1263679849772992148').request();
+      await Promise.all(commentsFeed.comments.map(async (comment)=>{
+        console.log("<------------++++++++++++++++++++++++++++------------>")
+        console.log(comment.text)
+        console.log(comment.user.username)
+        
+        comms.push({
+          comment: comment.text,
+          username:comment.user.username
+        })
+      }))
+
+      res.json(comms);
+    });
     
 
     this.app.use((req: Request, res: Response) => {
