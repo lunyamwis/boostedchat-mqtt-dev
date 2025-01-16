@@ -7,8 +7,12 @@ import { AccountInstances, TAccountInstances } from "./instances";
 import { addConnectedAccount, removeConnectedAccount } from "./accounts"
 import { Timer } from 'node:timers';
 import axios from 'axios';
+import { promisify } from 'util';
+import { writeFile, readFile, exists } from 'fs';
 
-
+const writeFileAsync = promisify(writeFile);
+const readFileAsync = promisify(readFile);
+const existsAsync = promisify(exists);
 
 export class MQTTListener {
   private mailer: Mailer;
@@ -137,12 +141,21 @@ export class MQTTListener {
 
   public async connectToFbns() {
     console.log('************Connecting to FBNS***********')
-    const ig: IgApiClientFbns = withFbns(new IgApiClient());
-    ig.state.generateDevice(this.username);
-    // var userId = await this.accountInstances.get(this.username)!.instance.state.getCookieUserId();
-    // you received a notification
-    ig.fbns.on('push', logEvent('push'));
-    await ig.fbns.connect();
+    //   const ig: IgApiClientFbns = withFbns(new IgApiClient());
+    //   ig.state.generateDevice(this.username);
+    //   // var userId = await this.accountInstances.get(this.username)!.instance.state.getCookieUserId();
+    //   // you received a notification
+    //   ig.fbns.on('push', logEvent('push'));
+    //   ig.fbns.on('auth', async auth => {
+    //     // logs the auth
+    //     logEvent('auth')(auth);
+
+    //     //saves the auth
+    //     await saveState(ig);
+    //  });
+    //   await ig.fbns.connect();
+    // await readState(this.accountInstances.get(this.username)?.instanceWithFbns);
+    // this.accountInstances.get(this.username)?.instanceWithFbns.fbns.on('push', logEvent('push'));
   }
 
   public async connectMQTTBroker() {
@@ -284,29 +297,29 @@ export class MQTTListener {
 
 
 
-      try {
-        this.accountInstances.get(this.username)!.instance.feed.liked().items$.subscribe({
-          next: (likedItems) => {
-            // This block runs every time new items are emitted
-            console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******KKKKKKKKKKKKKKK********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
-            console.log('New liked items received:');
-            likedItems.forEach(item => {
-              console.log(`Item ID: ${item.id}, Liked By: ${item.user?.username || 'Unknown'}`);
-            });
-          },
-          error: (err) => {
-            // Handle errors
-            console.error('Error receiving liked items:', err);
-          },
-          complete: () => {
-            // Called when the Observable completes (if it ever does)
-            console.log('No more updates.');
-          }
-        });
+      //   try {
+      //     this.accountInstances.get(this.username)!.instance.feed.liked().items$.subscribe({
+      //       next: (likedItems) => {
+      //         // This block runs every time new items are emitted
+      //         console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******KKKKKKKKKKKKKKK********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
+      //         console.log('New liked items received:');
+      //         likedItems.forEach(item => {
+      //           console.log(`Item ID: ${item.id}, Liked By: ${item.user?.username || 'Unknown'}`);
+      //         });
+      //       },
+      //       error: (err) => {
+      //         // Handle errors
+      //         console.error('Error receiving liked items:', err);
+      //       },
+      //       complete: () => {
+      //         // Called when the Observable completes (if it ever does)
+      //         console.log('No more updates.');
+      //       }
+      //     });
 
-      } catch (error) {
-        console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******!!!!ERORR!!!!********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
-      }
+      //   } catch (error) {
+      //     console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******!!!!ERORR!!!!********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
+      //   }
 
     } else {
       console.error("User ID is UNDEFINED");
@@ -757,3 +770,17 @@ function logEvent(name: string) {
   console.log("<------------FBNS------------->");
   return (data: any) => console.log(name, data);
 }
+
+async function saveState(ig: IgApiClientExt) {
+  return writeFileAsync('state.json', await ig.exportState(), { encoding: 'utf8' });
+}
+
+async function readState(ig: IgApiClientExt) {
+  if (!(await existsAsync('state.json'))) return;
+  await ig.importState(await readFileAsync('state.json', { encoding: 'utf8' }));
+}
+
+// async function loginToInstagram(ig: IgApiClientExt) {
+//   ig.request.end$.subscribe(() => saveState(ig));
+//   await ig.account.login(IG_USERNAME, IG_PASSWORD);
+// }

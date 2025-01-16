@@ -98,9 +98,10 @@ export class AccountRepository extends Repository {
         }
       }
     });
-    console.log("----Headers--------");
+    console.log("----ACCOUNT REPOSITORY Headers--------");
+    this.client.state.setIgCookiesFromHeaders(response.headers);
     console.log(response.headers);
-    console.log("----END Headers--------");
+    console.log("-----ACCOUNT REPOSITORYEND Headers--------");
     return response.data.logged_in_user;
   }
 

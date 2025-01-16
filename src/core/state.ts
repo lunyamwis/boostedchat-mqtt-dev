@@ -171,6 +171,7 @@ export class State {
   }
 
   public get cookieCsrfToken() {
+    console.log("GETTING CRF COOKIE TOKEN")
     try {
       return this.extractCookieValue('csrftoken');
     } catch {
@@ -183,6 +184,7 @@ export class State {
   // This method creates cookiesf from headers
   setIgCookiesFromHeaders(headers: any) {
     // Iterate over the headers and extract ig-set headers
+    console.log('-------------------------------------IgCookiesFromHeaders------');
     Object.keys(headers).forEach((header) => {
       if (header.startsWith('ig-set')) {
         const cookieName = header.replace('ig-set-', '').replace('ig-u-', '').replace(/-/g, '_'); // Normalize the cookie name
@@ -327,19 +329,19 @@ export class State {
 
   public extractCookie(key: string): Promise<Cookie | null> {
     return new Promise((resolve, reject) => {
-      // console.log(this.constants.HOST);
-      // console.log('-----------------');
-      // console.log(this.cookieJar.toJSON());
-      // console.log('----------------- getting cookies');
+      console.log(this.constants.HOST);
+      console.log('-----------------');
+      console.log(this.cookieJar.toJSON());
+      console.log('----------------- getting cookies');
       this.cookieJar.getCookies(this.constants.HOST, (err: Error | null, cookies: Cookie[]) => {
         if (err) {
-          // console.log("issue***************");
+          console.log("issue***************",err);
           return reject(err);
         }
         const cookie = _.find(cookies, { key }) as Cookie;
-        // console.log(cookie);
-        // console.log('^^^-----------------^^');
-        // console.log(this.cookieJar.toJSON());
+        console.log(cookie);
+        console.log('^^^-----------------^^');
+        console.log(this.cookieJar.toJSON());
         resolve(cookie || null);
       });
     });
@@ -418,12 +420,27 @@ export class State {
 
   public async serializeCookieJar(): Promise<CookieJar.Serialized> {
     // return Bluebird //fromCallback(cb => (this.cookieJar as any)['_jar'].serialize(cb));
+    console.log("000000000000000000000000000000000000000000000000000001111-----------------------------------------")
+    console.log(this.cookieJar);
+    console.log(this.cookieJar.toJSON());
+    console.log("****************************************************************");
+    
+    // const serializeAsync = Bluebird.Promise.promisify<CookieJar.Serialized>((cb: any) =>
+    //   this.cookieJar.serialize(cb)
+    // );
+
     const serializeAsync = Bluebird.Promise.promisify<CookieJar.Serialized>((cb: any) => (this.cookieJar as any)['_jar'].serialize(cb));
     const serializedData = await serializeAsync();
+    console.log(serializedData);
+    console.log("****************************************************************");
     return serializedData
   }
 
   public async serialize(): Promise<{ constants: any; cookies: any } & any> {
+    console.log("****************************************************************");
+    console.log("****************************************************************");
+    console.log("****************************************************************");
+    console.log(this.constants)
     const obj: { [key: string]: any } = { // Add index signature
       constants: this.constants,
       cookies: JSON.stringify(await this.serializeCookieJar()),
@@ -480,6 +497,8 @@ export class State {
   }
 
   private updateAuthorization() {
+    console.log("this.authorization")
+    console.log(this.authorization)
     if (!this.hasValidAuthorization()) {
       if (this.authorization?.startsWith('Bearer IGT:2:')) {
         try {

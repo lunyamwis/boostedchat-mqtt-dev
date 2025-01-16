@@ -2,6 +2,7 @@ import { login } from "./http-server/login";
 import { MQTTListener } from "./http-server/mqttListener";
 import { SalesRepAccount } from "./http-server/receiveAccounts";
 import { addLoggedInAccount } from "./http-server/accounts";
+import { MqttFbns } from "./http-server/fbnsSubscriber";
 // import smartproxy from '@api/smartproxy';
 
 export const initServers = async (salesRepAccounts: SalesRepAccount[], accountToCheck: any = false) => {
@@ -136,10 +137,11 @@ async function initializeAccount(account: any) {
         if(proxy_url){
           await login(account, proxy_url);
         }
-        const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
-        mqttListener.registerRealtimeListeners();
-        await mqttListener.connectToFbns();
-        await mqttListener.connectMQTTBroker();
+        const fbNs = new MqttFbns(account.igname)
+        await fbNs.initializeMqttFbns(account)
+        // const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
+        // mqttListener.registerRealtimeListeners();
+        // await mqttListener.connectMQTTBroker();
         resolve(account.igname);
       } catch (error) {
         // Return an object indicating failure, along with the account

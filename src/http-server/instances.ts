@@ -1,8 +1,9 @@
-import { IgApiClientRealtime } from "../";
+import { IgApiClientRealtime, IgApiClientFbns } from "../";
 
 export type AccountInstanceWithId = {
   userId: number;
   instance: IgApiClientRealtime;
+  // instanceWithFbns :IgApiClientFbns
 };
 
 export type TAccountInstances = Map<string, AccountInstanceWithId>;

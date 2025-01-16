@@ -13,14 +13,19 @@ export class IgApiClientExt extends IgApiClient {
    protected sateHooks: StateHook<any>[] = [];
 
    public async exportState(): Promise<string> {
+      console.log('EXPORT STATE IN EXTEND 99999999999999999999999999999');
       const data: Record<string, unknown> = {};
       for (const hook of this.sateHooks) {
+         console.log('hook');
+         console.log(hook);
          data[hook.name] = await hook.onExport(this);
       }
       return JSON.stringify(data);
    }
 
    public async importState(state: string | Record<string, unknown>): Promise<void> {
+      console.log('IMPORT STATE IN EXTEND 77777777777777777777777777777');
+      console.log(state);
       if (typeof state === 'string') state = JSON.parse(state);
 
       for (const [key, value] of Object.entries(state)) {
@@ -92,10 +97,18 @@ export function withFbnsAndRealtime(client: IgApiClient | IgApiClientExt, mixins
    return client;
 }
 
+// function assertClient(client: IgApiClient | IgApiClientExt): IgApiClientExt {
+//    if (!(client instanceof IgApiClientExt)) {
+//       return new IgApiClientExt();
+//    }
+//    // @ts-ignore
+//    return client;
+// }
 function assertClient(client: IgApiClient | IgApiClientExt): IgApiClientExt {
-   if (!(client instanceof IgApiClientExt)) {
-      return new IgApiClientExt();
+   if (client instanceof IgApiClientExt) {
+     // Client is already an extended version
+     return client;
    }
-   // @ts-ignore
-   return client;
-}
+   // Wrap and return a new extended client
+   return new IgApiClientExt();
+ }

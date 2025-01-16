@@ -82,6 +82,7 @@ export class FbnsClient extends EventEmitter<ToEventFn<FbnsClientEvents & { [x: 
       additionalTlsOptions?: ConnectionOptions;
    } = {}): Promise<any> {
       this.fbnsDebug('Connecting to FBNS...');
+      console.log('Connecting to FBNS...');
       this.auth.update();
       this.client = new MQTToTClient({
          url: FBNS.HOST_NAME_V6,
@@ -125,6 +126,7 @@ export class FbnsClient extends EventEmitter<ToEventFn<FbnsClientEvents & { [x: 
             throw new IllegalStateError('No client registered but an event was received');
          }
 
+         console.log('Connected to MQTT');
          this.fbnsDebug('Connected to MQTT');
          if (!res.payload?.length) {
             this.fbnsDebug(`Received empty connect packet. Reason: ${res.errorName}; Try resetting your fbns state!`);
@@ -134,6 +136,8 @@ export class FbnsClient extends EventEmitter<ToEventFn<FbnsClientEvents & { [x: 
          }
          const payload = res.payload.toString('utf8');
          this.fbnsDebug(`Received auth: ${payload}`);
+         console.log(`2222222222222222222222222222222 FBNS CLIENT`);
+         console.log(`Received auth: ${payload}`);
          this._auth.read(payload);
          this.emit('auth', this.auth);
          await this.client.mqttotPublish({
