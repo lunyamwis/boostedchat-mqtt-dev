@@ -236,90 +236,38 @@ export class MQTTListener {
 
 
 
-      // const inboxFeed = await this.accountInstances.get(this.username)!.instance.feed.directInbox().request();
+      const inboxFeed = await this.accountInstances.get(this.username)!.instance.feed.directInbox().request();
 
-      // await Promise.all(inboxFeed.inbox.threads.map(async (thread) => {
-      //   const threadMessages = [];
-      //   // Get the user in the thread
-      //   const current_user = thread.users.length > 1 ? thread.users.filter((user) => {
-      //     return user.username != this.username
-      //   })[0].username : thread.users[0].username
+      await Promise.all(inboxFeed.inbox.threads.map(async (thread) => {
+        const threadMessages = [];
+        // Get the user in the thread
+        const current_user = thread.users.length > 1 ? thread.users.filter((user) => {
+          return user.username != this.username
+        })[0].username : thread.users[0].username
 
-      //   for (const message of thread.items) {
-      //     // Get the userId from the message
-      //     const messageUserId = message.user_id;  // Assuming each message has a user_id field
-      //     let username = this.userCache.get(messageUserId.toString());
+        for (const message of thread.items) {
+          // Get the userId from the message
+          const messageUserId = message.user_id;  // Assuming each message has a user_id field
+          let username = this.userCache.get(messageUserId.toString());
 
-      //     if (!username) {
-      //       // Check if the message's userId matches the logged-in userId or get the userName of the client
-      //       // username = messageUserId.toString() === userId ? this.username : await this.getUsernameFromUserId(messageUserId?.toString());
+          if (!username) {
+            // Check if the message's userId matches the logged-in userId or get the userName of the client
+            // username = messageUserId.toString() === userId ? this.username : await this.getUsernameFromUserId(messageUserId?.toString());
 
-      //       // Return the username of the logged in user, otherwise return client to prevent too many Instagram requests
-      //       username = messageUserId.toString() === userId ? this.username : 'client' //await this.getUsernameFromUserId(messageUserId?.toString());
-      //       this.userCache.set(messageUserId?.toString(), username);
-      //     }
+            // Return the username of the logged in user, otherwise return client to prevent too many Instagram requests
+            username = messageUserId.toString() === userId ? this.username : 'client' //await this.getUsernameFromUserId(messageUserId?.toString());
+            this.userCache.set(messageUserId?.toString(), username);
+          }
 
-      //     const messageData = this.formatMessageData(username, thread.thread_id, message, current_user);
-      //     // Format the message data and add it to the threadMessages array
-      //     threadMessages.push(messageData);
-      //   }
-      //   // Send the entire thread's messages as one payload to the API
-      //   if (threadMessages.length > 0) {
-      //     await this.postThreadToApi(current_user, thread.thread_id, threadMessages);
-      //   }
-      // }));
-
-      // this works
-
-      // try {
-      //   this.accountInstances.get(this.username)!.instance.feed.liked().items$.subscribe({
-      //     next: (likedItems) => {
-      //       // This block runs every time new items are emitted
-      //       console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******KKKKKKKKKKKKKKK********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
-      //       console.log('New liked items received:');
-      //       likedItems.forEach(item => {
-      //         console.log(`Item ID: ${item.id}, Liked By: ${item.user?.username || 'Unknown'}`);
-      //       });
-      //     },
-      //     error: (err) => {
-      //       // Handle errors
-      //       console.error('Error receiving liked items:', err);
-      //     },
-      //     complete: () => {
-      //       // Called when the Observable completes (if it ever does)
-      //       console.log('No more updates.');
-      //     }
-      //   });
-
-      // } catch (error) {
-      //   console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******!!!!ERORR!!!!********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
-      // }
-
-
-
-      //   try {
-      //     this.accountInstances.get(this.username)!.instance.feed.liked().items$.subscribe({
-      //       next: (likedItems) => {
-      //         // This block runs every time new items are emitted
-      //         console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******KKKKKKKKKKKKKKK********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
-      //         console.log('New liked items received:');
-      //         likedItems.forEach(item => {
-      //           console.log(`Item ID: ${item.id}, Liked By: ${item.user?.username || 'Unknown'}`);
-      //         });
-      //       },
-      //       error: (err) => {
-      //         // Handle errors
-      //         console.error('Error receiving liked items:', err);
-      //       },
-      //       complete: () => {
-      //         // Called when the Observable completes (if it ever does)
-      //         console.log('No more updates.');
-      //       }
-      //     });
-
-      //   } catch (error) {
-      //     console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******!!!!ERORR!!!!********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
-      //   }
+          const messageData = this.formatMessageData(username, thread.thread_id, message, current_user);
+          // Format the message data and add it to the threadMessages array
+          threadMessages.push(messageData);
+        }
+        // Send the entire thread's messages as one payload to the API
+        if (threadMessages.length > 0) {
+          await this.postThreadToApi(current_user, thread.thread_id, threadMessages);
+        }
+      }));
 
     } else {
       console.error("User ID is UNDEFINED");
