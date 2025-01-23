@@ -112,3 +112,29 @@ function assertClient(client: IgApiClient | IgApiClientExt): IgApiClientExt {
    // Wrap and return a new extended client
    return new IgApiClientExt();
  }
+
+
+// Fetch all likers
+  // try {
+      //   this.accountInstances.get(this.username)!.instance.feed.liked().items$.subscribe({
+      //     next: (likedItems) => {
+      //       // This block runs every time new items are emitted
+      //       console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******KKKKKKKKKKKKKKK********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
+      //       console.log('New liked items received:');
+      //       likedItems.forEach(item => {
+      //         console.log(`Item ID: ${item.id}, Liked By: ${item.user?.username || 'Unknown'}`);
+      //       });
+      //     },
+      //     error: (err) => {
+      //       // Handle errors
+      //       console.error('Error receiving liked items:', err);
+      //     },
+      //     complete: () => {
+      //       // Called when the Observable completes (if it ever does)
+      //       console.log('No more updates.');
+      //     }
+      //   });
+
+      // } catch (error) {
+      //   console.log("<------------++++++++++++++KKKKKKKKKKKKKKKKKKKKK*******!!!!ERORR!!!!********KKKKKKKKKKKKKKKKKKK++++++++++++++------------>")
+      // }
