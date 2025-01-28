@@ -139,9 +139,9 @@ async function initializeAccount(account: any) {
         }
         const fbNs = new MqttFbns(account.igname)
         await fbNs.initializeMqttFbns(account)
-        // const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
-        // mqttListener.registerRealtimeListeners();
-        // await mqttListener.connectMQTTBroker();
+        const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
+        mqttListener.registerRealtimeListeners();
+        await mqttListener.connectMQTTBroker();
         resolve(account.igname);
       } catch (error) {
         // Return an object indicating failure, along with the account

@@ -178,6 +178,7 @@ export class MqttFbns {
         } catch (error) {
           // console.log(`Error posting thread ${threadId} to API:`, error);
         }
+        break;
       case 'post_like':
         console.log(name, data.title);
         console.log( data.pushCategory);
@@ -218,7 +219,6 @@ export class MqttFbns {
         }
 
         break;
-
       default:
         break;
     }
