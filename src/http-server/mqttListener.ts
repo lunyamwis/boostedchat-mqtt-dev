@@ -1,18 +1,18 @@
 import { GraphQLSubscriptions, SkywalkerSubscriptions } from "../";
-import { IgApiClientExt, IgApiClientFbns, withFbns } from '../';
-import { IgApiClient } from '../core/client';
+// import { IgApiClientExt, /*IgApiClientFbns, withFbns*/ } from '../';
+// import { IgApiClient } from '../core/client';
 import { eventLogger, httpLogger, libLogger } from "../config/logger";
 import { Mailer } from "../mailer/mailer";
 import { AccountInstances, TAccountInstances } from "./instances";
 import { addConnectedAccount, removeConnectedAccount } from "./accounts"
 import { Timer } from 'node:timers';
 import axios from 'axios';
-import { promisify } from 'util';
-import { writeFile, readFile, exists } from 'fs';
+// import { promisify } from 'util';
+// import { writeFile, readFile, exists } from 'fs';
 
-const writeFileAsync = promisify(writeFile);
-const readFileAsync = promisify(readFile);
-const existsAsync = promisify(exists);
+// const writeFileAsync = promisify(writeFile);
+// const readFileAsync = promisify(readFile);
+// const existsAsync = promisify(exists);
 
 export class MQTTListener {
   private mailer: Mailer;
@@ -711,22 +711,22 @@ export class MQTTListener {
 * @param name
 * @returns {(data) => void}
 */
-function logEvent(name: string) {
-  console.log("<------------FBNS------------->");
-  console.log("<------------FBNS------------->");
-  console.log("<------------FBNS------------->");
-  console.log("<------------FBNS------------->");
-  return (data: any) => console.log(name, data);
-}
+// function logEvent(name: string) {
+//   console.log("<------------FBNS------------->");
+//   console.log("<------------FBNS------------->");
+//   console.log("<------------FBNS------------->");
+//   console.log("<------------FBNS------------->");
+//   return (data: any) => console.log(name, data);
+// }
 
-async function saveState(ig: IgApiClientExt) {
-  return writeFileAsync('state.json', await ig.exportState(), { encoding: 'utf8' });
-}
+// async function saveState(ig: IgApiClientExt) {
+//   return writeFileAsync('state.json', await ig.exportState(), { encoding: 'utf8' });
+// }
 
-async function readState(ig: IgApiClientExt) {
-  if (!(await existsAsync('state.json'))) return;
-  await ig.importState(await readFileAsync('state.json', { encoding: 'utf8' }));
-}
+// async function readState(ig: IgApiClientExt) {
+//   if (!(await existsAsync('state.json'))) return;
+//   await ig.importState(await readFileAsync('state.json', { encoding: 'utf8' }));
+// }
 
 // async function loginToInstagram(ig: IgApiClientExt) {
 //   ig.request.end$.subscribe(() => saveState(ig));

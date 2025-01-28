@@ -1,4 +1,4 @@
-import { IgApiClientRealtime, IgApiClientFbns } from "../";
+import { IgApiClientRealtime } from "../";
 
 export type AccountInstanceWithId = {
   userId: number;

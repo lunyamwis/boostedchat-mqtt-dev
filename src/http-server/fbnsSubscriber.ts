@@ -1,4 +1,4 @@
-import { IgApiClientExt, IgApiClientFbns, IgApiClientRealtime, withFbns } from '../';
+import { IgApiClientExt, IgApiClientFbns, /*IgApiClientRealtime,*/ withFbns } from '../';
 import { IgApiClient } from '../core/client';
 import { promisify } from 'util';
 import { writeFile, readFile, exists } from 'fs';
@@ -79,9 +79,9 @@ export class MqttFbns {
     return writeFileAsync('state.json', await ig.exportState(), { encoding: 'utf8' });
   }
 
-  private async saveState2(ig: IgApiClientRealtime) {
-    return writeFileAsync('state.json', await ig.exportState(), { encoding: 'utf8' });
-  }
+  // private async saveState2(ig: IgApiClientRealtime) {
+  //   return writeFileAsync('state.json', await ig.exportState(), { encoding: 'utf8' });
+  // }
 
   private async readState(ig: IgApiClientExt) {
     console.log('readState BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
