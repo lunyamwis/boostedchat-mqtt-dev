@@ -20,3 +20,4 @@ logs/
 package-lock.json
 src/core/backup.request.ts
 state.json
+state.json
