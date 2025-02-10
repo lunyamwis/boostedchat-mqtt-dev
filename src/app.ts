@@ -137,8 +137,8 @@ async function initializeAccount(account: any) {
         if(proxy_url){
           await login(account, proxy_url);
         }
-        const fbNs = new MqttFbns(account.igname)
-        await fbNs.initializeMqttFbns(account)
+        // const fbNs = new MqttFbns(account.igname)
+        // await fbNs.initializeMqttFbns(account)
         const mqttListener = new MQTTListener(account.igname); // this needs to be accessible to be able to clear listeners on logout
         mqttListener.registerRealtimeListeners();
         await mqttListener.connectMQTTBroker();
