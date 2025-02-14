@@ -6,6 +6,7 @@ export type SalesRepAccount = {
   password: string;
   country: string;
   city: string;
+  zip: string;
 };
 
 export const receiveAccounts = async () => {
