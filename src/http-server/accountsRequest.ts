@@ -109,6 +109,7 @@ export type SalesRepAccount = {
   password: string;
   country: string;
   city: string;
+  zip: string;
 };
 
 export const fetchSalesRepAccountsFromAPI = async (publish = true) => {
@@ -118,12 +119,13 @@ export const fetchSalesRepAccountsFromAPI = async (publish = true) => {
   if (err) throw err;
 result = result.info;
 result = result.map((salesRep: any) => {
-    let { ig_username, ig_password, country, city } = salesRep;
+    let { ig_username, ig_password, country, city, zip } = salesRep;
     return {
         igname: ig_username,
         password: ig_password,
         country,
         city,
+        zip
     };
 });
 
