@@ -7,6 +7,7 @@ import { AccountInstances, TAccountInstances } from "./instances";
 import { addConnectedAccount, removeConnectedAccount } from "./accounts"
 import { Timer } from 'node:timers';
 import axios from 'axios';
+import ClickUpService from "../mailer/clickUp";
 // import { promisify } from 'util';
 // import { writeFile, readFile, exists } from 'fs';
 
@@ -16,6 +17,7 @@ import axios from 'axios';
 
 export class MQTTListener {
   private mailer: Mailer;
+  private clickUpservice: ClickUpService;
   private username: string;
   private accountInstances: TAccountInstances;
   private userCache: Map<string, string> = new Map();  // Cache to store userId and corresponding username
@@ -29,6 +31,7 @@ export class MQTTListener {
   constructor(username: string) {
     this.username = username;
     this.mailer = new Mailer();
+    this.clickUpservice = new ClickUpService();
     this.messageHolder = {};
     this.counter = 0;
     this.accountInstances = AccountInstances.allAccountInstances();
@@ -87,6 +90,11 @@ export class MQTTListener {
             this.counter += 1;
             this.reconnectMQTT();
           } else {
+
+            let subject = `MQTT client for ${this.username} reconnect failure \n\n`;
+            let message = `${subject} Hi team,\nThe MQTT Client for ${this.username} attempted to reconnect itself 10 times. Please check if this can be handled manually.`;
+
+            await this.clickUpservice.notifyTechNotifications(message, false);
             await this.mailer.send({
               subject: `MQTT client for ${this.username} reconnect failure`,
               text: `Hi team,\nThe MQTT Client for ${this.username} attempted to reconnect itself 10 times. Please check if this can be handled manually.`,
@@ -99,6 +107,14 @@ export class MQTTListener {
           label: `${this.username} MQTT error`,
           message: JSON.stringify(err),
         });
+
+        let subject = `${this.username}'s MQTT client error\n\n`;
+        let text = `${subject} Hi team, There was an error in ${this.username
+          }'s mqtt client.\nThe error message is \n${(err as Error).message
+          }\nand the stack trace is as follows:\n${(err as Error).stack
+          }\nPlease check on this.`;
+
+        await this.clickUpservice.notifyTechNotifications(text, false);
         await this.mailer.send({
           subject: `${this.username}'s MQTT client error`,
           text: `Hi team, There was an error in ${this.username
@@ -118,6 +134,9 @@ export class MQTTListener {
         });
         // removeLoggedInAccount(this.username)
         removeConnectedAccount(this.username)
+        let subject = `${this.username}'s MQTT client disconnected\n\n`;
+        let text = `${subject} Hi team, ${this.username}'s MQTT was safely disconnected. Please check on this.`;
+        await this.clickUpservice.notifyTechNotifications(text, false);
         await this.mailer.send({
           subject: `${this.username}'s MQTT client disconnected`,
           text: `Hi team, ${this.username}'s MQTT was safely disconnected. Please check on this.`,
@@ -127,11 +146,15 @@ export class MQTTListener {
     this.accountInstances
       .get(this.username)
       ?.instance.realtime.on("close", async () => {
+        let subject = `${this.username} Realtime client closed\n\n`;
+        let text = `${subject} Hi team, ${this.username}'s realtime client closed. Please check on this.`;
         libLogger.log({
           level: "error",
           label: `${this.username} MQTT Closed`,
           message: `Realtime client closed for ${this.username}`,
         });
+
+        await this.clickUpservice.notifyTechNotifications(text, false);
         await this.mailer.send({
           subject: `${this.username} Realtime client closed`,
           text: `Hi team, ${this.username}'s realtime client closed. Please check on this.`,
@@ -204,36 +227,8 @@ export class MQTTListener {
         connectOverrides: {},
       });
 
-      // const followerss= await this.accountInstances.get(this.username)!.instance.feed.liked()
-      // followerss.items$
-      // const followers = await this.accountInstances.get(this.username)!.instance.feed.accountFollowers({order:"default"}).request();
-
-      // followerss.users.map( (user)=>{
-      //   console.log(user.username)
-      // })
-
-      // await Promise.all(reels.reels (async (comment) => {
-      //   console.log("<------------++++++++++++++QQQQQQQQQQQQQQQQQQQQ*******QQQQQQQQQQQQQQQ********QQQQQQQQQQQQQ++++++++++++++------------>")
-      //   console.log(comment.text)
-      //   console.log(comment.user.username)
-      // }))
-
-      // Fetch existing inbox messages & sync
-      // const commentsFeedx = await this.accountInstances.get(this.username)!.instance.feed.mediaComments('1263679849772992148').request();
-      // await Promise.all(commentsFeedx.comments.map(async (comment)=>{
-      //   console.log("<------------++++++++++++++QQQQQQQQQQQQQQQQQQQQ*******QQQQQQQQQQQQQQQ********QQQQQQQQQQQQQ++++++++++++++------------>")
-      //   console.log(comment.text)
-      //   console.log(comment.user.username)
-      // }))
-      // const commentsFeed =  this.accountInstances.get(this.username)!.instance.feed.mediaComments('mediaId');
-      // const comments = await commentsFeed.items();
-      // comments.map(comment => ({
-      //   mediaId,
-      //   user: comment.user.username,
-      //   text: comment.text,
-      // }));
-
-
+      await this.clickUpservice.notifyTechNotifications("MQTT is successfully connected", false);
+      // await this.clickUpservice.createTask("TESITING MQTT TASK","fIRST MQTT TASK", false);
 
 
       const inboxFeed = await this.accountInstances.get(this.username)!.instance.feed.directInbox().request();
@@ -268,6 +263,7 @@ export class MQTTListener {
           await this.postThreadToApi(current_user, thread.thread_id, threadMessages);
         }
       }));
+      await this.clickUpservice.notifyTechNotifications("MQTT is successfully synced messages", false);
 
     } else {
       console.error("User ID is UNDEFINED");
