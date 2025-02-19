@@ -3,19 +3,19 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 class ClickUpService {
   private clickUpApi: AxiosInstance;
   private VIEW_ID: string;
-  private API_BUG_LIST_ID: string;
+  private MQTT_BUG_LIST_ID: string;
   private environment: string;
 
   constructor() {
     const CLICK_UP_BASE_URL = process.env.CLICK_UP_BASE_API_URL;
     const CLICK_UP_AUTH = process.env.CLICK_UP_DENN_AUTH;
     this.VIEW_ID = process.env.CLICK_UP_MQTT_NOTIFICATIONS_VIEW_ID || '';
-    this.API_BUG_LIST_ID = process.env.CLICK_UP_API_BUG_LIST_ID || '';
+    this.MQTT_BUG_LIST_ID = process.env.CLICK_UP_MQTT_BUG_LIST_ID || '';
     this.environment = process.env.NODE_ENV || 'development';
     
     
 
-    if (!CLICK_UP_BASE_URL || !CLICK_UP_AUTH || !this.VIEW_ID || !this.API_BUG_LIST_ID) {
+    if (!CLICK_UP_BASE_URL || !CLICK_UP_AUTH || !this.VIEW_ID || !this.MQTT_BUG_LIST_ID) {
       throw new Error('One or more ClickUp environment variables are missing.');
     }
 
@@ -66,7 +66,7 @@ class ClickUpService {
       description,
       notify_all
     };
-    const endpoint = `list/${this.API_BUG_LIST_ID}/task`;
+    const endpoint = `list/${this.MQTT_BUG_LIST_ID}/task`;
 
     const response = await this.postRequest(endpoint, payload);
     console.log('Task created successfully:', response);
