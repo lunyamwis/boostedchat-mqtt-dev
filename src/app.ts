@@ -3,6 +3,7 @@ import { MQTTListener } from "./http-server/mqttListener";
 import { SalesRepAccount } from "./http-server/receiveAccounts";
 import { addLoggedInAccount } from "./http-server/accounts";
 import { constructProxyUrl } from "./utils/proxyConstructor";
+import ClickUpService from "./mailer/clickUp";
 // import { MqttFbns } from "./http-server/fbnsSubscriber";
 // import smartproxy from '@api/smartproxy';
 
@@ -47,6 +48,11 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
           console.error(
             `account: ${failedAccount}`
           );
+          sendFailedNotification(`Failed to log in to account: ${failedAccount}`).finally(() => {
+            console.error(
+              `account: ${failedAccount}`
+            );
+          })
           let err_str: string = `${Object.values((result as PromiseRejectedResult).reason)[0]}`;
           // console.log(err_str)
           // console.log(err_str.match("IgCheckpointError:"))
@@ -75,7 +81,7 @@ export const initServers = async (salesRepAccounts: SalesRepAccount[], accountTo
     if (accountToCheck) {
       return resolve([ret.includes(accountToCheck), faileds] as [boolean, any]); // Explicitly type the return value as a tuple of 'boolean' and 'any'
     }
-    resolve([ret, faileds] as [any[], any]); // Explicitly type the return value as a tuple of 'any[]' and 'any'
+    resolve([ret, faileds] as [any[], any]); // Explicitly type the return value as a tuple of 'any[]' and 'any
   });
   // const httpServer = new HttpServer();
   // httpServer.initHttpServer();
@@ -110,4 +116,10 @@ async function initializeAccount(account: any) {
   } catch {
 
   }
+}
+
+async function sendFailedNotification(message: string) {
+  let clickUpservice = new ClickUpService();
+  // console.log(faileds)
+  await clickUpservice.notifyTechNotifications(message, true);
 }
