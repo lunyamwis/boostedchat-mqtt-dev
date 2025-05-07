@@ -5,7 +5,6 @@ import { addLoggedInAccount } from "./http-server/accounts";
 import { constructProxyUrl } from "./utils/proxyConstructor";
 import ClickUpService from "./mailer/clickUp";
 // import { MqttFbns } from "./http-server/fbnsSubscriber";
-// import smartproxy from '@api/smartproxy';
 
 export const initServers = async (salesRepAccounts: SalesRepAccount[], accountToCheck: any = false) => {
   return new Promise(async (resolve, reject) => {

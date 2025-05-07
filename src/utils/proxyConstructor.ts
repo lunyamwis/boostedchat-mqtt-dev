@@ -6,7 +6,7 @@ export const constructProxyUrl = (account: any) => {
   const fallbackUrl = process.env.SMART_PROXY_URL as string;
 
   if (country === 'us' && zip) {
-    return `http://user-${username}-country-us-zip-${zip}:${password}@${country}.smartproxy.com:10001`;
+    return `http://user-${username}-country-us-zip-${zip}:${password}@${country}.decodo.com:10001`;
   }
-  return `http://user-${username}:${password}@${country}.smartproxy.com:45001` || fallbackUrl;
+  return `http://user-${username}:${password}@${country}.decodo.com:45001` || fallbackUrl;
 }
