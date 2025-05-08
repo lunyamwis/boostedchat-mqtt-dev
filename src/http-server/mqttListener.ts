@@ -49,31 +49,32 @@ export class MQTTListener {
       });
 
     // Listen for messages
-    // this.accountInstances
-    //   .get(this.username)
-    //   ?.instance.realtime.on(
-    //     "message",
-    //     this.logEvent(
-    //       "messageWrapper",
-    //       this.accountInstances.get(this.username)!.userId
-    //     )
-    //   );
+    this.accountInstances
+      .get(this.username)
+      ?.instance.realtime.on(
+        "message",
+        this.logEvent(
+          "messageWrapper",
+          this.accountInstances.get(this.username)!.userId
+        )
+      );
 
 
-    // this.accountInstances
-    //   .get(this.username)
-    //   ?.instance.realtime.on(
-    //     "threadUpdate",
-    //     this.logEvent("threadUpdateWrapper")
-    //   );
+    this.accountInstances
+      .get(this.username)
+      ?.instance.realtime.on(
+        "threadUpdate",
+        this.logEvent("threadUpdateWrapper")
+      );
 
-    // this.accountInstances
-    //   .get(this.username)
-    //   ?.instance.realtime.on("direct", this.logEvent("direct"));
+    this.accountInstances
+      .get(this.username)
+      ?.instance.realtime.on("direct", this.logEvent("direct"));
+   
 
-    // this.accountInstances
-    //   .get(this.username)
-    //   ?.instance.realtime.on("realtimeSub", this.logEvent("realtimeSub"));
+    this.accountInstances
+      .get(this.username)
+      ?.instance.realtime.on("realtimeSub", this.logEvent("realtimeSub"));
 
     this.accountInstances
       .get(this.username)
@@ -238,7 +239,7 @@ export class MQTTListener {
         // Get the user in the thread
         const current_user = thread.users.length > 1 ? thread.users.filter((user) => {
           return user.username != this.username
-        })[0].username : thread.users[0].username
+        })[0]?.username : thread.users[0]?.username
 
         for (const message of thread.items) {
           // Get the userId from the message
