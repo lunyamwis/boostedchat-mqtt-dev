@@ -105,6 +105,7 @@ async function initializeAccount(account: any) {
         await mqttListener.connectMQTTBroker();
         resolve(account.igname);
       } catch (error) {
+        console.log("Error while logging in", error)
         // Return an object indicating failure, along with the account
         let ret: any = {};
         ret[account.igname] = error;

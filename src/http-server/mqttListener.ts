@@ -49,31 +49,31 @@ export class MQTTListener {
       });
 
     // Listen for messages
-    this.accountInstances
-      .get(this.username)
-      ?.instance.realtime.on(
-        "message",
-        this.logEvent(
-          "messageWrapper",
-          this.accountInstances.get(this.username)!.userId
-        )
-      );
+    // this.accountInstances
+    //   .get(this.username)
+    //   ?.instance.realtime.on(
+    //     "message",
+    //     this.logEvent(
+    //       "messageWrapper",
+    //       this.accountInstances.get(this.username)!.userId
+    //     )
+    //   );
 
 
-    this.accountInstances
-      .get(this.username)
-      ?.instance.realtime.on(
-        "threadUpdate",
-        this.logEvent("threadUpdateWrapper")
-      );
+    // this.accountInstances
+    //   .get(this.username)
+    //   ?.instance.realtime.on(
+    //     "threadUpdate",
+    //     this.logEvent("threadUpdateWrapper")
+    //   );
 
-    this.accountInstances
-      .get(this.username)
-      ?.instance.realtime.on("direct", this.logEvent("direct"));
+    // this.accountInstances
+    //   .get(this.username)
+    //   ?.instance.realtime.on("direct", this.logEvent("direct"));
 
-    this.accountInstances
-      .get(this.username)
-      ?.instance.realtime.on("realtimeSub", this.logEvent("realtimeSub"));
+    // this.accountInstances
+    //   .get(this.username)
+    //   ?.instance.realtime.on("realtimeSub", this.logEvent("realtimeSub"));
 
     this.accountInstances
       .get(this.username)
