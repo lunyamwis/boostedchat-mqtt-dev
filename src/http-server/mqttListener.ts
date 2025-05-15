@@ -549,7 +549,7 @@ export class MQTTListener {
               .get(this.username)!
               .instance.entity.directThread([userId.toString()]);
             await thread.broadcastText(body.generated_comment);
-          }, 75000);
+          }, 10);
         }
       }
     } else {
