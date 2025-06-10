@@ -553,18 +553,39 @@ export class MQTTListener {
         }
       }
     } else {
-      await this.mailer.send({
-        subject: `Response generation failed on ${this.username}`,
-        text: `Hi team, There was an error generating a response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this.`,
-      });
-      httpLogger.log({
-        level: "error",
-        label: `${this.username} Generate response error`,
-        message: JSON.stringify({
-          status: response.status,
-          text: response.text,
-        }),
-      });
+      try {
+        const response = await axios.post(`${process.env.API_URL}/instagram/dm/sync-message/`, {
+          threadId,
+          messages, // Send all messages in the thread as an array
+        });
+  
+        if (response.status == 201) {
+          console.log(`Thread ${threadId} posted successfully with ${messages.length} messages.`);
+        } else {
+          await this.mailer.send({
+            subject: `Error syncing thread with MQTT`,
+            text: `There was an error in the API error syncing thread with MQTT\n
+            ${response.data?.message}`
+          });
+        }
+  
+      } catch (error) {
+        console.log(`Error posting thread ${threadId} to API:`, error);
+        await this.mailer.send({
+          subject: `Response generation failed on ${this.username}`,
+          text: `Hi team, There was an error generating a response for the message(s): ${messages} belonging to thread ${threadId}\n. Please check on this.`,
+        });
+        httpLogger.log({
+          level: "error",
+          label: `${this.username} Generate response error`,
+          message: JSON.stringify({
+            status: response.status,
+            text: response.text,
+          }),
+        });
+      }
+
+      
     }
   }
 
