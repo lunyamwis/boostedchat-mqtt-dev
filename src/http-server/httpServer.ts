@@ -252,18 +252,18 @@ export class HttpServer {
           .get(data.username_from)!
           .instance.entity.directThread([userId.toString()]);
 
-        if (data.mediaId && data.mediaId.length > 0) {
-          try {
-            await thread.broadcastPost(data.mediaId);
-          } catch (err) {
-            this.mailer.send({
-              subject: `Sending media error`,
-              text: `Hi team, There was an error sending a media to a lead but nevertheless we are still proceeding without the media and reaching out.\nThe error message is \n${(err as Error).message
-                }\nand the stack trace is as follows:\n${(err as Error).stack
-                }\nPlease check on this.`,
-            });
-          }
+        // if (data.mediaId && data.mediaId.length > 0) {
+        try {
+          await thread.broadcastPost(data.mediaId);
+        } catch (err) {
+          this.mailer.send({
+            subject: `Sending media error`,
+            text: `Hi team, There was an error sending a media to a lead but nevertheless we are still proceeding without the media and reaching out.\nThe error message is \n${(err as Error).message
+              }\nand the stack trace is as follows:\n${(err as Error).stack
+              }\nPlease check on this.`,
+          });
         }
+        // }
         const sent_message = (await thread.broadcastText(
           data.message
         )) as DirectThreadRepositoryBroadcastResponsePayload;
