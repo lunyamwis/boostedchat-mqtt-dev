@@ -338,26 +338,26 @@ export class HttpServer {
       console.log("--------------------------------------777777777777777888888888888888888888888888888888888888888888");
       console.log(req.body);
       try {
-        const dataList = req.body as {
+        const data = req.body as {
           mediaId: string;
           username_from: string;
-        }[];
+        };
         console.log("--------------------------------------777777777777777888888888888888888888888888888888888888888888");
-        console.log(dataList);
-        for (const data of dataList) {
-          const clientInstance = this.accountInstances.get(data.username_from)!.instance;
-          const userId = clientInstance.user.getIdByUsername(data.username_from);
+        // console.log(dataList);
+        // for (const data of dataList) {
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const userId = clientInstance.user.getIdByUsername(data.username_from);
 
-          await clientInstance.media.like({
-            mediaId: data.mediaId,
-            moduleInfo: {
-              module_name: 'profile',
-              user_id: Number(userId),
-              username: data.username_from,
-            },
-            d: 1,
-          });
-        }
+        await clientInstance.media.like({
+          mediaId: data.mediaId,
+          moduleInfo: {
+            module_name: 'profile',
+            user_id: Number(userId),
+            username: data.username_from,
+          },
+          d: 1,
+        });
+        // }
 
         res.json("OK");
       } catch (err) {
