@@ -18,6 +18,7 @@ import {
 import { logout, disconnect } from "./login"
 const express = require('express');
 import { Request, Response } from 'express';
+// all endpoints
 // import { Express } from 'express';
 
 export const cors_urls = process.env.NODE_ENV === "production"
