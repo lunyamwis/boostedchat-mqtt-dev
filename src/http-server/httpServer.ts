@@ -305,13 +305,8 @@ export class HttpServer {
           caption: string;
           username_from: string;
         };
-        const imageResp = await fetch(data.imageURL, {
-          method: "GET",
-        });
-        const imageBuffer = await imageResp.blob();
-
         this.accountInstances.get(data.username_from)!.instance.publish.photo({
-          file: Buffer.from(await imageBuffer.arrayBuffer()),
+          file: data.imageURL as any,
           caption: data.caption,
         });
 
@@ -1781,7 +1776,7 @@ export class HttpServer {
       try {
         const data = req.body as {
           username_from: string;
-          file_buffer: Buffer;
+          file_buffer: any;
           caption?: string;
           location?: any;
           usertags?: any;
@@ -1812,21 +1807,26 @@ export class HttpServer {
       try {
         const data = req.body as {
           username_from: string;
-          video_buffer: Buffer;
-          coverImage?: Buffer;
+          video_buffer: any;
+          coverImage?: any;
           caption?: string;
           location?: any;
           usertags?: any;
         };
         
         const clientInstance = this.accountInstances.get(data.username_from)!.instance;
-        const result = await clientInstance.publish.video({
+        const publishOptions: any = {
           video: data.video_buffer,
-          coverImage: data.coverImage,
           caption: data.caption,
           location: data.location,
           usertags: data.usertags
-        });
+        };
+        
+        if (data.coverImage) {
+          publishOptions.coverImage = data.coverImage;
+        }
+        
+        const result = await clientInstance.publish.video(publishOptions);
 
         res.json(result);
       } catch (err) {
@@ -1874,7 +1874,7 @@ export class HttpServer {
       try {
         const data = req.body as {
           username_from: string;
-          file: Buffer;
+          file: any;
           caption?: string;
           stickerConfig?: any;
         };
@@ -1903,8 +1903,8 @@ export class HttpServer {
       try {
         const data = req.body as {
           username_from: string;
-          video: Buffer;
-          coverImage: Buffer;
+          video: any;
+          coverFrame: any;
           title: string;
           caption?: string;
           seriesId?: string;
@@ -1913,10 +1913,9 @@ export class HttpServer {
         const clientInstance = this.accountInstances.get(data.username_from)!.instance;
         const result = await clientInstance.publish.igtvVideo({
           video: data.video,
-          coverImage: data.coverImage,
+          coverFrame: data.coverFrame,
           title: data.title,
-          caption: data.caption,
-          seriesId: data.seriesId
+          caption: data.caption
         });
 
         res.json(result);
@@ -1937,7 +1936,7 @@ export class HttpServer {
       try {
         const data = req.body as {
           username_from: string;
-          file: Buffer;
+          file: any;
           uploadId?: string;
         };
         
@@ -1964,14 +1963,16 @@ export class HttpServer {
       try {
         const data = req.body as {
           username_from: string;
-          video: Buffer;
+          video: any;
           uploadId?: string;
+          duration?: number;
         };
         
         const clientInstance = this.accountInstances.get(data.username_from)!.instance;
         const result = await clientInstance.upload.video({
           video: data.video,
-          uploadId: data.uploadId
+          uploadId: data.uploadId,
+          duration: data.duration || 0
         });
 
         res.json(result);
@@ -2230,10 +2231,7 @@ export class HttpServer {
         };
         
         const clientInstance = this.accountInstances.get(data.username_from)!.instance;
-        const result = await clientInstance.directThread.addUser({
-          threadId: data.thread_id,
-          userIds: data.user_ids
-        });
+        const result = await clientInstance.directThread.addUser(data.thread_id, data.user_ids);
 
         res.json(result);
       } catch (err) {
