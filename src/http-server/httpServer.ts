@@ -703,6 +703,1820 @@ export class HttpServer {
     });
     
 
+    this.app.post('/trigger-reconnect', async (req: Request, res: Response) => {
+      try {
+        res.json({
+          status: "OK",
+        });
+      } catch (err) {
+        console.log("Disconnect error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Sending link error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // User Repository Endpoints
+    this.app.post('/getUserInfo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const userInfo = await clientInstance.user.info(data.user_id);
+
+        res.json(userInfo);
+      } catch (err) {
+        console.log("Get user info error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get user info error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getUsernameInfo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          username: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const userInfo = await clientInstance.user.usernameinfo(data.username);
+
+        res.json(userInfo);
+      } catch (err) {
+        console.log("Get username info error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get username info error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/searchUsers', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          query: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const searchResults = await clientInstance.user.search(data.query);
+
+        res.json(searchResults);
+      } catch (err) {
+        console.log("Search users error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search users error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Media Repository Endpoints
+    this.app.post('/getMediaInfo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const mediaInfo = await clientInstance.media.info(data.media_id);
+
+        res.json(mediaInfo);
+      } catch (err) {
+        console.log("Get media info error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get media info error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/editMedia', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+          caption: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.editMedia({
+          mediaId: data.media_id,
+          captionText: data.caption
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Edit media error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Edit media error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/deleteMedia', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+          media_type?: 'PHOTO' | 'VIDEO' | 'CAROUSEL';
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.delete({
+          mediaId: data.media_id,
+          mediaType: data.media_type || 'PHOTO'
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Delete media error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Delete media error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/likeComment', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          comment_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.likeComment(data.comment_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Like comment error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Like comment error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/unlikeComment', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          comment_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.unlikeComment(data.comment_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Unlike comment error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Unlike comment error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getMediaLikers', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const likers = await clientInstance.media.likers(data.media_id);
+
+        res.json(likers);
+      } catch (err) {
+        console.log("Get media likers error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get media likers error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Friendship Repository Endpoints
+    this.app.post('/getFriendshipStatus', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const friendshipStatus = await clientInstance.friendship.show(data.user_id);
+
+        res.json(friendshipStatus);
+      } catch (err) {
+        console.log("Get friendship status error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get friendship status error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/blockUser', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.friendship.block(data.user_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Block user error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Block user error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/unblockUser', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.friendship.unblock(data.user_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Unblock user error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Unblock user error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/removeFollower', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.friendship.removeFollower(data.user_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Remove follower error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Remove follower error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Feed Endpoints
+    this.app.post('/getAccountFollowers', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const followersFeed = clientInstance.feed.accountFollowers(data.user_id);
+        const followers = await followersFeed.items();
+
+        res.json(followers);
+      } catch (err) {
+        console.log("Get account followers error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get account followers error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getAccountFollowing', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const followingFeed = clientInstance.feed.accountFollowing(data.user_id);
+        const following = await followingFeed.items();
+
+        res.json(following);
+      } catch (err) {
+        console.log("Get account following error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get account following error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getUserFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const userFeed = clientInstance.feed.user(data.user_id);
+        const posts = await userFeed.items();
+
+        res.json(posts);
+      } catch (err) {
+        console.log("Get user feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get user feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getTimeline', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const timelineFeed = clientInstance.feed.timeline();
+        const timeline = await timelineFeed.items();
+
+        res.json(timeline);
+      } catch (err) {
+        console.log("Get timeline error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get timeline error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getReelsMediaFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_ids: string[];
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const reelsFeed = clientInstance.feed.reelsMedia({ userIds: data.user_ids });
+        const reels = await reelsFeed.items();
+
+        res.json(reels);
+      } catch (err) {
+        console.log("Get reels media feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get reels media feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getReelsTray', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const reelsTrayFeed = clientInstance.feed.reelsTray();
+        const reelsTray = await reelsTrayFeed.items();
+
+        res.json(reelsTray);
+      } catch (err) {
+        console.log("Get reels tray error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get reels tray error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Highlights Repository Endpoints
+    this.app.post('/getHighlightsTray', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const highlightsTray = await clientInstance.highlights.highlightsTray(data.user_id);
+
+        res.json(highlightsTray);
+      } catch (err) {
+        console.log("Get highlights tray error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get highlights tray error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/createHighlightReel', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          title: string;
+          media_ids: string[];
+          cover_id?: string;
+          source?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.highlights.createReel({
+          title: data.title,
+          mediaIds: data.media_ids,
+          coverId: data.cover_id,
+          source: data.source
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Create highlight reel error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Create highlight reel error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Live Repository Endpoints  
+    this.app.post('/getLiveBroadcastInfo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          broadcast_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const liveInfo = await clientInstance.live.info(data.broadcast_id);
+
+        res.json(liveInfo);
+      } catch (err) {
+        console.log("Get live broadcast info error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get live broadcast info error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Search Service Endpoints
+    this.app.post('/searchBlended', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          query: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const searchResults = await clientInstance.search.blended(data.query);
+
+        res.json(searchResults);
+      } catch (err) {
+        console.log("Search blended error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search blended error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/searchTags', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          query: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const searchResults = await clientInstance.search.tags(data.query);
+
+        res.json(searchResults);
+      } catch (err) {
+        console.log("Search tags error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search tags error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/searchPlaces', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          query: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const searchResults = await clientInstance.search.places(data.query);
+
+        res.json(searchResults);
+      } catch (err) {
+        console.log("Search places error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search places error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/searchLocation', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          latitude: number;
+          longitude: number;
+          query?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const searchResults = await clientInstance.search.location(data.latitude, data.longitude, data.query);
+
+        res.json(searchResults);
+      } catch (err) {
+        console.log("Search location error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search location error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Discover Repository Endpoints
+    this.app.post('/getDiscoverChaining', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          target_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const chainingResult = await clientInstance.discover.chaining(data.target_id);
+
+        res.json(chainingResult);
+      } catch (err) {
+        console.log("Get discover chaining error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get discover chaining error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getTopicalExplore', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const exploreResult = await clientInstance.discover.topicalExplore();
+
+        res.json(exploreResult);
+      } catch (err) {
+        console.log("Get topical explore error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get topical explore error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Tag Repository Endpoints
+    this.app.post('/getTagFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          tag: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const tagFeed = clientInstance.feed.tag(data.tag);
+        const posts = await tagFeed.items();
+
+        res.json(posts);
+      } catch (err) {
+        console.log("Get tag feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get tag feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/searchTag', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          tag: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const tagResults = await clientInstance.tag.search(data.tag);
+
+        res.json(tagResults);
+      } catch (err) {
+        console.log("Search tag error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search tag error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // News Feed
+    this.app.post('/getNewsFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const newsFeed = clientInstance.feed.news();
+        const news = await newsFeed.items();
+
+        res.json(news);
+      } catch (err) {
+        console.log("Get news feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get news feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Pending Friendships
+    this.app.post('/getPendingFriendships', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const pendingFeed = clientInstance.feed.pendingFriendships();
+        const pending = await pendingFeed.items();
+
+        res.json(pending);
+      } catch (err) {
+        console.log("Get pending friendships error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get pending friendships error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Blocked Users
+    this.app.post('/getBlockedUsers', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const blockedFeed = clientInstance.feed.blockedUsers();
+        const blocked = await blockedFeed.items();
+
+        res.json(blocked);
+      } catch (err) {
+        console.log("Get blocked users error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get blocked users error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Media Comments Feed
+    this.app.post('/getMediaComments', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const commentsFeed = clientInstance.feed.mediaComments(data.media_id);
+        const comments = await commentsFeed.items();
+
+        res.json(comments);
+      } catch (err) {
+        console.log("Get media comments error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get media comments error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Location Feed
+    this.app.post('/getLocationFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          location_id: string;
+          tab?: 'recent' | 'ranked';
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const locationFeed = clientInstance.feed.location(data.location_id, data.tab || 'ranked');
+        const posts = await locationFeed.items();
+
+        res.json(posts);
+      } catch (err) {
+        console.log("Get location feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get location feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Music Repository Endpoints
+    this.app.post('/getMusicMoods', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const moods = await clientInstance.music.moods();
+
+        res.json(moods);
+      } catch (err) {
+        console.log("Get music moods error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get music moods error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getMusicGenres', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const genres = await clientInstance.music.genres();
+
+        res.json(genres);
+      } catch (err) {
+        console.log("Get music genres error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get music genres error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getMusicLyrics', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          track_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const lyrics = await clientInstance.music.lyrics(data.track_id);
+
+        res.json(lyrics);
+      } catch (err) {
+        console.log("Get music lyrics error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get music lyrics error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Save/Unsave Media
+    this.app.post('/saveMedia', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.save(data.media_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Save media error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Save media error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/unsaveMedia', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.unsave(data.media_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Unsave media error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Unsave media error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Get Saved Feed
+    this.app.post('/getSavedFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const savedFeed = clientInstance.feed.saved();
+        const saved = await savedFeed.items();
+
+        res.json(saved);
+      } catch (err) {
+        console.log("Get saved feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get saved feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // User Tagging
+    this.app.post('/getUsertagsFeed', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const usertagsFeed = clientInstance.feed.usertags(data.user_id);
+        const usertags = await usertagsFeed.items();
+
+        res.json(usertags);
+      } catch (err) {
+        console.log("Get usertags feed error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get usertags feed error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Account Features
+    this.app.post('/getAccountDetails', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const accountDetails = await clientInstance.user.accountDetails(data.user_id);
+
+        res.json(accountDetails);
+      } catch (err) {
+        console.log("Get account details error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get account details error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getSharedFollowers', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const sharedFollowers = await clientInstance.user.sharedFollowerAccounts(data.user_id);
+
+        res.json(sharedFollowers);
+      } catch (err) {
+        console.log("Get shared followers error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get shared followers error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Publishing Service Endpoints
+    this.app.post('/publishPhoto', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          file_buffer: Buffer;
+          caption?: string;
+          location?: any;
+          usertags?: any;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.publish.photo({
+          file: data.file_buffer,
+          caption: data.caption,
+          location: data.location,
+          usertags: data.usertags
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Publish photo error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Publish photo error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/publishVideo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          video_buffer: Buffer;
+          coverImage?: Buffer;
+          caption?: string;
+          location?: any;
+          usertags?: any;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.publish.video({
+          video: data.video_buffer,
+          coverImage: data.coverImage,
+          caption: data.caption,
+          location: data.location,
+          usertags: data.usertags
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Publish video error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Publish video error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/publishAlbum', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          items: any[];
+          caption?: string;
+          location?: any;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.publish.album({
+          items: data.items,
+          caption: data.caption,
+          location: data.location
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Publish album error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Publish album error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/publishStory', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          file: Buffer;
+          caption?: string;
+          stickerConfig?: any;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.publish.story({
+          file: data.file,
+          caption: data.caption,
+          stickerConfig: data.stickerConfig
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Publish story error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Publish story error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/publishIgtvVideo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          video: Buffer;
+          coverImage: Buffer;
+          title: string;
+          caption?: string;
+          seriesId?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.publish.igtvVideo({
+          video: data.video,
+          coverImage: data.coverImage,
+          title: data.title,
+          caption: data.caption,
+          seriesId: data.seriesId
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Publish IGTV video error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Publish IGTV video error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Upload Repository Endpoints
+    this.app.post('/uploadPhoto', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          file: Buffer;
+          uploadId?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.upload.photo({
+          file: data.file,
+          uploadId: data.uploadId
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Upload photo error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Upload photo error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/uploadVideo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          video: Buffer;
+          uploadId?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.upload.video({
+          video: data.video,
+          uploadId: data.uploadId
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Upload video error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Upload video error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // IGTV Repository Endpoints
+    this.app.post('/searchIgtv', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          query?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.igtv.search(data.query);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Search IGTV error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Search IGTV error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/createIgtvSeries', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          title: string;
+          description?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.igtv.createSeries(data.title, data.description);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Create IGTV series error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Create IGTV series error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/addIgtvEpisode', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          series_id: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.igtv.seriesAddEpisode(data.series_id, data.media_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Add IGTV episode error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Add IGTV episode error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getUserIgtvSeries', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          user_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.igtv.allUserSeries(data.user_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Get user IGTV series error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get user IGTV series error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Direct Thread Repository Endpoints
+    this.app.post('/approveThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.approve(data.thread_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Approve thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Approve thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/declineThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.decline(data.thread_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Decline thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Decline thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/muteThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.mute(data.thread_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Mute thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Mute thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/unmuteThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.unmute(data.thread_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Unmute thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Unmute thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/leaveThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.leave(data.thread_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Leave thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Leave thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/hideThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.hide(data.thread_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Hide thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Hide thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/addUserToThread', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+          user_ids: string[];
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.addUser({
+          threadId: data.thread_id,
+          userIds: data.user_ids
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Add user to thread error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Add user to thread error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/updateThreadTitle', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+          title: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.updateTitle(data.thread_id, data.title);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Update thread title error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Update thread title error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/deleteThreadItem', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          thread_id: string;
+          item_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.directThread.deleteItem(data.thread_id, data.item_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Delete thread item error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Delete thread item error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // More Advanced Media Endpoints
+    this.app.post('/disableMediaComments', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.commentsDisable(data.media_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Disable media comments error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Disable media comments error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/enableMediaComments', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.commentsEnable(data.media_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Enable media comments error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Enable media comments error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/deleteComment', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          media_id: string;
+          comment_ids: string[];
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.media.commentsBulkDelete(data.media_id, data.comment_ids);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Delete comment error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Delete comment error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Live Broadcasting Endpoints
+    this.app.post('/createLiveBroadcast', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          message?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.live.create({
+          previewWidth: 1080,
+          previewHeight: 1920,
+          message: data.message
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Create live broadcast error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Create live broadcast error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/startLiveBroadcast', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          broadcast_id: string;
+          send_notifications?: boolean;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.live.start(data.broadcast_id, data.send_notifications);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Start live broadcast error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Start live broadcast error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/endLiveBroadcast', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          broadcast_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.live.endBroadcast(data.broadcast_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("End live broadcast error", err);
+        httpLogger.error({
+          level: "error",
+          label: "End live broadcast error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    this.app.post('/getLiveComments', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          broadcast_id: string;
+          last_comment_ts?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.live.getComment({
+          broadcastId: data.broadcast_id,
+          lastCommentTs: data.last_comment_ts
+        });
+
+        res.json(result);
+      } catch (err) {
+        console.log("Get live comments error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get live comments error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Location Repository Endpoints
+    this.app.post('/getLocationInfo', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          location_id: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.location.info(data.location_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Get location info error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Get location info error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
+    // Story Service (Enhanced)
+    this.app.post('/markStoryAsSeen', async (req: Request, res: Response) => {
+      try {
+        const data = req.body as {
+          username_from: string;
+          story_items: any[];
+          source_id?: string;
+        };
+        
+        const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+        const result = await clientInstance.story.seen(data.story_items, data.source_id);
+
+        res.json(result);
+      } catch (err) {
+        console.log("Mark story as seen error", err);
+        httpLogger.error({
+          level: "error",
+          label: "Mark story as seen error",
+          message: (err as Error).message,
+          stack: (err as Error).stack,
+        });
+        res.status(400).send("There was an error");
+      }
+    });
+
     this.app.use((req: Request, res: Response) => {
       res.send('Hello from Express!');
     });
