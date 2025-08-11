@@ -43,20 +43,20 @@ export class HttpServer {
 
   private initRoutes() {
     this.app.options('*', (req: Request, res: Response) => {
-        res.header('Content-Type', 'application/json');
-        res.header('Access-Control-Allow-Origin', cors_urls);
-        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization');
-        res.sendStatus(200);
+      res.header('Content-Type', 'application/json');
+      res.header('Access-Control-Allow-Origin', cors_urls);
+      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+      res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Authorization');
+      res.sendStatus(200);
     });
 
     this.app.get('/accounts', async (req: Request, res: Response) => {
-        let accounts = await listAccounts();
-        res.json(accounts);
+      let accounts = await listAccounts();
+      res.json(accounts);
     });
     this.app.get('/accounts/loggedin', async (req: Request, res: Response) => {
-        let accounts = await listAccounts();
-        res.json(accounts);
+      let accounts = await listAccounts();
+      res.json(accounts);
     });
 
     this.app.post('/accounts/logout', async (req: Request, res: Response) => {
@@ -72,11 +72,11 @@ export class HttpServer {
     });
 
     this.app.post('/accounts/disconnect', async (req: Request, res: Response) => {
-        const data = req.body as {
-            igname: string;
-        };
-        await disconnect(data.igname);
-        res.status(200).send("Account has been disconnected.");
+      const data = req.body as {
+        igname: string;
+      };
+      await disconnect(data.igname);
+      res.status(200).send("Account has been disconnected.");
     });
 
     this.app.get('/accounts/connected', async (req: Request, res: Response) => {
@@ -90,18 +90,18 @@ export class HttpServer {
     });
 
     this.app.post('/accounts/isloggedin', async (req: Request, res: Response) => {
-        try {
-            const data = req.body as {
-                igname: string;
-            };
-            let isLoggedIn = await isALoggedInAccount(data.igname);
-            let dat: {[key: string]: boolean} = {}; // Add index signature
-            dat[data.igname] = isLoggedIn;
-            res.status(200).json(dat);
-        } catch (error) {
-            console.error(error);
-            res.status(400).send("There was an error");
-        }
+      try {
+        const data = req.body as {
+          igname: string;
+        };
+        let isLoggedIn = await isALoggedInAccount(data.igname);
+        let dat: { [key: string]: boolean } = {}; // Add index signature
+        dat[data.igname] = isLoggedIn;
+        res.status(200).json(dat);
+      } catch (error) {
+        console.error(error);
+        res.status(400).send("There was an error");
+      }
     });
 
     this.app.post('/accounts/isconnected', async (req: Request, res: Response) => {
@@ -110,7 +110,7 @@ export class HttpServer {
           igname: string;
         };
         let isLoggedIn = await isConnectedAccount(data.igname);
-        let dat: {[key: string]: boolean} = {}; // Add index signature
+        let dat: { [key: string]: boolean } = {}; // Add index signature
         dat[data.igname] = isLoggedIn;
         res.status(200).json(dat);
       } catch (error) {
@@ -125,7 +125,7 @@ export class HttpServer {
           igname: string;
         };
         let isLoggedIn = await isDisconnectedAccount(data.igname);
-        let dat: {[key: string]: boolean} = {}; // Add index signature
+        let dat: { [key: string]: boolean } = {}; // Add index signature
         dat[data.igname] = isLoggedIn;
         res.status(200).json(dat);
       } catch (error) {
@@ -137,40 +137,40 @@ export class HttpServer {
     this.app.post('/login', async (req: Request, res: Response) => {
       try {
         const data = req.body as {
-            igname: string;
+          igname: string;
         };
         let isLoggedIn: boolean;
         try {
-            isLoggedIn = await isALoggedInAccount(data.igname);
+          isLoggedIn = await isALoggedInAccount(data.igname);
         } catch (error) {
-            console.error(error);
-            return res.status(400).json({
-                message: error?.toString(),
-            });
+          console.error(error);
+          return res.status(400).json({
+            message: error?.toString(),
+          });
         }
         if (isLoggedIn) {
-            return res.status(200).json({
-                message: "Account already logged in"
-            });
+          return res.status(200).json({
+            message: "Account already logged in"
+          });
         }
         let salesReps = await fetchSalesRepAccountsFromAPI(false);
         if (salesReps) {
-            // salesReps = JSON.parse(salesReps)
+          // salesReps = JSON.parse(salesReps)
         } else {
-            return res.status(404).send("Account not found");
+          return res.status(404).send("Account not found");
         }
         let failures: { [key: string]: { status: number, msg: string } };
         let accounts: any[] = []; // Explicitly type 'accounts' as an array
         [isLoggedIn, failures] = await initServers(accounts, data.igname) as [boolean, { [key: string]: { status: number, msg: string } }];
         if (isLoggedIn) {
-            return res.status(200).json({
-                message: "Account not found"
-            });
+          return res.status(200).json({
+            message: "Account not found"
+          });
         } else {
-            let { status, msg } = failures?.[data.igname] ?? { status: 400, msg: 'Unknown error occurred' };
-            return res.status(status).json({
-                message: msg,
-            });
+          let { status, msg } = failures?.[data.igname] ?? { status: 400, msg: 'Unknown error occurred' };
+          return res.status(status).json({
+            message: msg,
+          });
         }
       } catch (error) {
         console.error(error);
@@ -221,7 +221,7 @@ export class HttpServer {
           username_from: string;
           username_to: string;
           links: string;
-          mediaId: string;
+          mediaId: string | string[];
         };
         let sales_rep = data.username_from
         let isLoggedIn = await isALoggedInAccount(sales_rep);
@@ -252,18 +252,23 @@ export class HttpServer {
           .get(data.username_from)!
           .instance.entity.directThread([userId.toString()]);
 
-        // if (data.mediaId && data.mediaId.length > 0) {
-        try {
-          await thread.broadcastPost(data.mediaId);
-        } catch (err) {
-          this.mailer.send({
-            subject: `Sending media error`,
-            text: `Hi team, There was an error sending a media to a lead but nevertheless we are still proceeding without the media and reaching out.\nThe error message is \n${(err as Error).message
-              }\nand the stack trace is as follows:\n${(err as Error).stack
-              }\nPlease check on this.`,
-          });
+
+        // send multiple media
+        const mediaIds = Array.isArray(data.mediaId) ? data.mediaId : [data.mediaId];
+        for (const id of mediaIds) {
+          try {
+            await thread.broadcastPost(id);
+          } catch (err) {
+            // your mailer code
+            this.mailer.send({
+                subject: `Sending media error`,
+                text: `Hi team, There was an error sending a media to a lead but nevertheless we are still proceeding without the media and reaching out.\nThe error message is \n${(err as Error).message
+                  }\nand the stack trace is as follows:\n${(err as Error).stack
+                  }\nPlease check on this.`,
+              });
+          }
         }
-        // }
+
         const sent_message = (await thread.broadcastText(
           data.message
         )) as DirectThreadRepositoryBroadcastResponsePayload;
@@ -516,18 +521,18 @@ export class HttpServer {
         }[];
 
         for (const data of dataList) {
-            const clientInstance = this.accountInstances.get(data.username_from)!.instance;
+          const clientInstance = this.accountInstances.get(data.username_from)!.instance;
 
-            const targetUser = await clientInstance.user.searchExact(data.usernames_to);
-            const reelsFeed = clientInstance.feed.reelsMedia({
-                userIds: [targetUser.pk],
-            });
-            const storyItems = await reelsFeed.items();
-            if (storyItems.length === 0) {
-                console.log(`${targetUser.username}'s story is empty`);
-                continue;
-            }
-            await clientInstance.story.seen([storyItems[0]]);
+          const targetUser = await clientInstance.user.searchExact(data.usernames_to);
+          const reelsFeed = clientInstance.feed.reelsMedia({
+            userIds: [targetUser.pk],
+          });
+          const storyItems = await reelsFeed.items();
+          if (storyItems.length === 0) {
+            console.log(`${targetUser.username}'s story is empty`);
+            continue;
+          }
+          await clientInstance.story.seen([storyItems[0]]);
         }
 
         res.json("OK");
@@ -630,18 +635,18 @@ export class HttpServer {
     });
 
     this.app.post('/trigger-disconnect', async (req: Request, res: Response) => {
-    try {
+      try {
         const data = req.body as {
-            username_from: string;
+          username_from: string;
         };
         await this.accountInstances
-            .get(data.username_from)!
-            .instance.realtime.disconnect();
+          .get(data.username_from)!
+          .instance.realtime.disconnect();
 
         res.json({
-            status: "OK",
+          status: "OK",
         });
-    } catch (err) {
+      } catch (err) {
         console.log("Disconnect error", err);
         httpLogger.error({
           level: "error",
@@ -686,22 +691,22 @@ export class HttpServer {
       // const inbox = await clientInstance.feed.directPending()
       const comms = <any>[]
 
-    
+
       const commentsFeed = await clientInstance.feed.mediaComments('1263679849772992148').request();
-      await Promise.all(commentsFeed.comments.map(async (comment)=>{
+      await Promise.all(commentsFeed.comments.map(async (comment) => {
         console.log("<------------++++++++++++++++++++++++++++------------>")
         console.log(comment.text)
         console.log(comment.user.username)
-        
+
         comms.push({
           comment: comment.text,
-          username:comment.user.username
+          username: comment.user.username
         })
       }))
 
       res.json(comms);
     });
-    
+
 
     this.app.use((req: Request, res: Response) => {
       res.send('Hello from Express!');
