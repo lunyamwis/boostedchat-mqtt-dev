@@ -70,7 +70,7 @@ export class MQTTListener {
     this.accountInstances
       .get(this.username)
       ?.instance.realtime.on("direct", this.logEvent("direct"));
-
+   
 
     this.accountInstances
       .get(this.username)
@@ -428,31 +428,6 @@ export class MQTTListener {
         }
       );
 
-      try {
-
-        const ai_os_response = await fetch(
-          `https://workflow-engine-876385716101.us-central1.run.app`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              sales_rep_message: message,
-              threadId: threadId
-            }),
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        console.log("Success pos")
-        await this.clickUpservice.notifyTechNotifications("success posting salesrep msg to AI OS", false)
-        console.log(ai_os_response)
-
-      } catch (error) {
-        console.log("Error posting sales rep msg to AI OS")
-        await this.clickUpservice.notifyTechNotifications(`Error positng to AI OS:  ${error}`, false)
-        console.log(error)
-      }
-
-
-
       if (response.status !== 201) {
         /*
         await this.mailer.send({
@@ -518,30 +493,6 @@ export class MQTTListener {
         headers: { "Content-Type": "application/json" },
       }
     );
-
-    try {
-      const ai_os_response = await fetch(
-        `https://workflow-engine-876385716101.us-central1.run.app`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            client_messages: messages,
-            threadId: threadId
-          }),
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      console.log(ai_os_response)
-      await this.clickUpservice.notifyTechNotifications("success posting lead msg to AI OS", false)
-
-    } catch (error) {
-      console.log("Error posting lead msg to AI OS")
-      await this.clickUpservice.notifyTechNotifications(`Error positng lead to AI OS:  ${error}`, false)
-      console.log(error)
-    }
-
-
-
     if (response.status === 200) {
       const body = (await response.json()) as {
         status: number;
@@ -607,7 +558,7 @@ export class MQTTListener {
           threadId,
           messages, // Send all messages in the thread as an array
         });
-
+  
         if (response.status == 201) {
           console.log(`Thread ${threadId} posted successfully with ${messages.length} messages.`);
         } else {
@@ -617,7 +568,7 @@ export class MQTTListener {
             ${response.data?.message}`
           });
         }
-
+  
       } catch (error) {
         console.log(`Error posting thread ${threadId} to API:`, error);
         await this.mailer.send({
@@ -634,7 +585,7 @@ export class MQTTListener {
         });
       }
 
-
+      
     }
   }
 
