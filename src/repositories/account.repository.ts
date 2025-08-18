@@ -46,7 +46,7 @@ export class AccountRepository extends Repository {
     //   await this.client.qe.syncLoginExperiments();
     // }
     let proxyAgent = createProxyAgent(this.client.state.proxyUrl);
-    const { encrypted, time } = await this.encryptPassword(password);
+    // const { encrypted, time } = await this.encryptPassword(password);
     // console.log(encrypted);
     // console.log('-------------------afadf--------');
 
@@ -115,54 +115,13 @@ export class AccountRepository extends Repository {
     return `2${sum}`;
   }
 
-  // ...existing code...
-  public async encryptPassword(password: string): Promise<{ time: string; encrypted: string; }> {
-    const randKey = crypto.randomBytes(32);
-    const iv = crypto.randomBytes(12);
-    const publickeyData = await this.passwordPublickeys();
-    const publickey = publickeyData.publickey;
-    const publickeyid = publickeyData.publickeyid;
-    const rsaEncrypted = crypto.publicEncrypt({
-      key: publickey ? Buffer.from(publickey, 'base64').toString() : '',
-      // @ts-ignore
-      padding: crypto.constants.RSA_PKCS1_PADDING,
-    }, randKey);
-    const cipher = crypto.createCipheriv('aes-256-gcm', randKey, iv);
-    const time = Math.floor(Date.now() / 1000).toString();
-    cipher.setAAD(Buffer.from(time));
-    const aesEncrypted = Buffer.concat([cipher.update(password, 'utf8'), cipher.final()]);
-    const sizeBuffer = Buffer.alloc(2, 0);
-    sizeBuffer.writeInt16LE(rsaEncrypted.byteLength, 0);
-    const authTag = cipher.getAuthTag();
-    let encrypted_d = Buffer.concat([Buffer.from([1, this.client.state.passwordEncryptionKeyId]),
-      iv,
-      sizeBuffer,
-      rsaEncrypted, authTag, aesEncrypted])
-      .toString('base64')
-
-    console.log('XXXXXXXXXXXXX-----------------XXXXXXXXXXXXXXXX')
-    console.log(encrypted_d);
-
-    return {
-      time,
-      encrypted: Buffer.concat([
-        Buffer.from([1, publickeyid]),
-        iv,
-        sizeBuffer,
-        rsaEncrypted, authTag, aesEncrypted])
-        .toString('base64'),
-    };
-  }
-// ...existing code...
-
-  // This is a new method to encrypt password
   // public async encryptPassword(password: string): Promise<{ time: string; encrypted: string; }> {
-
   //   const randKey = crypto.randomBytes(32);
   //   const iv = crypto.randomBytes(12);
-  //   const { publickeyid, publickey } = await this.passwordPublickeys();
+  //   const publickeyData = await this.passwordPublickeys();
+  //   const publickey = publickeyData.publickey;
+  //   const publickeyid = publickeyData.publickeyid;
   //   const rsaEncrypted = crypto.publicEncrypt({
-  //     // key: this.client.state.passwordEncryptionPubKey ? Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString() : '',
   //     key: publickey ? Buffer.from(publickey, 'base64').toString() : '',
   //     // @ts-ignore
   //     padding: crypto.constants.RSA_PKCS1_PADDING,
@@ -186,16 +145,55 @@ export class AccountRepository extends Repository {
   //   return {
   //     time,
   //     encrypted: Buffer.concat([
-  //       Buffer.from([1,
-  //         // this.client.state.passwordEncryptionKeyId
-  //         publickeyid
-  //       ]),
+  //       Buffer.from([1, publickeyid]),
   //       iv,
   //       sizeBuffer,
   //       rsaEncrypted, authTag, aesEncrypted])
   //       .toString('base64'),
   //   };
   // }
+
+  // This is a new method to encrypt password
+  public async encryptPassword(password: string): Promise<{ time: string; encrypted: string; }> {
+
+    const randKey = crypto.randomBytes(32);
+    const iv = crypto.randomBytes(12);
+    const { publickeyid, publickey } = await this.passwordPublickeys();
+    const rsaEncrypted = crypto.publicEncrypt({
+      // key: this.client.state.passwordEncryptionPubKey ? Buffer.from(this.client.state.passwordEncryptionPubKey, 'base64').toString() : '',
+      key: publickey ? Buffer.from(publickey, 'base64').toString() : '',
+      // @ts-ignore
+      padding: crypto.constants.RSA_PKCS1_PADDING,
+    }, randKey);
+    const cipher = crypto.createCipheriv('aes-256-gcm', randKey, iv);
+    const time = Math.floor(Date.now() / 1000).toString();
+    cipher.setAAD(Buffer.from(time));
+    const aesEncrypted = Buffer.concat([cipher.update(password, 'utf8'), cipher.final()]);
+    const sizeBuffer = Buffer.alloc(2, 0);
+    sizeBuffer.writeInt16LE(rsaEncrypted.byteLength, 0);
+    const authTag = cipher.getAuthTag();
+    let encrypted_d = Buffer.concat([Buffer.from([1, this.client.state.passwordEncryptionKeyId]),
+      iv,
+      sizeBuffer,
+      rsaEncrypted, authTag, aesEncrypted])
+      .toString('base64')
+
+    console.log('XXXXXXXXXXXXX-----------------XXXXXXXXXXXXXXXX')
+    console.log(encrypted_d);
+
+    return {
+      time,
+      encrypted: Buffer.concat([
+        Buffer.from([1,
+          // this.client.state.passwordEncryptionKeyId
+          publickeyid
+        ]),
+        iv,
+        sizeBuffer,
+        rsaEncrypted, authTag, aesEncrypted])
+        .toString('base64'),
+    };
+  }
 
   formatAsPEM(key: Buffer): string {
     const base64Key = key.toString('base64');
