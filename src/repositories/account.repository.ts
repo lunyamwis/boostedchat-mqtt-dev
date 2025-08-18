@@ -57,7 +57,8 @@ export class AccountRepository extends Repository {
         data: this.client.request.sign({
           jazoest: AccountRepository.createJazoest(this.client.state.phoneId),//"22422",
           phone_id: this.client.state.phoneId, //"b9ebdb38-1e13-4777-b8d9-6107bc1c06e3",//
-          enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
+          // enc_password: `#PWD_INSTAGRAM:4:${time}:${encrypted}`,
+          enc_password: "#PWD_INSTAGRAM:4:1755497803:AQH/ibjZsM+qDz1E0R8AAU4ZKfRH69PnjweeE4n5Q+V7QGWPPLWkfGGQM37lCT6RzXikQO1pnchW8EbnN5RUPJBIe4T3jyyWENEPd669FTRNATiggWQ6x+IrYYEd+8/B2WFshldU/Jclghvi4u8olbD+QlBkEaR1qCZVs/EopBidqRgmPgdRjYyOB1tmCfkkHJi/4Yy+tVUZkatdtmY4xkfCjuI5/93rKokzYZ214KqBeeIz3NntHBP0NEApsTzUpz0nPFV/gtOv1PBqiqyxkF4t3tJmqcd20JVAyfc/GjHnPGIG6SrdXkqF1jv2QBKzqn7gk1hOSpawLW8AB/4InY+g+Kd/J1ok5HUKaKna4uAydBVWOK4ZrsTJZDwTGwhkq6NA0zp4QkiIBaPtWw==",
           // enc_password:"#PWD_INSTAGRAM:4:1725879233:AaqB1TYJji6wavojyYEAAUUURK15lMuF78OCZAixo0HJemdwfsBhG/TebmCo1P6HTC8xgB1AAZP2YFJWbTT7pEBbqjco4386jLrvWkBesvHAcj2haPgV4svA9oJG4Ect0+M/t+XjIQNYcarxVFEPoxqLrsgyWdqa58K1H0C5dMiGsEP3ChV6hJJOHEfA4L1mtQVsoXVm13DOGMlWGq0TvZDcrq9TnLMMYvpfOPmj9K/ghxiOaDEg1EvnDTloOSvWt7krcqVQE6uBv/a7K5W7FlISkjgnTxzDOQhlMbnzs1r0Mnus9ZNWWv7wNigFtJS+9wUtk2ARxWlW61QChasVf95xxG16d4vxBNKWyM9KRAk42GsxGyqRtn6FHJQH17I5Hi6G4hVoF1N0fix7Zp4=",
           username: username,// "martobiro",
           adid: this.client.state.adid,//"a4d0e0aa-b36f-4d24-a3cf-d6c7e5cdb582",
