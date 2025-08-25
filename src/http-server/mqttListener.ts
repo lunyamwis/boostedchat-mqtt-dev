@@ -431,7 +431,7 @@ export class MQTTListener {
       );
 
       // post message to AI OS
-      this.postSalesRepMessageToApi(message, threadId)
+      await this.postSalesRepMessageToApi(message, threadId)
 
       if (response.status !== 201) {
         /*
@@ -500,7 +500,7 @@ export class MQTTListener {
       }
     );
     // post lead messages to AI OS
-    this.postLeadMessageToAiOs(messages, threadId)
+    await this.postLeadMessageToAiOs(messages, threadId)
 
     if (response.status === 200) {
       const body = (await response.json()) as {
