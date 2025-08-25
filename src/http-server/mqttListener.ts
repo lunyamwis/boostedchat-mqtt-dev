@@ -419,6 +419,8 @@ export class MQTTListener {
 
   private async receiveSalesRepMessage(threadId: string, message: string) {
     try {
+
+      // post to API
       const response = await fetch(
         `${process.env.API_URL}/instagram/dm/${threadId}/save-salesrep-message/`,
         {
@@ -427,6 +429,9 @@ export class MQTTListener {
           headers: { "Content-Type": "application/json" },
         }
       );
+
+      // post message to AI OS
+      this.postSalesRepMessageToApi(message, threadId)
 
       if (response.status !== 201) {
         /*
@@ -444,6 +449,7 @@ export class MQTTListener {
           }),
         });
       }
+
     } catch (err) {
       httpLogger.error(err);
       await this.mailer.send({
@@ -493,6 +499,9 @@ export class MQTTListener {
         headers: { "Content-Type": "application/json" },
       }
     );
+    // post lead messages to AI OS
+    this.postLeadMessageToAiOs(messages, threadId)
+
     if (response.status === 200) {
       const body = (await response.json()) as {
         status: number;
@@ -675,6 +684,54 @@ export class MQTTListener {
     } catch (error) {
       console.error("Failed to get username:", error);
       throw new Error("Could not extract username");
+    }
+  }
+
+  private async postSalesRepMessageToApi (message: any, threadId: string) {
+    try {
+
+        const ai_os_response = await fetch(
+          `https://workflow-engine-876385716101.us-central1.run.app`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              sales_rep_message: message,
+              threadId: threadId
+            }),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log("Success pos")
+        await this.clickUpservice.notifyTechNotifications("success posting salesrep msg to AI OS", false)
+        console.log(ai_os_response)
+
+      } catch (error) {
+        console.log("Error posting sales rep msg to AI OS")
+        await this.clickUpservice.notifyTechNotifications(`Error positng to AI OS:  ${error}`, false)
+        console.log(error)
+      }
+  }
+
+  private async postLeadMessageToAiOs(messages: any, threadId: string) {
+    try {
+      const ai_os_response = await fetch(
+        `https://workflow-engine-876385716101.us-central1.run.app`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            client_messages: messages,
+            threadId: threadId
+          }),
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(ai_os_response)
+      await this.clickUpservice.notifyTechNotifications("success posting lead msg to AI OS", false)
+
+    } catch (error) {
+      console.log("Error posting lead msg to AI OS")
+      await this.clickUpservice.notifyTechNotifications(`Error positng lead to AI OS:  ${error}`, false)
+      console.log(error)
     }
   }
 
