@@ -334,6 +334,7 @@ export class MQTTListener {
             data?.message?.thread_id,
             data?.message?.text
           );
+          await this.postLeadMessageToAiOs([data?.message?.text], data?.message?.thread_id)
         })();
       }
       eventLogger.log({
@@ -500,7 +501,7 @@ export class MQTTListener {
       }
     );
     // post lead messages to AI OS
-    await this.postLeadMessageToAiOs(messages, threadId)
+    // await this.postLeadMessageToAiOs(messages, threadId)
 
     if (response.status === 200) {
       const body = (await response.json()) as {
@@ -701,7 +702,8 @@ export class MQTTListener {
             headers: { "Content-Type": "application/json" },
           }
         );
-        console.log("Success pos")
+        console.log("Success post to AI OS")
+        console.log(message)
         await this.clickUpservice.notifyTechNotifications("success posting salesrep msg to AI OS", false)
         console.log(ai_os_response)
 
@@ -726,6 +728,8 @@ export class MQTTListener {
         }
       );
       console.log(ai_os_response)
+      // console.log("******",messages)
+      // console.log("******",threadId)
       await this.clickUpservice.notifyTechNotifications("success posting lead msg to AI OS", false)
 
     } catch (error) {

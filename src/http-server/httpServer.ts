@@ -211,6 +211,8 @@ export class HttpServer {
             }\nand the stack trace is as follows:\n${(err as Error).stack
             }\nPlease check on this.`,
         });
+        // console.log((err as Error).message)
+        // console.log((err as Error).stack)
         res.status(400).send("There was an error");
       }
     });
